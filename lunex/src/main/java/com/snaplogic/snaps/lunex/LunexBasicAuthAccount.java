@@ -1,11 +1,11 @@
 /*
  * SnapLogic - Data Integration
- *
- * Copyright (C) 2014, SnapLogic, Inc.  All rights reserved.
- *
+ * 
+ * Copyright (C) 2014, SnapLogic, Inc. All rights reserved.
+ * 
  * This program is licensed under the terms of
  * the SnapLogic Commercial Subscription agreement.
- *
+ * 
  * "SnapLogic" is a trademark of SnapLogic, Inc.
  */
 package com.snaplogic.snaps.lunex;
@@ -30,13 +30,13 @@ import com.snaplogic.snaps.lunex.bean.AccountBean;
 @AccountCategory(type = AccountType.BASIC_AUTH)
 public class LunexBasicAuthAccount extends BasicAuthAccount<AccountBean> {
 
-	@Override
-	public AccountBean connect() throws ExecutionException {
-		return new AccountBean(username, password);
-	}
+    @Override
+    public AccountBean connect() throws ExecutionException {
+        return new AccountBean(username, password);
+    }
 
-	@Override
-	public void disconnect() throws ExecutionException {
-		// NO OP
-	}
+    @Override
+    public void disconnect() throws ExecutionException {
+        // NO OP
+    }
 }
