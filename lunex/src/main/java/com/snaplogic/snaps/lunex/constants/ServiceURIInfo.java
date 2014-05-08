@@ -40,6 +40,8 @@ public class ServiceURIInfo {
      * GET/Read Resource operation supported resource list
      */
     public final static ImmutableMap<String, String> RR_URI_LIST = new ImmutableMap.Builder<String, String>()
+            .put(RResource.GetTime.toString(),
+                    "/pos/time")
             .put(RResource.GetAccount.toString(),
                     "/pos/sellers/{SELLER}/pins/{PIN}?passcode={PASSCODE}")
             .put(RResource.GetOrderStatus.toString(), "/pos/sellers/{SELLER}/orderstatus/{CID}")

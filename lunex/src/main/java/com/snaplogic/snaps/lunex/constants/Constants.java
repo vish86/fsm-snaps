@@ -141,7 +141,7 @@ public class Constants {
         GetAccount("GetAccount"), ListAccount("ListAccount"), ListSpeedDial("ListSpeedDial"), ListRegisterPhone(
                 "ListRegisterPhone"), GetOrderStatus("GetOrderStatus"), ListProduct("ListProduct"), GetSeller(
                 "GetSeller"), ListTransactions("ListTransactions"), ListDidByState("ListDidByState"), GetAutoITU(
-                "GetAutoITU"), TopUpOrder("TopupOrder");
+                "GetAutoITU"), TopUpOrder("TopupOrder"), GetTime("GetTime");
         private final String rresource;
 
         private RResource(String resource) {
@@ -182,6 +182,7 @@ public class Constants {
      * GET/Read Resource operation supported resource list
      */
     public static final ImmutableMap<String, ImmutableSet<String>> RR_PARAM_LIST = new ImmutableMap.Builder<String, ImmutableSet<String>>()
+            .put(RResource.GetTime.toString(), new ImmutableSet.Builder<String>().build())
             .put(RResource.GetAccount.toString(),
                     new ImmutableSet.Builder<String>().add(SELLER).add(CID).add(SKU).add(PHONE)
                             .add(PROMO_PHONE).add(AMOUNT).add(QUANTITY).add(PHONETYPE).add(LANG)

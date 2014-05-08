@@ -68,11 +68,15 @@ public class RequestProcessor {
 
             BufferedReader reader;
             StringBuffer response = new StringBuffer();
-            if ((statusCode = httpConnection.getResponseCode()) == HttpStatus.SC_OK) {
-                reader = new BufferedReader(new InputStreamReader(httpConnection.getInputStream()));
-            } else {
+            reader = new BufferedReader(new InputStreamReader(httpConnection.getInputStream()));
+            if ((statusCode = httpConnection.getResponseCode()) != HttpStatus.SC_OK) {
                 reader = new BufferedReader(new InputStreamReader(httpConnection.getErrorStream()));
             }
+//            if ((statusCode = httpConnection.getResponseCode()) == HttpStatus.SC_OK) {
+//                reader = new BufferedReader(new InputStreamReader(httpConnection.getInputStream()));
+//            } else {
+//                reader = new BufferedReader(new InputStreamReader(httpConnection.getErrorStream()));
+//            }
 
             String line;
             log.debug("###Resource Type: " + rBuilder.getSnapType());

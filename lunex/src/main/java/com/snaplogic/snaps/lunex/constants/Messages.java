@@ -18,7 +18,7 @@ package com.snaplogic.snaps.lunex.constants;
 public class Messages {
     // Snap labels and descriptions
     public static final String LUNEX_CREATE_LABEL = "Lunex - Create";
-    public static final String LUNEX_CREATE_DESC = "Issues an HTTP Postto "
+    public static final String LUNEX_CREATE_DESC = "Issues an HTTP Post to "
             + "Lunex API service endpoint.";
     public static final String LUNEX_UPDATE_LABEL = "Lunex - Update";
     public static final String LUNEX_UPDATE_DESC = "Issues an HTTP Put to "
