@@ -23,6 +23,7 @@ import com.google.common.collect.ImmutableSet;
  * @author svatada
  */
 public class Constants {
+    public static final String STATUS_CODE_TAG = "statusCode";
     public static final String RESOLUTION_TAG = "Resolution";
     public static final String REASON_TAG = "Reason";
     public static final String MESSAGE_TAG = "Message";
@@ -138,10 +139,11 @@ public class Constants {
     }
 
     public static enum RResource {
-        GetAccount("GetAccount"), ListAccount("ListAccount"), ListSpeedDial("ListSpeedDial"), ListRegisterPhone(
-                "ListRegisterPhone"), GetOrderStatus("GetOrderStatus"), ListProduct("ListProduct"), GetSeller(
-                "GetSeller"), ListTransactions("ListTransactions"), ListDidByState("ListDidByState"), GetAutoITU(
-                "GetAutoITU"), TopUpOrder("TopupOrder"), GetTime("GetTime");
+        GetAccount("GetAccount"), GetTime("GetTime"), ListAccount("ListAccount"), ListSpeedDial(
+                "ListSpeedDial"), ListRegisterPhone("ListRegisterPhone"), GetOrderStatus(
+                "GetOrderStatus"), ListProduct("ListProduct"), GetSeller("GetSeller"), ListTransactions(
+                "ListTransactions"), ListDidByState("ListDidByState"), GetAutoITU("GetAutoITU"), TopUpOrder(
+                "TopupOrder");
         private final String rresource;
 
         private RResource(String resource) {
@@ -154,17 +156,46 @@ public class Constants {
     }
 
     public static final ImmutableMap<String, Integer> REQ_BODY_PARAM_INFO = new ImmutableMap.Builder<String, Integer>()
-            .put("AutoRefillUpdatedBy", 0).put("AccessPhone", 0).put("AccessPhoneInt", 0)
-            .put("Balance", 0).put(CITY, 0).put("Created", 0).put("CreatedBy", 0)
-            .put("Currency", 0).put("Description", 0).put("Distributor", 0).put("Email", 0)
-            .put("ExpiredDate", 0).put(FIRST_NAME, 0).put("FirstPurchaseDate", 0)
-            .put("FirstUseDate", 0).put(LAST_NAME, 0).put("LastPurchaseDate", 0)
-            .put("LastUseDate", 0).put("MinBalance", 0).put("Minutes", 1).put("Num", 1)
-            .put("Notes", 0).put(PHONE2, 1).put("Pin", 1).put("Region", 0).put("RedeemDate", 0)
-            .put("ReferralName", 0).put("ReferralPhone", 1).put("RefillAmt", 0).put("Reseller", 0)
-            .put("RegionInt", 1).put("Sku", 1).put(STATE, 0).put("StatementOption", 0)
-            .put("Status", 0).put(STREET, 0).put("Updated", 0).put("UpdatedBy", 0).put(ZIPCODE, 0)
-            .build();
+            .put("AutoRefillUpdatedBy", 0)
+                .put("AccessPhone", 0)
+                .put("AccessPhoneInt", 0)
+                .put("Balance", 0)
+                .put(CITY, 0)
+                .put("Created", 0)
+                .put("CreatedBy", 0)
+                .put("Currency", 0)
+                .put("Description", 0)
+                .put("Distributor", 0)
+                .put("Email", 0)
+                .put("ExpiredDate", 0)
+                .put(FIRST_NAME, 0)
+                .put("FirstPurchaseDate", 0)
+                .put("FirstUseDate", 0)
+                .put(LAST_NAME, 0)
+                .put("LastPurchaseDate", 0)
+                .put("LastUseDate", 0)
+                .put("MinBalance", 0)
+                .put("Minutes", 1)
+                .put("Num", 1)
+                .put("Notes", 0)
+                .put(PHONE2, 1)
+                .put("Pin", 1)
+                .put("Region", 0)
+                .put("RedeemDate", 0)
+                .put("ReferralName", 0)
+                .put("ReferralPhone", 1)
+                .put("RefillAmt", 0)
+                .put("Reseller", 0)
+                .put("RegionInt", 1)
+                .put("Sku", 1)
+                .put(STATE, 0)
+                .put("StatementOption", 0)
+                .put("Status", 0)
+                .put(STREET, 0)
+                .put("Updated", 0)
+                .put("UpdatedBy", 0)
+                .put(ZIPCODE, 0)
+                .build();
 
     /*
      * POST/Create operation supported resource list
@@ -182,68 +213,167 @@ public class Constants {
      * GET/Read Resource operation supported resource list
      */
     public static final ImmutableMap<String, ImmutableSet<String>> RR_PARAM_LIST = new ImmutableMap.Builder<String, ImmutableSet<String>>()
-            .put(RResource.GetTime.toString(), new ImmutableSet.Builder<String>().build())
             .put(RResource.GetAccount.toString(),
-                    new ImmutableSet.Builder<String>().add(SELLER).add(CID).add(SKU).add(PHONE)
-                            .add(PROMO_PHONE).add(AMOUNT).add(QUANTITY).add(PHONETYPE).add(LANG)
-                            .add(NOTIFY).add(MERCHANTNAME).add(MERCHANTID).build())
-            .put(RResource.GetOrderStatus.toString(),
-                    new ImmutableSet.Builder<String>().add(SELLER).add(PHONETYPE).add(LANG)
-                            .add(NOTIFY).build())
-            .put(RResource.GetSeller.toString(),
-                    new ImmutableSet.Builder<String>().add(SELLER).add(TXID).add(NOTIFY).build())
-            .put(RResource.ListAccount.toString(),
-                    new ImmutableSet.Builder<String>().add(SELLER).add(CID).add(SKU).add(PHONE)
-                            .add(AMOUNT).build())
-            .put(RResource.ListDidByState.toString(),
-                    new ImmutableSet.Builder<String>().add(SELLER).add(CID).add(SKU).add(PHONE)
-                            .add(AMOUNT).build())
-            .put(RResource.ListProduct.toString(),
-                    new ImmutableSet.Builder<String>().add(SELLER).add(CID).add(SKU).add(PHONE)
-                            .add(AMOUNT).build())
-            .put(RResource.ListRegisterPhone.toString(),
-                    new ImmutableSet.Builder<String>().add(SELLER).add(CID).add(SKU).add(PHONE)
-                            .add(AMOUNT).build())
-            .put(RResource.ListSpeedDial.toString(),
-                    new ImmutableSet.Builder<String>().add(SELLER).add(CID).add(SKU).add(PHONE)
-                            .add(AMOUNT).build())
-            .put(RResource.ListTransactions.toString(),
-                    new ImmutableSet.Builder<String>().add(SELLER).add(CID).add(SKU).add(PHONE)
-                            .add(AMOUNT).build())
-            .put(RResource.GetAutoITU.toString(),
-                    new ImmutableSet.Builder<String>().add(SELLER).add(TYPE).add(PHONE).build())
-            .put(RResource.TopUpOrder.toString(),
-                    new ImmutableSet.Builder<String>().add(SELLER).add(ORDER).add(SKU).add(PHONE)
-                            .add(AMOUNT).build()).build();
+                    new ImmutableSet.Builder<String>()
+                            .add(SELLER)
+                                .add(CID)
+                                .add(SKU)
+                                .add(PHONE)
+                                .add(PROMO_PHONE)
+                                .add(AMOUNT)
+                                .add(QUANTITY)
+                                .add(PHONETYPE)
+                                .add(LANG)
+                                .add(NOTIFY)
+                                .add(MERCHANTNAME)
+                                .add(MERCHANTID)
+                                .build())
+                .put(RResource.GetOrderStatus.toString(),
+                        new ImmutableSet.Builder<String>()
+                                .add(SELLER)
+                                    .add(PHONETYPE)
+                                    .add(LANG)
+                                    .add(NOTIFY)
+                                    .build())
+                .put(RResource.GetSeller.toString(),
+                        new ImmutableSet.Builder<String>()
+                                .add(SELLER)
+                                    .add(TXID)
+                                    .add(NOTIFY)
+                                    .build())
+                .put(RResource.GetTime.toString(), new ImmutableSet.Builder<String>().build())
+                .put(RResource.GetAutoITU.toString(),
+                        new ImmutableSet.Builder<String>().add(SELLER).add(TYPE).add(PHONE).build())
+                .put(RResource.ListAccount.toString(),
+                        new ImmutableSet.Builder<String>()
+                                .add(SELLER)
+                                    .add(CID)
+                                    .add(SKU)
+                                    .add(PHONE)
+                                    .add(AMOUNT)
+                                    .build())
+                .put(RResource.ListDidByState.toString(),
+                        new ImmutableSet.Builder<String>()
+                                .add(SELLER)
+                                    .add(CID)
+                                    .add(SKU)
+                                    .add(PHONE)
+                                    .add(AMOUNT)
+                                    .build())
+                .put(RResource.ListProduct.toString(),
+                        new ImmutableSet.Builder<String>()
+                                .add(SELLER)
+                                    .add(CID)
+                                    .add(SKU)
+                                    .add(PHONE)
+                                    .add(AMOUNT)
+                                    .build())
+                .put(RResource.ListRegisterPhone.toString(),
+                        new ImmutableSet.Builder<String>()
+                                .add(SELLER)
+                                    .add(CID)
+                                    .add(SKU)
+                                    .add(PHONE)
+                                    .add(AMOUNT)
+                                    .build())
+                .put(RResource.ListSpeedDial.toString(),
+                        new ImmutableSet.Builder<String>()
+                                .add(SELLER)
+                                    .add(CID)
+                                    .add(SKU)
+                                    .add(PHONE)
+                                    .add(AMOUNT)
+                                    .build())
+                .put(RResource.ListTransactions.toString(),
+                        new ImmutableSet.Builder<String>()
+                                .add(SELLER)
+                                    .add(CID)
+                                    .add(SKU)
+                                    .add(PHONE)
+                                    .add(AMOUNT)
+                                    .build())
+                .put(RResource.TopUpOrder.toString(),
+                        new ImmutableSet.Builder<String>()
+                                .add(SELLER)
+                                    .add(ORDER)
+                                    .add(SKU)
+                                    .add(PHONE)
+                                    .add(AMOUNT)
+                                    .build())
+                .build();
 
     /*
      * PUT/UpdateResource operation supported resource list
      */
     public static final ImmutableMap<String, ImmutableSet<String>> UR_PARAM_LIST = new ImmutableMap.Builder<String, ImmutableSet<String>>()
             .put(UResource.PostOrder.toString(),
-                    new ImmutableSet.Builder<String>().add(SELLER).add(CID).add(SKU).add(PHONE)
-                            .add(PROMO_PHONE).add(AMOUNT).add(QUANTITY).add(PHONETYPE).add(LANG)
-                            .add(NOTIFY).add(MERCHANTNAME).add(MERCHANTID).build())
-            .put(UResource.UpdateAccount.toString(),
-                    new ImmutableSet.Builder<String>().add(SELLER).add(PHONETYPE).add(LANG)
-                            .add(NOTIFY).build())
-            .put(UResource.UpdateRegisterPhone.toString(),
-                    new ImmutableSet.Builder<String>().add(SELLER).add(TXID).add(NOTIFY).build())
-            .put(UResource.UpdateSpeedDial.toString(),
-                    new ImmutableSet.Builder<String>().add(SELLER).add(CID).add(SKU).add(PHONE)
-                            .add(AMOUNT).build()).build();
+                    new ImmutableSet.Builder<String>()
+                            .add(SELLER)
+                                .add(CID)
+                                .add(SKU)
+                                .add(PHONE)
+                                .add(PROMO_PHONE)
+                                .add(AMOUNT)
+                                .add(QUANTITY)
+                                .add(PHONETYPE)
+                                .add(LANG)
+                                .add(NOTIFY)
+                                .add(MERCHANTNAME)
+                                .add(MERCHANTID)
+                                .build())
+                .put(UResource.UpdateAccount.toString(),
+                        new ImmutableSet.Builder<String>()
+                                .add(SELLER)
+                                    .add(PHONETYPE)
+                                    .add(LANG)
+                                    .add(NOTIFY)
+                                    .build())
+                .put(UResource.UpdateRegisterPhone.toString(),
+                        new ImmutableSet.Builder<String>()
+                                .add(SELLER)
+                                    .add(TXID)
+                                    .add(NOTIFY)
+                                    .build())
+                .put(UResource.UpdateSpeedDial.toString(),
+                        new ImmutableSet.Builder<String>()
+                                .add(SELLER)
+                                    .add(CID)
+                                    .add(SKU)
+                                    .add(PHONE)
+                                    .add(AMOUNT)
+                                    .build())
+                .build();
     /*
      * DELETE/Delete Resource operation supported resource list
      */
     public static final ImmutableMap<String, ImmutableSet<String>> DR_PARAM_LIST = new ImmutableMap.Builder<String, ImmutableSet<String>>()
             .put(DResource.DeleteRegisterPhone.toString(),
-                    new ImmutableSet.Builder<String>().add(SELLER).add(CID).add(SKU).add(PHONE)
-                            .add(PROMO_PHONE).add(AMOUNT).add(QUANTITY).add(PHONETYPE).add(LANG)
-                            .add(NOTIFY).add(MERCHANTNAME).add(MERCHANTID).build())
-            .put(DResource.DeleteSpeedDial.toString(),
-                    new ImmutableSet.Builder<String>().add(SELLER).add(PHONETYPE).add(LANG)
-                            .add(NOTIFY).build())
-            .put(DResource.RemoveCustomer.toString(),
-                    new ImmutableSet.Builder<String>().add(SELLER).add(TXID).add(NOTIFY).build())
-            .build();
+                    new ImmutableSet.Builder<String>()
+                            .add(SELLER)
+                                .add(CID)
+                                .add(SKU)
+                                .add(PHONE)
+                                .add(PROMO_PHONE)
+                                .add(AMOUNT)
+                                .add(QUANTITY)
+                                .add(PHONETYPE)
+                                .add(LANG)
+                                .add(NOTIFY)
+                                .add(MERCHANTNAME)
+                                .add(MERCHANTID)
+                                .build())
+                .put(DResource.DeleteSpeedDial.toString(),
+                        new ImmutableSet.Builder<String>()
+                                .add(SELLER)
+                                    .add(PHONETYPE)
+                                    .add(LANG)
+                                    .add(NOTIFY)
+                                    .build())
+                .put(DResource.RemoveCustomer.toString(),
+                        new ImmutableSet.Builder<String>()
+                                .add(SELLER)
+                                    .add(TXID)
+                                    .add(NOTIFY)
+                                    .build())
+                .build();
 }

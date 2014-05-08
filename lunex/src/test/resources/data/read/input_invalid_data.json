@@ -1,0 +1,22 @@
+{
+   "inp":[
+      {
+         "SELLER":"",
+         "CID":"testcid",
+         "SKU":"invalid",
+         "LANG":"en",
+         "NOTIFY":"sms",
+         "PHONE":"myphone",
+         "PHONETYPE":"2",
+         "CITY":"ANAHEM",
+         "EMAIL":"vatada.satish@gmail.com",
+         "COUNTRY":"US",
+         "STATE":"CA",
+         "STREET":"sanmatio",
+         "FIRSTNAME":"VATADA",
+         "LASTNAME":"SATISJ",
+         "PIN":"********",
+         "PASSCODE":"12345"
+      }
+   ]
+}

@@ -18,7 +18,7 @@ package com.snaplogic.snaps.lunex.constants;
 public class Messages {
     // Snap labels and descriptions
     public static final String LUNEX_CREATE_LABEL = "Lunex - Create";
-    public static final String LUNEX_CREATE_DESC = "Issues an HTTP Post to "
+    public static final String LUNEX_CREATE_DESC = "Issues an HTTP Postto "
             + "Lunex API service endpoint.";
     public static final String LUNEX_UPDATE_LABEL = "Lunex - Update";
     public static final String LUNEX_UPDATE_DESC = "Issues an HTTP Put to "
@@ -34,6 +34,14 @@ public class Messages {
     public static final String SERVICE_DOMAIN_LABEL = "Endpoint IP";
     public static final String SERVICE_DOMAIN_DESCRIPTION = "Please enter "
             + "the Lunex service endpoint domain address";
+    public static final String USERNAME_PROP = "username";
+    public static final String USERNAME_LABEL = "Username";
+    public static final String USERNAME_DESCRIPTION = "Please enter "
+            + "the username for Lunex service endpoint";
+    public static final String PASSWORD_PROP = "passward";
+    public static final String PASSWORD_LABEL = "Password";
+    public static final String PASSWORD_DESCRIPTION = "Please enter "
+            + "the passcode for Lunex service endpoint";
     public static final String RESOURCE_LABEL = "Resource type";
     public static final String RESOURCE_PROP = "Resource";
     public static final String RESOURCE_DESC = "Available Lunex resources";

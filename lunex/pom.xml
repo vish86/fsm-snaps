@@ -6,67 +6,13 @@
 	<artifactId>lunex</artifactId>
 	<version>1-${sl_build}</version>
 	<packaging>jar</packaging>
-
 	<name>Lunex</name>
 	<url>http://www.SnapLogic.com</url>
-	<repositories>
-		<repository>
-			<id>Snaplogic-Maven-Repository</id>
-			<name>Snaplogic Maven Repository</name>
-			<url>http://maven.clouddev.snaplogic.com:8080/nexus/content/repositories/releases/</url>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-				<updatePolicy>daily</updatePolicy>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>Snaplogic-Maven-Snapshot-Repository</id>
-			<name>Snaplogic Maven Snapshot Repository</name>
-			<url>http://maven.clouddev.snaplogic.com:8080/nexus/content/repositories/snapshots/</url>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
-			</snapshots>
-		</repository>
-	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>Snaplogic-Maven-Repository</id>
-			<name>Snaplogic Maven Repository</name>
-			<url>http://maven.clouddev.snaplogic.com:8080/nexus/content/repositories/releases/</url>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-				<updatePolicy>daily</updatePolicy>
-			</snapshots>
-		</pluginRepository>
-		<pluginRepository>
-			<id>Snaplogic-Maven-Snapshot-Repository</id>
-			<name>Snaplogic Maven Snapshot Repository</name>
-			<url>http://maven.clouddev.snaplogic.com:8080/nexus/content/repositories/snapshots/</url>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
-
-
+	<parent>
+		<artifactId>snaps</artifactId>
+		<groupId>com.snaplogic</groupId>
+		<version>4.0</version>
+	</parent>
 	<!-- Snap zip assembly descriptor -->
 	<build>
 		<finalName>${project.artifactId}</finalName>
@@ -223,13 +169,13 @@
 		</snap.classes>
 		<!-- Enter your cc key prefix from keys.properties -->
 		<key.prefix>local-snapadmin</key.prefix>
-			<!-- This is the username that is authorized to deploy snaps to server -->
+		<!-- This is the username that is authorized to deploy snaps to server -->
 		<user>satish@snaplogic.com</user>
 		<!-- This is the path where the snap will be deployed. In case of sidekick, 
 			use the path {your_company}/{user} -->
 		<asset_path>snaplogic/shared</asset_path>
-		<path>snaplogic/shared/satish</path>
-		<sl_build>SNAPSHOT</sl_build>
+		<path>snaplogic/satish</path>
+		<sl_build>A001</sl_build>
 		<VERSION>1</VERSION>
 	</properties>
 	<!-- Dependencies -->

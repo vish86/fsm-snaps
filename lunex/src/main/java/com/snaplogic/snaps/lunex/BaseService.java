@@ -92,15 +92,17 @@ public abstract class BaseService extends SimpleSnap implements
                 .build();
     private List<Pair<String, ExpressionProperty>> queryParams;
     private List<Pair<String, ExpressionProperty>> requestContentInfo;
-    private List<Pair<String, String>> additionalHeaders;
+    private List<Pair<String, String>> headersProperties;
     @Inject
     private Account<AccountBean> account = null;
+    private ExpressionProperty username, password;
     private LunexSnaps snapsType;
     @Inject
     private JsonPathUtil jsonPathUtil;
     private String resourceType;
     private String lunexEnpointHostIP;
     private boolean isAuthHeaderSet = false;
+    private boolean isCredentialsSet = false;
     private static Logger log;
     private HttpMethodNames httpMethod;
 
@@ -132,6 +134,14 @@ public abstract class BaseService extends SimpleSnap implements
                 .describe(SERVICE_DOMAIN_PROP, SERVICE_DOMAIN_LABEL, SERVICE_DOMAIN_DESCRIPTION)
                     .required()
                     .add();
+        propertyBuilder
+                .describe(USERNAME_PROP, USERNAME_LABEL, USERNAME_DESCRIPTION)
+                    .expression(SnapProperty.DecoratorType.ACCEPTS_SCHEMA)
+                    .add();
+        propertyBuilder
+                .describe(PASSWORD_PROP, PASSWORD_LABEL, PASSWORD_DESCRIPTION)
+                    .expression(SnapProperty.DecoratorType.ACCEPTS_SCHEMA)
+                    .add();
         propertyBuilder.describe(RESOURCE_PROP, RESOURCE_LABEL, RESOURCE_DESC);
         switch (snapsType) {
             case Create:
@@ -159,8 +169,7 @@ public abstract class BaseService extends SimpleSnap implements
                     .add();
         SnapProperty paramPath = propertyBuilder
                 .describe(PARAM_PATH_PROP, PARAM_PATH_LABEL, PARAM_PATH_DESC)
-                    .schemaAware(SnapProperty.DecoratorType.ACCEPTS_SCHEMA)
-                    .expression()
+                    .expression(SnapProperty.DecoratorType.ACCEPTS_SCHEMA)
                     .build();
         SnapProperty paramName = propertyBuilder
                 .describe(PARAM_NAME_PROP, PARAM_NAME_LABEL, PARAM_NAME_DESC)
@@ -224,8 +233,7 @@ public abstract class BaseService extends SimpleSnap implements
         if (snapsType != LunexSnaps.Read) {
             SnapProperty fieldPath = propertyBuilder
                     .describe(FIELD_PATH_PROP, FIELD_PATH_LABEL, FIELD_PATH_DESC)
-                        .schemaAware(SnapProperty.DecoratorType.ACCEPTS_SCHEMA)
-                        .expression()
+                        .expression(SnapProperty.DecoratorType.ACCEPTS_SCHEMA)
                         .build();
             SnapProperty fieldName = propertyBuilder
                     .describe(FIELD_NAME_PROP, FIELD_NAME_LABEL, FIELD_NAME_DESC)
@@ -248,7 +256,6 @@ public abstract class BaseService extends SimpleSnap implements
                         .type(SnapType.TABLE)
                         .withEntry(fieldPath)
                         .withEntry(fieldName)
-                        .required()
                         .add();
         }
     }
@@ -277,38 +284,53 @@ public abstract class BaseService extends SimpleSnap implements
                 requestContentInfo.add(Pair.of(queryParam, queryParamValue));
             }
         }
+        username = propertyValues.getAsExpression(USERNAME_PROP);
+        password = propertyValues.getAsExpression(PASSWORD_PROP);
         List<Map<String, Object>> httpHeader = propertyValues.get(HTTP_HEADER_PROP);
         int size = 4;
         if (CollectionUtils.isNotEmpty(httpHeader)) {
             size = httpHeader.size() + 4;
         }
-        additionalHeaders = Lists.newArrayListWithExpectedSize(size);
+        /*
+         * Snap considers sets the authentication header based on the following: -> Gives the first
+         * priority to Username and Password properties from the snap. -> If they are empty then
+         * checks for Account class, -> finally checks in header table for Authentication header.
+         */
+        if (!username.isEmpty() && !password.isEmpty()) {
+            isCredentialsSet = true;
+        }
+        headersProperties = Lists.newArrayListWithExpectedSize(size);
         setDefaultHeaders();
-        for (Map<String, Object> item : httpHeader) {
-            String key = jsonPathUtil.nullableRead(HEADER_KEY_JSON, item);
-            if (isAuthHeaderSet == true && key.equalsIgnoreCase(AUTHORIZATION)) {
-                continue;
-            } else {
-                String value = jsonPathUtil.nullableRead(HEADER_VALUE_JSON, item);
-                additionalHeaders.add(Pair.of(key, value));
-                if (key.equalsIgnoreCase(AUTHORIZATION)) {
-                    isAuthHeaderSet = true;
+        if (CollectionUtils.isNotEmpty(httpHeader)) {
+            for (Map<String, Object> item : httpHeader) {
+                if (null != item) {
+                    String key = jsonPathUtil.nullableRead(HEADER_KEY_JSON, item);
+                    if (isAuthHeaderSet == true && key.equalsIgnoreCase(AUTHORIZATION)) {
+                        continue;
+                    } else {
+                        String value = jsonPathUtil.nullableRead(HEADER_VALUE_JSON, item);
+                        headersProperties.add(Pair.of(key, value));
+                        if (key.equalsIgnoreCase(AUTHORIZATION)) {
+                            isAuthHeaderSet = true;
+                        }
+                    }
                 }
             }
         }
-        if (!isAuthHeaderSet) {
+        /* No credentials and no auth header was set */
+        if (!isAuthHeaderSet && !isCredentialsSet) {
             throw new ExecutionException(AUTH_ERROR).withReason(AUTH_ERROR_REASON).withResolution(
                     AUTH_ERROR_RESOLUTION);
         }
     }
 
     private void setDefaultHeaders() {
-        additionalHeaders.add(Pair.of(CONTENT_TYPE, APPLICATION_JSON));
-        additionalHeaders.add(Pair.of(ACCEPT, APPLICATION_JSON));
+        headersProperties.add(Pair.of(CONTENT_TYPE, APPLICATION_JSON));
+        headersProperties.add(Pair.of(ACCEPT, APPLICATION_JSON));
         AccountBean bean = account.connect();
-        if (bean != null) {
+        if (!isCredentialsSet && bean != null) {
             isAuthHeaderSet = true;
-            additionalHeaders.add(Pair.of(
+            headersProperties.add(Pair.of(
                     AUTHORIZATION,
                     BASIC
                             + Base64.encodeBase64String((bean.getUsername() + COLON + bean
@@ -322,10 +344,19 @@ public abstract class BaseService extends SimpleSnap implements
         Map<String, Object> map = null;
         SnapDataException snapException = null;
         try {
+            if (isCredentialsSet) {
+                /* Updating Auth header using credentials from input document */
+                headersProperties
+                        .add(Pair.of(
+                                AUTHORIZATION,
+                                BASIC
+                                        + Base64.encodeBase64String((username.eval(document)
+                                                + COLON + password.eval(document)).getBytes())));
+            }
             RequestBuilder rBuilder = new RequestBuilder()
                     .addDoc(document)
                         .addEndPointIP(lunexEnpointHostIP)
-                        .addHeaders(additionalHeaders)
+                        .addHeaders(headersProperties)
                         .addQueryParams(queryParams)
                         .addRequestBody(prepareJson(requestContentInfo, document))
                         .addResource(resourceType)
@@ -334,6 +365,7 @@ public abstract class BaseService extends SimpleSnap implements
             String response = RequestProcessor.getInstance().execute(rBuilder);
             if (RequestProcessor.getInstance().getStatusCode() == HttpStatus.SC_OK) {
                 map = OBJECT_MAPPER.readValue(response, MAP_TYPE_REFERENCE);
+                map.put(STATUS_CODE_TAG, HttpStatus.SC_OK);
                 outputViews.write(documentUtility.newDocument(map));
             } else {
                 map = new HashMap<String, Object>();
@@ -355,7 +387,7 @@ public abstract class BaseService extends SimpleSnap implements
             map.put(RESOLUTION_TAG, MALFORMEDURL_ERROR_RESOLUTION);
             snapException = new SnapDataException(documentUtility.newDocument(map), ex.getMessage())
                     .withReason(ILLEGAL_STATE_REASON)
-                    .withResolution(ILLEGAL_STATE_RESOLUTION);
+                        .withResolution(ILLEGAL_STATE_RESOLUTION);
             errorViews.write(snapException);
         } catch (IllegalStateException ex) {
             log.error(ex.getMessage(), ex);
@@ -366,7 +398,7 @@ public abstract class BaseService extends SimpleSnap implements
             map.put(RESOLUTION_TAG, ILLEGAL_STATE_RESOLUTION);
             snapException = new SnapDataException(documentUtility.newDocument(map), ex.getMessage())
                     .withReason(ILLEGAL_STATE_REASON)
-                    .withResolution(ILLEGAL_STATE_RESOLUTION);
+                        .withResolution(ILLEGAL_STATE_RESOLUTION);
             errorViews.write(snapException);
         } catch (JsonParseException ex) {
             log.error(ex.getMessage(), ex);
@@ -375,9 +407,9 @@ public abstract class BaseService extends SimpleSnap implements
             map.put(MESSAGE_TAG, ex.getMessage());
             map.put(REASON_TAG, JSON_PARSING_REASON);
             map.put(RESOLUTION_TAG, JSON_PARSING_RESOLUTION);
-            snapException = new SnapDataException(documentUtility.newDocument(map),ex.getMessage())
+            snapException = new SnapDataException(documentUtility.newDocument(map), ex.getMessage())
                     .withReason(JSON_PARSING_REASON)
-                    .withResolution(JSON_PARSING_RESOLUTION);
+                        .withResolution(JSON_PARSING_RESOLUTION);
             errorViews.write(snapException);
         } catch (IOException ex) {
             log.error(ex.getMessage(), ex);
@@ -386,9 +418,9 @@ public abstract class BaseService extends SimpleSnap implements
             map.put(MESSAGE_TAG, ex.getMessage());
             map.put(REASON_TAG, IO_ERROR_REASON);
             map.put(RESOLUTION_TAG, IO_ERROR_RESOLUTION);
-            snapException = new SnapDataException(documentUtility.newDocument(map),ex.getMessage())
+            snapException = new SnapDataException(documentUtility.newDocument(map), ex.getMessage())
                     .withReason(IO_ERROR_REASON)
-                    .withResolution(IO_ERROR_RESOLUTION);
+                        .withResolution(IO_ERROR_RESOLUTION);
             errorViews.write(snapException);
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
@@ -397,9 +429,9 @@ public abstract class BaseService extends SimpleSnap implements
             map.put(MESSAGE_TAG, ex.getMessage());
             map.put(REASON_TAG, ERROR_REASON);
             map.put(RESOLUTION_TAG, ERROR_RESOLUTION);
-            snapException = new SnapDataException(documentUtility.newDocument(map),ex.getMessage())
+            snapException = new SnapDataException(documentUtility.newDocument(map), ex.getMessage())
                     .withReason(ERROR_REASON)
-                    .withResolution(ERROR_RESOLUTION);
+                        .withResolution(ERROR_RESOLUTION);
             errorViews.write(snapException);
         }
     }

@@ -13,6 +13,7 @@ package com.snaplogic.snaps.lunex.http.handler;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -65,20 +66,6 @@ public class RequestProcessor {
                             + header.getValue() + "]");
                 }
             }
-
-            BufferedReader reader;
-            StringBuffer response = new StringBuffer();
-            reader = new BufferedReader(new InputStreamReader(httpConnection.getInputStream()));
-            if ((statusCode = httpConnection.getResponseCode()) != HttpStatus.SC_OK) {
-                reader = new BufferedReader(new InputStreamReader(httpConnection.getErrorStream()));
-            }
-//            if ((statusCode = httpConnection.getResponseCode()) == HttpStatus.SC_OK) {
-//                reader = new BufferedReader(new InputStreamReader(httpConnection.getInputStream()));
-//            } else {
-//                reader = new BufferedReader(new InputStreamReader(httpConnection.getErrorStream()));
-//            }
-
-            String line;
             log.debug("###Resource Type: " + rBuilder.getSnapType());
             if (rBuilder.getSnapType() != LunexSnaps.Read) {
                 String paramsJson = null;
@@ -90,19 +77,31 @@ public class RequestProcessor {
                     cgiInput.close();
                 }
             }
+
+            BufferedReader reader;
+            StringBuffer response = new StringBuffer();
+            InputStream iStream = httpConnection.getInputStream();
+            if ((statusCode = httpConnection.getResponseCode()) == HttpStatus.SC_OK) {
+                reader = new BufferedReader(new InputStreamReader(iStream));
+            } else {
+                reader = new BufferedReader(new InputStreamReader(httpConnection.getErrorStream()));
+            }
+            String line;
             while ((line = reader.readLine()) != null) {
                 response.append(line);
             }
             log.debug("###HTTP Status: " + statusCode);
             reader.close();
             return response.toString();
-
         } catch (MalformedURLException me) {
             log.error(me.getMessage(), me);
             throw me;
         } catch (IOException ioe) {
             log.error(ioe.getMessage(), ioe);
             throw ioe;
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
         }
     }
 }
