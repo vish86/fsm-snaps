@@ -294,7 +294,7 @@ public abstract class BaseService extends SimpleSnap implements
         /*
          * Snap considers sets the authentication header based on the following: -> Gives the first
          * priority to Username and Password properties from the snap. -> If they are empty then
-         * checks for Account class, -> finally checks in header table for Authentication header.
+         * checks for Account class, -> finally it will checks in header table for Authentication header.
          */
         if (!username.isEmpty() && !password.isEmpty()) {
             isCredentialsSet = true;
@@ -317,7 +317,7 @@ public abstract class BaseService extends SimpleSnap implements
                 }
             }
         }
-        /* No credentials and no auth header was set */
+        /* No credentials and no auth header */
         if (!isAuthHeaderSet && !isCredentialsSet) {
             throw new ExecutionException(AUTH_ERROR).withReason(AUTH_ERROR_REASON).withResolution(
                     AUTH_ERROR_RESOLUTION);

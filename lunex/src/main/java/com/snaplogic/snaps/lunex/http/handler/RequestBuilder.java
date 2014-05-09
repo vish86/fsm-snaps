@@ -104,6 +104,10 @@ public class RequestBuilder {
         return this;
     }
 
+    public Object getResource() {
+        return resource;
+    }
+
     private String resolveUrl(final Document document) {
         try {
             String resourceSpecificUri = null;
