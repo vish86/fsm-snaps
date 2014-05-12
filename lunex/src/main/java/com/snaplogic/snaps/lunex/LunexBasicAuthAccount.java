@@ -1,16 +1,14 @@
 /*
  * SnapLogic - Data Integration
- * 
+ *
  * Copyright (C) 2014, SnapLogic, Inc. All rights reserved.
- * 
+ *
  * This program is licensed under the terms of
  * the SnapLogic Commercial Subscription agreement.
- * 
+ *
  * "SnapLogic" is a trademark of SnapLogic, Inc.
  */
 package com.snaplogic.snaps.lunex;
-
-import static com.snaplogic.snaps.lunex.constants.Messages.LUNEX_BASIC_AUTH_ACCOUNT_TITLE;
 
 import com.snaplogic.account.api.AccountType;
 import com.snaplogic.account.api.capabilities.AccountCategory;
@@ -20,9 +18,11 @@ import com.snaplogic.snap.api.capabilities.General;
 import com.snaplogic.snap.api.capabilities.Version;
 import com.snaplogic.snaps.lunex.bean.AccountBean;
 
+import static com.snaplogic.snaps.lunex.constants.Messages.LUNEX_BASIC_AUTH_ACCOUNT_TITLE;
+
 /**
  * Provides a basic auth account for the Lunex snap.
- * 
+ *
  * @author Svatada
  */
 @General(title = LUNEX_BASIC_AUTH_ACCOUNT_TITLE)

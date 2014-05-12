@@ -1,8 +1,7 @@
 # This is how you add comments in this file
 com.snaplogic.snaps.lunex.Create {
     allow java.security.AllPermission;
-}
-com.snaplogic.snaps.lunex.Read {
+}com.snaplogic.snaps.lunex.Read {
     allow java.security.AllPermission;
 }com.snaplogic.snaps.lunex.Update {
     allow java.security.AllPermission;

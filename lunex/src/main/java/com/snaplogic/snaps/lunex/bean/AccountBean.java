@@ -1,18 +1,18 @@
 /*
  * SnapLogic - Data Integration
- * 
+ *
  * Copyright (C) 2014, SnapLogic, Inc. All rights reserved.
- * 
+ *
  * This program is licensed under the terms of
  * the SnapLogic Commercial Subscription agreement.
- * 
+ *
  * "SnapLogic" is a trademark of SnapLogic, Inc.
  */
 package com.snaplogic.snaps.lunex.bean;
 
 /**
  * java bean class to hold account information.
- * 
+ *
  * @author svatada
  */
 public class AccountBean {
@@ -28,7 +28,8 @@ public class AccountBean {
         return username;
     }
 
-    public void setUsername(String username) {
+    public void setUsername(
+        String username) {
         this.username = username;
     }
 
@@ -36,7 +37,8 @@ public class AccountBean {
         return password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(
+        String password) {
         this.password = password;
     }
 }

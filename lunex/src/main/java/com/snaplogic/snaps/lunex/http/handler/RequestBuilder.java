@@ -10,22 +10,29 @@
  */
 package com.snaplogic.snaps.lunex.http.handler;
 
-import java.util.List;
-
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.snaplogic.api.ExecutionException;
 import com.snaplogic.snap.api.Document;
 import com.snaplogic.snap.api.ExpressionProperty;
+import com.snaplogic.snaps.lunex.constants.Constants.HttpMethodNames;
 import com.snaplogic.snaps.lunex.constants.Constants.LunexSnaps;
 import com.snaplogic.snaps.lunex.constants.ServiceURIInfo;
-import static com.snaplogic.snaps.lunex.constants.Constants.*;
+
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.List;
+
+import static com.snaplogic.snaps.lunex.constants.Constants.CLOSETAG;
+import static com.snaplogic.snaps.lunex.constants.Constants.COLON;
+import static com.snaplogic.snaps.lunex.constants.Constants.CONTENT_LENGTH;
+import static com.snaplogic.snaps.lunex.constants.Constants.DOUBLE_SLASH;
+import static com.snaplogic.snaps.lunex.constants.Constants.HTTP;
+import static com.snaplogic.snaps.lunex.constants.Constants.OPENTAG;
 import static com.snaplogic.snaps.lunex.constants.Messages.INVALID_URI;
 import static com.snaplogic.snaps.lunex.constants.Messages.INVALID_URI_RESOLUTION;
 
 /**
  * This will takes care of http request preparation
- * 
+ *
  * @author svatada
  */
 
@@ -43,7 +50,8 @@ public class RequestBuilder {
         return method;
     }
 
-    public RequestBuilder addMethod(HttpMethodNames method) {
+    public RequestBuilder addMethod(
+        HttpMethodNames method) {
         this.method = method;
         return this;
     }
@@ -68,38 +76,45 @@ public class RequestBuilder {
         return requestBody.length() + "";
     }
 
-    public RequestBuilder addEndPointIP(String host) {
+    public RequestBuilder addEndPointIP(
+        String host) {
         this.lunexEndpontHostIP = host;
         return this;
     }
 
-    public RequestBuilder addHeaders(List<Pair<String, String>> headers) {
+    public RequestBuilder addHeaders(
+        List<Pair<String, String>> headers) {
         Headers = headers;
         return this;
     }
 
-    public RequestBuilder addSnapTye(LunexSnaps snaps) {
+    public RequestBuilder addSnapTye(
+        LunexSnaps snaps) {
         this.snapType = snaps;
         return this;
     }
 
-    public RequestBuilder addRequestBody(String requestBody) {
+    public RequestBuilder addRequestBody(
+        String requestBody) {
         this.requestBody = requestBody;
         Headers.add(Pair.of(CONTENT_LENGTH, getRequestBodyLenght()));
         return this;
     }
 
-    public RequestBuilder addDoc(Document doc) {
+    public RequestBuilder addDoc(
+        Document doc) {
         this.doc = doc;
         return this;
     }
 
-    public RequestBuilder addResource(Object resource) {
+    public RequestBuilder addResource(
+        Object resource) {
         this.resource = resource;
         return this;
     }
 
-    public RequestBuilder addQueryParams(List<Pair<String, ExpressionProperty>> queryParams) {
+    public RequestBuilder addQueryParams(
+        List<Pair<String, ExpressionProperty>> queryParams) {
         this.queryParams = queryParams;
         return this;
     }
@@ -108,7 +123,8 @@ public class RequestBuilder {
         return resource;
     }
 
-    private String resolveUrl(final Document document) {
+    private String resolveUrl(
+        final Document document) {
         try {
             String resourceSpecificUri = null;
             switch (snapType) {
@@ -129,17 +145,20 @@ public class RequestBuilder {
                 CharSequence source, target;
                 for (Pair<String, ExpressionProperty> paramPair : queryParams) {
                     source = OPENTAG + paramPair.getLeft() + CLOSETAG;
-                    target = paramPair.getRight().eval(document).toString();
+                    target = paramPair.getRight()
+                        .eval(document)
+                        .toString();
                     resourceSpecificUri = resourceSpecificUri.replace(source, target);
                 }
             }
             return new String(HTTP + COLON + DOUBLE_SLASH + lunexEndpontHostIP
-                    + resourceSpecificUri);
+                + resourceSpecificUri);
         } catch (Exception e) {
-            String msg = String.format(INVALID_URI, new String(HTTP + COLON + DOUBLE_SLASH
+            String msg =
+                String.format(INVALID_URI, new String(HTTP + COLON + DOUBLE_SLASH
                     + lunexEndpontHostIP));
-            throw new ExecutionException(e, msg).withReason(msg).withResolution(
-                    INVALID_URI_RESOLUTION);
+            throw new ExecutionException(e, msg).withReason(msg)
+                .withResolution(INVALID_URI_RESOLUTION);
         }
     }
 

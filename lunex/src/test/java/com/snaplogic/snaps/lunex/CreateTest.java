@@ -27,15 +27,21 @@ import com.snaplogic.snap.test.harness.TestSetup;
 
 /**
  * CreateTest is a unit test for lunex API Create Snap.
- * 
+ *
  * @author Svatada
  */
 @SuppressWarnings("unchecked")
 @RunWith(SnapTestRunner.class)
 public class CreateTest extends LunexApiTest {
-    @TestFixture(snap = Create.class, outputs = "out1", errors = "err1", input = "data/create/input_valid_data.json", properties = "data/create/property_data_1.json")
-    public void testCreateValidData(TestSetup setup) throws Exception {
-        setup.inject().fieldName("account").dependency(account).add();
+    @TestFixture(snap = Create.class, outputs = "out1", errors = "err1",
+        input = "data/create/input_valid_data.json",
+        properties = "data/create/property_data_1.json")
+    public void testCreateValidData(
+        TestSetup setup) throws Exception {
+        setup.inject()
+            .fieldName("account")
+            .dependency(account)
+            .add();
         TestResult testResult = setup.test();
         // check for no exception
         assertNull(testResult.getException());
@@ -48,16 +54,23 @@ public class CreateTest extends LunexApiTest {
         assertEquals(1, outputRecorder.getDocumentCount() + errRecorder.getDocumentCount());
         // status code = 200 meaning "OK"
         if (outputRecorder.getDocumentCount() > 0) {
-            Document document = outputRecorder.getRecordedDocuments().get(0);
+            Document document = outputRecorder.getRecordedDocuments()
+                .get(0);
             Map<String, Object> data = document.get(Map.class);
             int statusCode = (int) data.get("statusCode");
             assertEquals(200, statusCode);
         }
     }
 
-    @TestFixture(snap = Create.class, outputs = "out1", errors = "err1", input = "data/create/input_valid_data.json", properties = "data/create/property_data_2.json")
-    public void testCreateValidateAccout(TestSetup setup) throws Exception {
-        setup.inject().fieldName("account").dependency(account).add();
+    @TestFixture(snap = Create.class, outputs = "out1", errors = "err1",
+        input = "data/create/input_valid_data.json",
+        properties = "data/create/property_data_2.json")
+    public void testCreateValidateAccout(
+        TestSetup setup) throws Exception {
+        setup.inject()
+            .fieldName("account")
+            .dependency(account)
+            .add();
         TestResult testResult = setup.test();
         // check for no exception
         assertNull(testResult.getException());
@@ -71,16 +84,22 @@ public class CreateTest extends LunexApiTest {
         assertEquals(1, outputRecorder.getDocumentCount() + errRecorder.getDocumentCount());
         // status code = 200 meaning "OK"
         if (outputRecorder.getDocumentCount() > 0) {
-            Document document = outputRecorder.getRecordedDocuments().get(0);
+            Document document = outputRecorder.getRecordedDocuments()
+                .get(0);
             Map<String, Object> data = document.get(Map.class);
             int statusCode = (int) data.get("statusCode");
             assertEquals(200, statusCode);
         }
     }
 
-    @TestFixture(snap = Create.class, input = "data/create/input_invalid_data.json", outputs = "out1", errors = "err1", properties = "data/create/property_data_1.json")
-    public void testCreateInvalidData(TestSetup setup) throws Exception {
-        setup.inject().fieldName("account").dependency(account).add();
+    @TestFixture(snap = Create.class, input = "data/create/input_invalid_data.json",
+        outputs = "out1", errors = "err1", properties = "data/create/property_data_1.json")
+    public void testCreateInvalidData(
+        TestSetup setup) throws Exception {
+        setup.inject()
+            .fieldName("account")
+            .dependency(account)
+            .add();
         TestResult testResult = setup.test();
         // check for no exception
         assertNull(testResult.getException());
@@ -94,17 +113,22 @@ public class CreateTest extends LunexApiTest {
         assertEquals(1, outputRecorder.getDocumentCount());
     }
 
-    @TestFixture(snap = Create.class, outputs = "out1", errors = "err1", input = "data/create/input_bulk_data.json", properties = "data/create/property_data_1.json")
-    public void testCreateBulkLoad(TestSetup setup) throws Exception {
-        setup.inject().fieldName("account").dependency(account).add();
+    @TestFixture(snap = Create.class, outputs = "out1", errors = "err1",
+        input = "data/create/input_bulk_data.json", properties = "data/create/property_data_1.json")
+    public void testCreateBulkLoad(
+        TestSetup setup) throws Exception {
+        setup.inject()
+            .fieldName("account")
+            .dependency(account)
+            .add();
         TestResult testResult = setup.test();
         setup.cleanup();
         OutputRecorder outputRecorder = testResult.getOutputViewByName("out1");
         long dataDocs = outputRecorder.getDocumentCount();
         outputRecorder = testResult.getErrorViewByName("err1");
-        long errDocs = outputRecorder.getRecordedDocuments().size();
+        long errDocs = outputRecorder.getRecordedDocuments()
+            .size();
         long totalDocs = dataDocs + errDocs;
         assertEquals(4, totalDocs);
     }
-
 }
