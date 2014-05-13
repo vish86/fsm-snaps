@@ -26,18 +26,18 @@ import com.snaplogic.snap.test.harness.TestResult;
 import com.snaplogic.snap.test.harness.TestSetup;
 
 /**
- * CreateTest is a unit test for lunex API Create Snap.
+ * JUnit tests for Lunex Create Snap.
  *
- * @author Svatada
+ * @author svatada
  */
 @SuppressWarnings("unchecked")
 @RunWith(SnapTestRunner.class)
 public class CreateTest extends LunexApiTest {
-    @TestFixture(snap = Create.class, outputs = "out1", errors = "err1",
+    @TestFixture(
+        snap = Create.class, outputs = "out1", errors = "err1",
         input = "data/create/input_valid_data.json",
         properties = "data/create/property_data_1.json")
-    public void testCreateValidData(
-        TestSetup setup) throws Exception {
+    public void testCreateValidData(TestSetup setup) throws Exception {
         setup.inject()
             .fieldName("account")
             .dependency(account)
@@ -62,11 +62,11 @@ public class CreateTest extends LunexApiTest {
         }
     }
 
-    @TestFixture(snap = Create.class, outputs = "out1", errors = "err1",
+    @TestFixture(
+        snap = Create.class, outputs = "out1", errors = "err1",
         input = "data/create/input_valid_data.json",
         properties = "data/create/property_data_2.json")
-    public void testCreateValidateAccout(
-        TestSetup setup) throws Exception {
+    public void testCreateValidateAccout(TestSetup setup) throws Exception {
         setup.inject()
             .fieldName("account")
             .dependency(account)
@@ -92,10 +92,10 @@ public class CreateTest extends LunexApiTest {
         }
     }
 
-    @TestFixture(snap = Create.class, input = "data/create/input_invalid_data.json",
-        outputs = "out1", errors = "err1", properties = "data/create/property_data_1.json")
-    public void testCreateInvalidData(
-        TestSetup setup) throws Exception {
+    @TestFixture(
+        snap = Create.class, input = "data/create/input_invalid_data.json", outputs = "out1",
+        errors = "err1", properties = "data/create/property_data_1.json")
+    public void testCreateInvalidData(TestSetup setup) throws Exception {
         setup.inject()
             .fieldName("account")
             .dependency(account)
@@ -113,10 +113,10 @@ public class CreateTest extends LunexApiTest {
         assertEquals(1, outputRecorder.getDocumentCount());
     }
 
-    @TestFixture(snap = Create.class, outputs = "out1", errors = "err1",
+    @TestFixture(
+        snap = Create.class, outputs = "out1", errors = "err1",
         input = "data/create/input_bulk_data.json", properties = "data/create/property_data_1.json")
-    public void testCreateBulkLoad(
-        TestSetup setup) throws Exception {
+    public void testCreateBulkLoad(TestSetup setup) throws Exception {
         setup.inject()
             .fieldName("account")
             .dependency(account)

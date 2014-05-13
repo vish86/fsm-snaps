@@ -17,17 +17,15 @@ import com.snaplogic.account.api.Account;
 import com.snaplogic.snap.api.DocumentUtility;
 import com.snaplogic.snap.api.impl.DocumentUtilityImpl;
 import com.snaplogic.snaps.lunex.bean.AccountBean;
-import com.snaplogic.util.SnapObjectMapper;
 
 import org.junit.Before;
 
 /**
- * Common Lunex API Snap unit test setup
+ * Lunex Snap unit test setup
  *
  * @author svatada
  */
 public abstract class LunexApiTest {
-    private static final SnapObjectMapper MAPPER = new SnapObjectMapper();
     protected Injector injector;
     protected Account<AccountBean> account = new MockAccount();
 

@@ -11,11 +11,12 @@
 package com.snaplogic.snaps.lunex;
 
 import com.snaplogic.snap.api.capabilities.General;
-import com.snaplogic.snaps.lunex.constants.Constants.HttpMethodNames;
-import com.snaplogic.snaps.lunex.constants.Constants.LunexSnaps;
+import com.snaplogic.snaps.lunex.Constants.HttpMethodNames;
+import com.snaplogic.snaps.lunex.Constants.LunexSnaps;
 
-import static com.snaplogic.snaps.lunex.constants.Messages.LUNEX_CREATE_DESC;
-import static com.snaplogic.snaps.lunex.constants.Messages.LUNEX_CREATE_LABEL;
+import static com.snaplogic.snaps.lunex.Messages.LUNEX_CREATE_DESC;
+import static com.snaplogic.snaps.lunex.Messages.LUNEX_CREATE_LABEL;
+
 
 /**
  * Performs create operation in Lunex making use of Lunex REST API calls.

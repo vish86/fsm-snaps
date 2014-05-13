@@ -11,34 +11,34 @@
 package com.snaplogic.snaps.lunex.bean;
 
 /**
- * java bean class to hold account information.
+ * Simple java bean class to hold account information.
  *
  * @author svatada
  */
 public class AccountBean {
-    private String username;
     private String password;
+    private String username;
 
     public AccountBean(String username2, String password2) {
         this.username = username2;
         this.password = password2;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(
-        String username) {
-        this.username = username;
-    }
-
     public String getPassword() {
         return password;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public void setPassword(
         String password) {
         this.password = password;
+    }
+
+    public void setUsername(
+        String username) {
+        this.username = username;
     }
 }

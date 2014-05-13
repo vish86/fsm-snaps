@@ -26,18 +26,18 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 
 /**
- * deleteTest is a unit test for lunex API delete Snap.
+ * JUnit tests for Lunex Delete Snap.
  *
- * @author Svatada
+ * @author svatada
  */
 @SuppressWarnings("unchecked")
 @RunWith(SnapTestRunner.class)
 public class DeleteTest extends LunexApiTest {
-    @TestFixture(snap = Delete.class, outputs = "out1", errors = "err1",
+    @TestFixture(
+        snap = Delete.class, outputs = "out1", errors = "err1",
         input = "data/delete/input_valid_data.json",
         properties = "data/delete/property_data_1.json")
-    public void testDeleteValidData(
-        TestSetup setup) throws Exception {
+    public void testDeleteValidData(TestSetup setup) throws Exception {
         setup.inject()
             .fieldName("account")
             .dependency(account)
@@ -63,10 +63,10 @@ public class DeleteTest extends LunexApiTest {
         }
     }
 
-    @TestFixture(snap = Delete.class, input = "data/delete/input_invalid_data.json",
-        outputs = "out1", errors = "err1", properties = "data/delete/property_data_1.json")
-    public void testDeleteInvalidData(
-        TestSetup setup) throws Exception {
+    @TestFixture(
+        snap = Delete.class, input = "data/delete/input_invalid_data.json", outputs = "out1",
+        errors = "err1", properties = "data/delete/property_data_1.json")
+    public void testDeleteInvalidData(TestSetup setup) throws Exception {
         setup.inject()
             .fieldName("account")
             .dependency(account)
@@ -85,10 +85,10 @@ public class DeleteTest extends LunexApiTest {
         assertEquals(1, outputRecorder.getDocumentCount());
     }
 
-    @TestFixture(snap = Delete.class, outputs = "out1", errors = "err1",
+    @TestFixture(
+        snap = Delete.class, outputs = "out1", errors = "err1",
         input = "data/delete/input_bulk_data.json", properties = "data/delete/property_data_1.json")
-    public void testDeleteBulkLoad(
-        TestSetup setup) throws Exception {
+    public void testDeleteBulkLoad(TestSetup setup) throws Exception {
         setup.inject()
             .fieldName("account")
             .dependency(account)

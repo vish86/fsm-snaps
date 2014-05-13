@@ -26,17 +26,17 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 
 /**
- * readTest is a unit test for lunex API read Snap.
+ * JUnit tests for Lunex Read snap.
  *
- * @author Svatada
+ * @author svatada
  */
 @SuppressWarnings("unchecked")
 @RunWith(SnapTestRunner.class)
 public class ReadTest extends LunexApiTest {
-    @TestFixture(snap = Read.class, outputs = "out1", errors = "err1",
+    @TestFixture(
+        snap = Read.class, outputs = "out1", errors = "err1",
         input = "data/read/input_valid_data.json", properties = "data/read/property_data_1.json")
-    public void testReadValidData(
-        TestSetup setup) throws Exception {
+    public void testReadValidData(TestSetup setup) throws Exception {
         setup.inject()
             .fieldName("account")
             .dependency(account)
@@ -61,10 +61,10 @@ public class ReadTest extends LunexApiTest {
         }
     }
 
-    @TestFixture(snap = Read.class, input = "data/read/input_invalid_data.json", outputs = "out1",
+    @TestFixture(
+        snap = Read.class, input = "data/read/input_invalid_data.json", outputs = "out1",
         errors = "err1", properties = "data/read/property_data_1.json")
-    public void testReadInvalidData(
-        TestSetup setup) throws Exception {
+    public void testReadInvalidData(TestSetup setup) throws Exception {
         setup.inject()
             .fieldName("account")
             .dependency(account)
@@ -83,10 +83,10 @@ public class ReadTest extends LunexApiTest {
         assertEquals(1, outputRecorder.getDocumentCount());
     }
 
-    @TestFixture(snap = Read.class, outputs = "out1", errors = "err1",
+    @TestFixture(
+        snap = Read.class, outputs = "out1", errors = "err1",
         input = "data/read/input_bulk_data.json", properties = "data/read/property_data_1.json")
-    public void testReadBulkLoad(
-        TestSetup setup) throws Exception {
+    public void testReadBulkLoad(TestSetup setup) throws Exception {
         setup.inject()
             .fieldName("account")
             .dependency(account)

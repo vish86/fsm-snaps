@@ -18,7 +18,8 @@ import com.snaplogic.snap.api.capabilities.General;
 import com.snaplogic.snap.api.capabilities.Version;
 import com.snaplogic.snaps.lunex.bean.AccountBean;
 
-import static com.snaplogic.snaps.lunex.constants.Messages.LUNEX_BASIC_AUTH_ACCOUNT_TITLE;
+import static com.snaplogic.snaps.lunex.Messages.LUNEX_BASIC_AUTH_ACCOUNT_TITLE;
+
 
 /**
  * Provides a basic auth account for the Lunex snap.

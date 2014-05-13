@@ -26,18 +26,18 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 
 /**
- * updateTest is a unit test for lunex API update Snap.
+ * Unit tests for Lunex Update snap.
  *
- * @author Svatada
+ * @author svatada
  */
 @SuppressWarnings("unchecked")
 @RunWith(SnapTestRunner.class)
 public class UpdateTest extends LunexApiTest {
-    @TestFixture(snap = Update.class, outputs = "out1", errors = "err1",
+    @TestFixture(
+        snap = Update.class, outputs = "out1", errors = "err1",
         input = "data/update/input_valid_data.json",
         properties = "data/update/property_data_1.json")
-    public void testUpdateValidData(
-        TestSetup setup) throws Exception {
+    public void testUpdateValidData(TestSetup setup) throws Exception {
         setup.inject()
             .fieldName("account")
             .dependency(account)
@@ -62,10 +62,10 @@ public class UpdateTest extends LunexApiTest {
         }
     }
 
-    @TestFixture(snap = Update.class, input = "data/update/input_invalid_data.json",
-        outputs = "out1", errors = "err1", properties = "data/update/property_data_1.json")
-    public void testUpdateInvalidData(
-        TestSetup setup) throws Exception {
+    @TestFixture(
+        snap = Update.class, input = "data/update/input_invalid_data.json", outputs = "out1",
+        errors = "err1", properties = "data/update/property_data_1.json")
+    public void testUpdateInvalidData(TestSetup setup) throws Exception {
         setup.inject()
             .fieldName("account")
             .dependency(account)
@@ -84,10 +84,10 @@ public class UpdateTest extends LunexApiTest {
         assertEquals(1, outputRecorder.getDocumentCount());
     }
 
-    @TestFixture(snap = Update.class, outputs = "out1", errors = "err1",
+    @TestFixture(
+        snap = Update.class, outputs = "out1", errors = "err1",
         input = "data/update/input_bulk_data.json", properties = "data/update/property_data_1.json")
-    public void testUpdateBulkLoad(
-        TestSetup setup) throws Exception {
+    public void testUpdateBulkLoad(TestSetup setup) throws Exception {
         setup.inject()
             .fieldName("account")
             .dependency(account)

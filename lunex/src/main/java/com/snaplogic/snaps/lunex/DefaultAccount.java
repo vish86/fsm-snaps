@@ -26,13 +26,14 @@ import com.snaplogic.snaps.lunex.bean.AccountBean;
 @AccountCategory(type = AccountType.NONE)
 public class DefaultAccount implements Account<AccountBean> {
     @Override
-    public AccountBean connect() throws ExecutionException {
-        return null;
+    public void configure(
+        final PropertyValues propertyValues) {
+        // NO OP
     }
 
     @Override
-    public void disconnect() throws ExecutionException {
-        // NO OP
+    public AccountBean connect() throws ExecutionException {
+        return null;
     }
 
     @Override
@@ -42,8 +43,7 @@ public class DefaultAccount implements Account<AccountBean> {
     }
 
     @Override
-    public void configure(
-        final PropertyValues propertyValues) {
+    public void disconnect() throws ExecutionException {
         // NO OP
     }
 }
