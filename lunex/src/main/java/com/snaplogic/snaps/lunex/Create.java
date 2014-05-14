@@ -17,7 +17,6 @@ import com.snaplogic.snaps.lunex.Constants.LunexSnaps;
 import static com.snaplogic.snaps.lunex.Messages.LUNEX_CREATE_DESC;
 import static com.snaplogic.snaps.lunex.Messages.LUNEX_CREATE_LABEL;
 
-
 /**
  * Performs create operation in Lunex making use of Lunex REST API calls.
  *

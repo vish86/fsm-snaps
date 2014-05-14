@@ -10,7 +10,6 @@
  */
 package com.snaplogic.snaps.lunex;
 
-
 import com.snaplogic.snaps.lunex.Constants.LunexSnaps;
 import com.snaplogic.snaps.lunex.Constants.RResource;
 
@@ -34,24 +33,19 @@ import static com.snaplogic.snaps.lunex.Constants.COLON;
 import static com.snaplogic.snaps.lunex.Constants.OPENTAG;
 import static com.snaplogic.snaps.lunex.Constants.QUOTE;
 
-
 /**
  * This will take care of http request execution.
  *
  * @author svatada
  */
 public class RequestProcessor {
-    private static final String END = "]";
-    private static final String HEADER_KEY = "#@@Header [Key: ";
-    private static final String HEADER_VALUE = " Value: ";
-    private static final String HOST = "###Host: ";
-    private static final String HTTP_STATUS = "###HTTP Status: ";
+    private static final String LUNEX_HTTP_INFO = "[{\"ResourceType\": \"%s\"}, {\"Lunex URL\":\"%s\"}, {\"Header\": \"%s\"}]";
+    private static final String LUNEX_HTTP_REQ_INFO = "Lunex Request Body: %s";
+    private static final String HTTP_STATUS = "###HTTPStatus: %s ";
     private static final Logger log = LoggerFactory.getLogger(RequestProcessor.class);
     private static final String REGEX = "[^\\p{L}\\p{Nd}]";
-    private static final String RESOURCE_TYPE = "###Resource Type: ";
     private static RequestProcessor rHandler = null;
     private static final String TIME_STAMP_TAG = "TimeStamp";
-    private static final String URI = "###URI: ";
     static {
         rHandler = new RequestProcessor();
     }
@@ -61,34 +55,30 @@ public class RequestProcessor {
         return rHandler;
     }
 
-    public String execute(
-        RequestBuilder rBuilder) throws MalformedURLException, IOException {
+    public String execute(RequestBuilder rBuilder) throws MalformedURLException, IOException {
         try {
             URL api_url = new URL(rBuilder.getURL());
-            log.debug(HOST + api_url.getHost());
-            log.debug(URI + api_url.getPath());
             HttpURLConnection httpConnection = (HttpURLConnection) api_url.openConnection();
-            httpConnection.setRequestMethod(rBuilder.getMethod()
-                    .toString());
+            httpConnection.setRequestMethod(rBuilder.getMethod().toString());
             httpConnection.setDoInput(true);
             httpConnection.setDoOutput(true);
             httpConnection.setUseCaches(false);
             for (Pair<String, String> header : rBuilder.getHeaders()) {
                 if (!StringUtils.isEmpty(header.getKey())
-                    && !StringUtils.isEmpty(header.getValue())) {
+                        && !StringUtils.isEmpty(header.getValue())) {
                     httpConnection.setRequestProperty(header.getKey(), header.getValue());
-                    log.debug(HEADER_KEY + header.getKey() + HEADER_VALUE + header.getValue() + END);
                 }
             }
-            log.debug(RESOURCE_TYPE + rBuilder.getSnapType());
+            log.debug(String.format(LUNEX_HTTP_INFO, rBuilder.getSnapType(), rBuilder.getURL(),
+                    httpConnection.getRequestProperties().toString()));
+            DataOutputStream cgiInput = null;
             if (rBuilder.getSnapType() != LunexSnaps.Read) {
                 String paramsJson = null;
                 if (!StringUtils.isEmpty(paramsJson = rBuilder.getRequestBody())) {
-                    DataOutputStream cgiInput =
-                        new DataOutputStream(httpConnection.getOutputStream());
+                    cgiInput = new DataOutputStream(httpConnection.getOutputStream());
+                    log.debug(String.format(LUNEX_HTTP_REQ_INFO, paramsJson));
                     cgiInput.writeBytes(paramsJson);
                     cgiInput.flush();
-                    cgiInput.close();
                 }
             }
 
@@ -104,13 +94,12 @@ public class RequestProcessor {
             while ((line = reader.readLine()) != null) {
                 response.append(line);
             }
-            if (rBuilder.getResource()
-                .toString()
-                .equals(RResource.GetTime.toString())) {
+            if (rBuilder.getResource().toString().equals(RResource.GetTime.toString())) {
                 return getTimeJson(response.toString());
             }
-            log.debug(HTTP_STATUS + statusCode);
+            log.debug(String.format(HTTP_STATUS, statusCode));
             reader.close();
+            cgiInput.close();
             return response.toString();
         } catch (MalformedURLException me) {
             log.error(me.getMessage(), me);
@@ -128,19 +117,11 @@ public class RequestProcessor {
         return statusCode;
     }
 
-    private String getTimeJson(
-        String response) {
+    private String getTimeJson(String response) {
         // ""\/Date(928178400000-0800)\/""
-        return new StringBuilder().append(OPENTAG)
-            .append(QUOTE)
-            .append(TIME_STAMP_TAG)
-            .append(QUOTE)
-            .append(COLON)
-            .append(QUOTE)
-            .append(response.replaceAll(REGEX, "")
-                .substring(4))
-            .append(QUOTE)
-            .append(CLOSETAG)
-            .toString();
+        return new StringBuilder().append(OPENTAG).append(QUOTE).append(TIME_STAMP_TAG)
+                .append(QUOTE).append(COLON).append(QUOTE)
+                .append(response.replaceAll(REGEX, "").substring(4)).append(QUOTE).append(CLOSETAG)
+                .toString();
     }
 }

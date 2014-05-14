@@ -17,7 +17,6 @@ import com.snaplogic.snaps.lunex.Constants.LunexSnaps;
 import static com.snaplogic.snaps.lunex.Messages.LUNEX_UPDATE_DESC;
 import static com.snaplogic.snaps.lunex.Messages.LUNEX_UPDATE_LABEL;
 
-
 /**
  * Performs update operation in Lunex making use of Lunex REST API calls.
  *

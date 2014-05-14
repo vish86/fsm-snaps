@@ -1,0 +1,222 @@
+{
+  "id" : "com-snaplogic-snaps-lunex-lunexbasicauthaccount_1-A013",
+  "type" : "object",
+  "description" : "A schema for a snap",
+  "properties" : {
+    "class_id" : {
+      "description" : "",
+      "type" : "string",
+      "pattern" : "^[a-z]+-[^_]*$",
+      "required" : true
+    },
+    "class_fqid" : {
+      "description" : "",
+      "type" : "string",
+      "pattern" : "^[a-z]+-[^_]*_[0-9]+-[a-zA-Z0-9]*",
+      "required" : true
+    },
+    "class_version" : {
+      "description" : "snap version",
+      "type" : "number",
+      "required" : true,
+      "minimum" : 1,
+      "default" : 2
+    },
+    "class_build_tag" : {
+      "description" : "snap build tag",
+      "type" : "string",
+      "required" : true,
+      "default" : "SNAPSHOT"
+    },
+    "instance_id" : {
+      "type" : "string",
+      "pattern" : "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$",
+      "required" : true,
+      "default" : "00000000-0000-0000-0000-000000000000"
+    },
+    "instance_fqid" : {
+      "type" : "string",
+      "pattern" : "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}_[0-9]+$",
+      "required" : true,
+      "default" : "00000000-0000-0000-0000-000000000000_1"
+    },
+    "instance_version" : {
+      "type" : "number",
+      "required" : true,
+      "minimum" : 1,
+      "default" : 1
+    },
+    "class_map" : {
+      "description" : "Stores all the immutable definitions.",
+      "extends" : {
+        "$ref" : "com-snaplogic-snap_2#accountpropertycategories"
+      },
+      "properties" : {
+        "settings" : {
+          "properties" : {
+            "username" : {
+              "required" : true,
+              "extends" : {
+                "$ref" : "com-snaplogic-snap_2#propertyextensions"
+              }
+            },
+            "password" : {
+              "required" : true,
+              "extends" : {
+                "$ref" : "com-snaplogic-snap_2#propertyextensions"
+              }
+            }
+          }
+        }
+      }
+    },
+    "property_map" : {
+      "extends" : {
+        "$ref" : "com-snaplogic-snap_2#accountinstancecategories"
+      },
+      "required" : true,
+      "properties" : {
+        "settings" : {
+          "properties" : {
+            "username" : {
+              "extends" : {
+                "$ref" : "com-snaplogic-snap_2#instancepropertyextensions"
+              },
+              "properties" : {
+                "value" : {
+                  "required" : true,
+                  "type" : "string"
+                }
+              },
+              "required" : true
+            },
+            "password" : {
+              "extends" : {
+                "$ref" : "com-snaplogic-snap_2#instancepropertyextensions"
+              },
+              "properties" : {
+                "value" : {
+                  "required" : true,
+                  "type" : "string"
+                }
+              },
+              "required" : true
+            }
+          },
+          "required" : true
+        }
+      }
+    }
+  },
+  "description" : "The common schema for accounts.",
+  "class_map" : {
+    "property_category_list" : [ "info", "settings" ],
+    "info" : {
+      "snap_pack_fqid" : {
+        "ui_row_count" : 1,
+        "info_text" : "The fully qualified id of Snap pack to which the Snap belongs.",
+        "value" : "lunex-snap-1-A013.zip",
+        "label_text" : "Snap-pack fqid",
+        "priority_index" : 65,
+        "display_type" : "hidden"
+      },
+      "snap_pack_build_number" : {
+        "ui_row_count" : 1,
+        "info_text" : "The build number of the Snap pack to which the Snap belongs.",
+        "value" : "A013",
+        "label_text" : "Snap-pack build-number",
+        "priority_index" : 60,
+        "display_type" : "hidden"
+      },
+      "title" : {
+        "ui_row_count" : 1,
+        "info_text" : "Class title shown for the Snap",
+        "value" : "LUNEX basic auth account",
+        "label_text" : "Title",
+        "priority_index" : 30,
+        "display_type" : "visible"
+      },
+      "snap_pack_name" : {
+        "ui_row_count" : 1,
+        "info_text" : "The name of the Snap pack to which the Snap belongs.",
+        "value" : "Lunex",
+        "label_text" : "Snap-pack name",
+        "priority_index" : 66,
+        "display_type" : "hidden"
+      },
+      "cc_version" : {
+        "ui_row_count" : 1,
+        "info_text" : "The container version of the Snap",
+        "value" : 4.0,
+        "label_text" : "Container version",
+        "priority_index" : 90,
+        "display_type" : "hidden"
+      },
+      "sdk_version" : {
+        "ui_row_count" : 1,
+        "info_text" : "The SDK version of the Snap",
+        "value" : 4.0,
+        "label_text" : "SDK version",
+        "priority_index" : 100,
+        "display_type" : "hidden"
+      },
+      "snap_pack_url" : {
+        "ui_row_count" : 1,
+        "info_text" : "The URL of the snap pack, it can be relative.",
+        "value" : "$SNAP_HOME/lunex/target/lunex-build",
+        "label_text" : "Snap-pack URL",
+        "priority_index" : 68,
+        "display_type" : "hidden"
+      },
+      "label" : {
+        "ui_row_count" : 1,
+        "info_text" : "User provided label for instance",
+        "label_text" : "Label",
+        "priority_index" : 10,
+        "display_type" : "visible"
+      },
+      "class_fqid" : {
+        "ui_row_count" : 2,
+        "info_text" : "The unique identifier of the Snap",
+        "value" : "com-snaplogic-snaps-lunex-lunexbasicauthaccount_1-A013",
+        "label_text" : "Class FQID",
+        "priority_index" : 80,
+        "display_type" : "visible"
+      },
+      "snap_pack_version" : {
+        "ui_row_count" : 1,
+        "info_text" : "The version of the Snap pack to which the Snap belongs.",
+        "value" : 1,
+        "label_text" : "Snap-pack version",
+        "priority_index" : 70,
+        "display_type" : "hidden"
+      },
+      "snap_class_name" : {
+        "ui_row_count" : 1,
+        "info_text" : "The name of the Snap class.",
+        "value" : "com.snaplogic.snaps.lunex.LunexBasicAuthAccount",
+        "label_text" : "Snap class name",
+        "priority_index" : 69,
+        "display_type" : "hidden"
+      }
+    },
+    "category" : "basic_auth",
+    "is_validatable" : false,
+    "settings" : {
+      "username" : {
+        "info_text" : "Username",
+        "label_text" : "Username",
+        "priority_index" : 10
+      },
+      "password" : {
+        "info_text" : "Password",
+        "label_text" : "Password",
+        "priority_index" : 20,
+        "display_type" : "password"
+      }
+    }
+  },
+  "property_map" : {
+    "view_serial" : 100
+  }
+}

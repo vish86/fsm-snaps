@@ -1,0 +1,1 @@
+/bin/sh -c cd /home/madhavi/Fullsail/SnapFactory_v4/lunex && /usr/lib/jvm/java-7-openjdk-amd64/jre/../bin/javac @/home/madhavi/Fullsail/SnapFactory_v4/lunex/target/classes/org.codehaus.plexus.compiler.javac.JavacCompiler3448188369473785032arguments -J-Xmx1024m -J-Xms256m

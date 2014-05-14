@@ -1,0 +1,11 @@
+#surefire_0
+#Wed May 14 18:01:58 IST 2014
+key.prefix=local-snapadmin
+user=satish@snaplogic.com
+user.dir=/home/madhavi/Fullsail/SnapFactory_v4/lunex
+localRepository=/home/madhavi/.m2/repository
+basedir=/home/madhavi/Fullsail/SnapFactory_v4/lunex
+asset_path=snaplogic/shared
+path=snaplogic/satish
+VERSION=1
+sl_build=A013

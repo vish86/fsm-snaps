@@ -26,8 +26,7 @@ import com.snaplogic.snaps.lunex.bean.AccountBean;
 @AccountCategory(type = AccountType.NONE)
 public class DefaultAccount implements Account<AccountBean> {
     @Override
-    public void configure(
-        final PropertyValues propertyValues) {
+    public void configure(final PropertyValues propertyValues) {
         // NO OP
     }
 
@@ -37,8 +36,7 @@ public class DefaultAccount implements Account<AccountBean> {
     }
 
     @Override
-    public void defineProperties(
-        final PropertyBuilder propertyBuilder) {
+    public void defineProperties(final PropertyBuilder propertyBuilder) {
         // NO OP
     }
 

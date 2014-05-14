@@ -33,15 +33,9 @@ import static junit.framework.Assert.assertNull;
 @SuppressWarnings("unchecked")
 @RunWith(SnapTestRunner.class)
 public class UpdateTest extends LunexApiTest {
-    @TestFixture(
-        snap = Update.class, outputs = "out1", errors = "err1",
-        input = "data/update/input_valid_data.json",
-        properties = "data/update/property_data_1.json")
+    @TestFixture(snap = Update.class, outputs = "out1", errors = "err1", input = "data/update/input_valid_data.json", properties = "data/update/property_data_1.json")
     public void testUpdateValidData(TestSetup setup) throws Exception {
-        setup.inject()
-            .fieldName("account")
-            .dependency(account)
-            .add();
+        setup.inject().fieldName("account").dependency(account).add();
         TestResult testResult = setup.test();
         // check for no exception
         assertNull(testResult.getException());
@@ -54,22 +48,16 @@ public class UpdateTest extends LunexApiTest {
         assertEquals(1, outputRecorder.getDocumentCount() + errRecorder.getDocumentCount());
         // status code = 200 meaning "OK"
         if (outputRecorder.getDocumentCount() > 0) {
-            Document document = outputRecorder.getRecordedDocuments()
-                .get(0);
+            Document document = outputRecorder.getRecordedDocuments().get(0);
             Map<String, Object> data = document.get(Map.class);
             int statusCode = (int) data.get("statusCode");
             assertEquals(200, statusCode);
         }
     }
 
-    @TestFixture(
-        snap = Update.class, input = "data/update/input_invalid_data.json", outputs = "out1",
-        errors = "err1", properties = "data/update/property_data_1.json")
+    @TestFixture(snap = Update.class, input = "data/update/input_invalid_data.json", outputs = "out1", errors = "err1", properties = "data/update/property_data_1.json")
     public void testUpdateInvalidData(TestSetup setup) throws Exception {
-        setup.inject()
-            .fieldName("account")
-            .dependency(account)
-            .add();
+        setup.inject().fieldName("account").dependency(account).add();
         TestResult testResult = setup.test();
         // check for no exception
         assertNull(testResult.getException());
@@ -84,21 +72,15 @@ public class UpdateTest extends LunexApiTest {
         assertEquals(1, outputRecorder.getDocumentCount());
     }
 
-    @TestFixture(
-        snap = Update.class, outputs = "out1", errors = "err1",
-        input = "data/update/input_bulk_data.json", properties = "data/update/property_data_1.json")
+    @TestFixture(snap = Update.class, outputs = "out1", errors = "err1", input = "data/update/input_bulk_data.json", properties = "data/update/property_data_1.json")
     public void testUpdateBulkLoad(TestSetup setup) throws Exception {
-        setup.inject()
-            .fieldName("account")
-            .dependency(account)
-            .add();
+        setup.inject().fieldName("account").dependency(account).add();
         TestResult testResult = setup.test();
         setup.cleanup();
         OutputRecorder outputRecorder = testResult.getOutputViewByName("out1");
         long dataDocs = outputRecorder.getDocumentCount();
         outputRecorder = testResult.getErrorViewByName("err1");
-        long errDocs = outputRecorder.getRecordedDocuments()
-            .size();
+        long errDocs = outputRecorder.getRecordedDocuments().size();
         long totalDocs = dataDocs + errDocs;
         assertEquals(4, totalDocs);
     }
