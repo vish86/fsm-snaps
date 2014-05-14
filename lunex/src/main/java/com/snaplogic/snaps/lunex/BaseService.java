@@ -215,10 +215,10 @@ public abstract class BaseService extends SimpleSnap implements
     public void configure(final PropertyValues propertyValues) throws ConfigurationException {
         lunexHost = propertyValues.get(SERVICE_DOMAIN_PROP);
         resourceType = propertyValues.get(RESOURCE_PROP).toString();
-        configureTableProperty(propertyValues, PARAM_NAME_JSON, PARAM_TABLE_MAPPINGS_PROP,
-                PARAM_PATH_PROP, queryParams);
-        configureTableProperty(propertyValues, FIELD_NAME_JSON, FIELD_TABLE_MAPPINGS_PROP,
-                FIELD_PATH_PROP, requestContentInfo);
+        queryParams = configureTableProperty(propertyValues, PARAM_NAME_JSON,
+                PARAM_TABLE_MAPPINGS_PROP, PARAM_PATH_PROP);
+        requestContentInfo = configureTableProperty(propertyValues, FIELD_NAME_JSON,
+                FIELD_TABLE_MAPPINGS_PROP, FIELD_PATH_PROP);
         username = propertyValues.getAsExpression(USERNAME_PROP);
         password = propertyValues.getAsExpression(PASSWORD_PROP);
         List<Map<String, Object>> httpHeader = propertyValues.get(HTTP_HEADER_PROP);
@@ -304,9 +304,10 @@ public abstract class BaseService extends SimpleSnap implements
         // NO OP
     }
 
-    private void configureTableProperty(final PropertyValues propertyValues,
-            final String JSON_PATH, final String TABLE_PROP_NAME, final String VALUE_PROP_NAME,
-            List<Pair<String, ExpressionProperty>> paramKeyValuePair) {
+    private List<Pair<String, ExpressionProperty>> configureTableProperty(
+            final PropertyValues propertyValues, final String JSON_PATH,
+            final String TABLE_PROP_NAME, final String VALUE_PROP_NAME) {
+        List<Pair<String, ExpressionProperty>> paramKeyValuePair = null;
         List<Map<String, String>> params = propertyValues.get(TABLE_PROP_NAME);
         if (CollectionUtils.isNotEmpty(params)) {
             ExpressionProperty queryParamValue;
@@ -318,6 +319,7 @@ public abstract class BaseService extends SimpleSnap implements
                 paramKeyValuePair.add(Pair.of(queryParam, queryParamValue));
             }
         }
+        return paramKeyValuePair;
     }
 
     private StringBuilder prepareJson(List<Pair<String, ExpressionProperty>> requestContent,
