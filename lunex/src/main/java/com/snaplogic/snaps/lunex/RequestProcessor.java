@@ -10,6 +10,7 @@
  */
 package com.snaplogic.snaps.lunex;
 
+import static com.snaplogic.snaps.lunex.Constants.CLOSEBRACKET;
 import com.snaplogic.snaps.lunex.Constants.LunexSnaps;
 import com.snaplogic.snaps.lunex.Constants.RResource;
 
@@ -30,6 +31,7 @@ import java.net.URL;
 
 import static com.snaplogic.snaps.lunex.Constants.CLOSETAG;
 import static com.snaplogic.snaps.lunex.Constants.COLON;
+import static com.snaplogic.snaps.lunex.Constants.OPENBRACKET;
 import static com.snaplogic.snaps.lunex.Constants.OPENTAG;
 import static com.snaplogic.snaps.lunex.Constants.QUOTE;
 
@@ -79,6 +81,7 @@ public class RequestProcessor {
                     log.debug(String.format(LUNEX_HTTP_REQ_INFO, paramsJson));
                     cgiInput.writeBytes(paramsJson);
                     cgiInput.flush();
+                    cgiInput.close();
                 }
             }
 
@@ -94,13 +97,14 @@ public class RequestProcessor {
             while ((line = reader.readLine()) != null) {
                 response.append(line);
             }
+            reader.close();
+            log.debug(String.format(HTTP_STATUS, statusCode));
+
             if (rBuilder.getResource().toString().equals(RResource.GetTime.toString())) {
                 return getTimeJson(response.toString());
             }
-            log.debug(String.format(HTTP_STATUS, statusCode));
-            reader.close();
-            cgiInput.close();
-            return response.toString();
+            return formatResponse(response.toString());
+            
         } catch (MalformedURLException me) {
             log.error(me.getMessage(), me);
             throw me;
@@ -119,9 +123,16 @@ public class RequestProcessor {
 
     private String getTimeJson(String response) {
         // ""\/Date(928178400000-0800)\/""
-        return new StringBuilder().append(OPENTAG).append(QUOTE).append(TIME_STAMP_TAG)
+        return formatResponse(new StringBuilder().append(OPENTAG).append(QUOTE).append(TIME_STAMP_TAG)
                 .append(QUOTE).append(COLON).append(QUOTE)
                 .append(response.replaceAll(REGEX, "").substring(4)).append(QUOTE).append(CLOSETAG)
-                .toString();
+                .toString());
+    }
+    
+    private String formatResponse(String response) {
+        if (!response.endsWith(CLOSEBRACKET) && !response.startsWith(OPENBRACKET)) {
+            response = new StringBuilder().append(OPENBRACKET).append(response).append(CLOSEBRACKET).toString();
+        }
+        return response;
     }
 }

@@ -55,6 +55,8 @@ public class Constants {
     static final String ESCAPECHAR = "\\";
     static final String CLOSETAG = "}";
     static final String OPENTAG = "{";
+    static final String OPENBRACKET = "[";
+    static final String CLOSEBRACKET = "]";
     private static final String STREET = "Street";
     private static final String STATE = "State";
     private static final String COUNTRY = "Country";
