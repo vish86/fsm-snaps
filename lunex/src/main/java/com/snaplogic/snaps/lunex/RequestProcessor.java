@@ -20,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -108,8 +107,8 @@ public class RequestProcessor {
     private void close(Object obj) {
         if (null != obj) {
             try {
-                if (obj instanceof DataInputStream) {
-                    ((DataInputStream) obj).close();
+                if (obj instanceof DataOutputStream) {
+                    ((DataOutputStream) obj).close();
                 } else {
                     ((BufferedReader) obj).close();
                 }
@@ -134,7 +133,10 @@ public class RequestProcessor {
         } else if (rBuilder.getSnapType() == LunexSnaps.Delete) {
             sBuilder.append(OPENTAG).append(QUOTE).append(DELETE_RESPONSE_FLAG).append(QUOTE)
                     .append(COLON).append(QUOTE).append(response).append(QUOTE).append(CLOSETAG);
+        } else {
+            sBuilder.append(response);
         }
+            
         return formatResponse(sBuilder);
     }
 
