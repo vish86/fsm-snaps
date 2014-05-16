@@ -48,6 +48,7 @@ public class RequestProcessor {
     private static final String REGEX = "[^\\p{L}\\p{Nd}]";
     private static RequestProcessor rHandler = null;
     private static final String TIME_STAMP_TAG = "TimeStamp";
+    private static final String DELETE_RESPONSE_FLAG = "DeleteResponse";
     static {
         rHandler = new RequestProcessor();
     }
@@ -102,6 +103,8 @@ public class RequestProcessor {
 
             if (rBuilder.getResource().toString().equals(RResource.GetTime.toString())) {
                 return getTimeJson(response.toString());
+            } else if (rBuilder.getSnapType() == LunexSnaps.Delete) {
+                return getDeleteJson(response.toString());
             }
             return formatResponse(response.toString());
             
@@ -128,7 +131,15 @@ public class RequestProcessor {
                 .append(response.replaceAll(REGEX, "").substring(4)).append(QUOTE).append(CLOSETAG)
                 .toString());
     }
-    
+
+    private String getDeleteJson(String response) {
+        // "[true]"
+        return formatResponse(new StringBuilder().append(OPENTAG).append(QUOTE).append(DELETE_RESPONSE_FLAG)
+                .append(QUOTE).append(COLON).append(QUOTE)
+                .append(response).append(QUOTE).append(CLOSETAG)
+                .toString());
+    }
+
     private String formatResponse(String response) {
         if (!response.endsWith(CLOSEBRACKET) && !response.startsWith(OPENBRACKET)) {
             response = new StringBuilder().append(OPENBRACKET).append(response).append(CLOSEBRACKET).toString();

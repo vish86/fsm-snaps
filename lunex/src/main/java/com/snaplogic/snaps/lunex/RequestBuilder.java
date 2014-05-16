@@ -72,7 +72,6 @@ public class RequestBuilder {
 
     public RequestBuilder addRequestBody(StringBuilder requestBody) {
         this.requestBody = requestBody;
-        Headers.add(Pair.of(CONTENT_LENGTH, getRequestBodyLenght()));
         return this;
     }
 
