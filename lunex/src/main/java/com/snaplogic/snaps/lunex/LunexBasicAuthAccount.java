@@ -23,7 +23,7 @@ import static com.snaplogic.snaps.lunex.Messages.LUNEX_BASIC_AUTH_ACCOUNT_TITLE;
 /**
  * Provides a basic auth account for the Lunex snap.
  *
- * @author Svatada
+ * @author svatada
  */
 @General(title = LUNEX_BASIC_AUTH_ACCOUNT_TITLE)
 @Version(snap = 1)

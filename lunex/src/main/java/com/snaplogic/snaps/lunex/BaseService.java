@@ -64,9 +64,15 @@ import java.util.Map;
 
 import static com.snaplogic.snaps.lunex.Constants.*;
 import static com.snaplogic.snaps.lunex.Messages.*;
+import static com.snaplogic.snaps.lunex.ServiceURIInfo.ADDRESS_JSONOBJ;
+import static com.snaplogic.snaps.lunex.ServiceURIInfo.CR_PARAM_LIST;
+import static com.snaplogic.snaps.lunex.ServiceURIInfo.DR_PARAM_LIST;
+import static com.snaplogic.snaps.lunex.ServiceURIInfo.REQ_BODY_PARAM_INFO;
+import static com.snaplogic.snaps.lunex.ServiceURIInfo.RR_PARAM_LIST;
+import static com.snaplogic.snaps.lunex.ServiceURIInfo.UR_PARAM_LIST;
 
 /**
- * Base abstract class for Lunex snap pack which contains common snap properties, authentication and
+ * Abstract base class for Lunex snap pack which contains common snap properties, authentication and
  * request handling.
  *
  * @author svatada
@@ -103,6 +109,7 @@ public abstract class BaseService extends SimpleSnap implements
     private static final Logger log = LoggerFactory.getLogger(BaseService.class);
     private final HttpMethodNames httpMethod;
 
+    /* Constructor to initialise the respective snap */
     public BaseService(LunexSnaps snaps, HttpMethodNames httpMethod) {
         this.snapsType = snaps;
         this.httpMethod = httpMethod;
@@ -215,9 +222,9 @@ public abstract class BaseService extends SimpleSnap implements
     public void configure(final PropertyValues propertyValues) throws ConfigurationException {
         lunexHost = propertyValues.get(SERVICE_DOMAIN_PROP);
         resourceType = propertyValues.get(RESOURCE_PROP).toString();
-        queryParams = configureTableProperty(propertyValues, PARAM_NAME_JSON,
+        queryParams = processTableProperty(propertyValues, PARAM_NAME_JSON,
                 PARAM_TABLE_MAPPINGS_PROP, PARAM_PATH_PROP);
-        requestContentInfo = configureTableProperty(propertyValues, FIELD_NAME_JSON,
+        requestContentInfo = processTableProperty(propertyValues, FIELD_NAME_JSON,
                 FIELD_TABLE_MAPPINGS_PROP, FIELD_PATH_PROP);
         username = propertyValues.getAsExpression(USERNAME_PROP);
         password = propertyValues.getAsExpression(PASSWORD_PROP);
@@ -304,7 +311,8 @@ public abstract class BaseService extends SimpleSnap implements
         // NO OP
     }
 
-    private List<Pair<String, ExpressionProperty>> configureTableProperty(
+    /* This will read the table property and returned the collection of key value pair */
+    private List<Pair<String, ExpressionProperty>> processTableProperty(
             final PropertyValues propertyValues, final String JSON_PATH,
             final String TABLE_PROP_NAME, final String VALUE_PROP_NAME) {
         List<Pair<String, ExpressionProperty>> paramKeyValuePair = null;
@@ -322,6 +330,7 @@ public abstract class BaseService extends SimpleSnap implements
         return paramKeyValuePair;
     }
 
+    /* Creates the request body based on the selected resource and request parameters */
     private StringBuilder prepareJson(List<Pair<String, ExpressionProperty>> requestContent,
             Document document) {
         StringBuilder json = new StringBuilder();
@@ -350,6 +359,7 @@ public abstract class BaseService extends SimpleSnap implements
         return new StringBuilder("");
     }
 
+    /* Prepares the sub Json object by evaluating the input document */
     private StringBuilder getJsonSlice(Pair<String, ExpressionProperty> paramPair, Document document) {
         String key = paramPair.getKey();
         if (REQ_BODY_PARAM_INFO.get(key) == 1) {
@@ -361,6 +371,7 @@ public abstract class BaseService extends SimpleSnap implements
                 .append(COMMA);
     }
 
+    /* configure the basic auth header */
     private void setAuthHeaderProp(String username, String passcode) {
         headersProperties
                 .add(Pair.of(
@@ -372,6 +383,7 @@ public abstract class BaseService extends SimpleSnap implements
                                         .getBytes())).toString()));
     }
 
+    /* configure the HTTP Lunex request headers */
     private void setDefaultHeaders() {
         headersProperties.add(Pair.of(CONTENT_TYPE, APPLICATION_JSON));
         headersProperties.add(Pair.of(ACCEPT, APPLICATION_JSON));
@@ -382,6 +394,7 @@ public abstract class BaseService extends SimpleSnap implements
         }
     }
 
+    /* Prepare the suggestion builder for table property */
     private void setSuggestionBuilder(final SuggestionBuilder suggestionBuilder,
             PropertyValues propertyValues, final String TABLE_PROP_NAME,
             final String VALUE_PROP_NAME, ImmutableMap<String, ImmutableSet<String>> PARAM_LIST) {
@@ -392,6 +405,7 @@ public abstract class BaseService extends SimpleSnap implements
                         PARAM_LIST.get(propertyValues.get(RESOURCE_PROP)).toArray(new String[0]));
     }
 
+    /* Writes the exception records to error view */
     private void writeToErrorView(final String errMsg, final String errReason,
             final String errResoulution, Throwable ex) {
         log.error(ex.getMessage(), ex);
@@ -405,6 +419,7 @@ public abstract class BaseService extends SimpleSnap implements
         errorViews.write(snapException);
     }
 
+    /* Writes the error records to error view */
     private void writeToErrorView(final int httpErrCode, final String errReason,
             final String errResoulution, final String errResponse) {
         Map<String, Object> map = new HashMap<String, Object>();
@@ -416,5 +431,4 @@ public abstract class BaseService extends SimpleSnap implements
                 errResponse).withReason(errReason).withResolution(errResoulution);
         errorViews.write(snapException);
     }
-
 }

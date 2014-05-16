@@ -12,24 +12,28 @@ package com.snaplogic.snaps.lunex;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 
 import java.util.List;
 import java.util.Map;
 
 /**
- * This class holds all the constants and enum types
+ * This class holds all the static final variables and enum types.
  *
  * @author svatada
  */
 public class Constants {
-    private static final String REGISTERPHONE = "REGISTERPHONE";
-    private static final String SPEEDDIAL = "SPEEDDIAL";
-    private static final String STATE2 = "STATE";
-    private static final String TODATE = "TODATE";
-    private static final String FROMDATE = "FROMDATE";
-    private static final String SUB = "SUB";
+    static final String LUNEX_HTTP_INFO = "[{\"ResourceType\": \"%s\"}, {\"Lunex URL\":\"%s\"}, {\"Header\": \"%s\"}]";
+    static final String LUNEX_HTTP_REQ_INFO = "Lunex Request Body: %s";
+    static final String HTTP_STATUS = "Lunex HTTPStatus: %s ";
+    static final String REGEX = "[^\\p{L}\\p{Nd}]";
+    static final String TIME_STAMP_TAG = "TimeStamp";
+    static final String DELETE_RESPONSE_FLAG = "DeletionStatus";
+    static final String REGISTERPHONE = "REGISTERPHONE";
+    static final String SPEEDDIAL = "SPEEDDIAL";
+    static final String STATE2 = "STATE";
+    static final String TODATE = "TODATE";
+    static final String FROMDATE = "FROMDATE";
+    static final String SUB = "SUB";
     static final String STATUS_CODE_TAG = "statusCode";
     static final String RESOLUTION_TAG = "Resolution";
     static final String REASON_TAG = "Reason";
@@ -57,30 +61,30 @@ public class Constants {
     static final String OPENTAG = "{";
     static final String OPENBRACKET = "[";
     static final String CLOSEBRACKET = "]";
-    private static final String STREET = "Street";
-    private static final String STATE = "State";
-    private static final String COUNTRY = "Country";
-    private static final String CITY = "City";
-    private static final String PHONE2 = "Phone";
-    private static final String LAST_NAME = "LastName";
-    private static final String FIRST_NAME = "FirstName";
-    private static final String TYPE = "TYPE";
-    private static final String ORDER = "ORDER";
-    private static final String TXID = "TXID";
-    private static final String MERCHANTID = "MERCHANTID";
-    private static final String MERCHANTNAME = "MERCHANTNAME";
-    private static final String NOTIFY = "NOTIFY";
-    private static final String LANG = "LANG";
-    private static final String PHONETYPE = "PHONETYPE";
-    private static final String QUANTITY = "QUANTITY";
-    private static final String AMOUNT = "AMOUNT";
-    private static final String PROMO_PHONE = "PROMOPHONE";
-    private static final String PHONE = "PHONE";
-    private static final String CID = "CID";
-    private static final String SELLER = "SELLER";
-    private static final String SKU = "SKU";
-    private static final String PIN = "PIN";
-    private static final String PASSCODE = "PASSCODE";
+    static final String STREET = "Street";
+    static final String STATE = "State";
+    static final String COUNTRY = "Country";
+    static final String CITY = "City";
+    static final String PHONE2 = "Phone";
+    static final String LAST_NAME = "LastName";
+    static final String FIRST_NAME = "FirstName";
+    static final String TYPE = "TYPE";
+    static final String ORDER = "ORDER";
+    static final String TXID = "TXID";
+    static final String MERCHANTID = "MERCHANTID";
+    static final String MERCHANTNAME = "MERCHANTNAME";
+    static final String NOTIFY = "NOTIFY";
+    static final String LANG = "LANG";
+    static final String PHONETYPE = "PHONETYPE";
+    static final String QUANTITY = "QUANTITY";
+    static final String AMOUNT = "AMOUNT";
+    static final String PROMO_PHONE = "PROMOPHONE";
+    static final String PHONE = "PHONE";
+    static final String CID = "CID";
+    static final String SELLER = "SELLER";
+    static final String SKU = "SKU";
+    static final String PIN = "PIN";
+    static final String PASSCODE = "PASSCODE";
 
     static enum HttpMethodNames {
         POST("POST"), PUT("PUT"), GET("GET"), DELETE("DELETE");
@@ -171,86 +175,4 @@ public class Constants {
             return rresource;
         }
     }
-
-    static final ImmutableMap<String, Integer> REQ_BODY_PARAM_INFO = new ImmutableMap.Builder<String, Integer>()
-            .put("AutoRefillUpdatedBy", 0).put("AccessPhone", 0).put("AccessPhoneInt", 0)
-            .put("Balance", 1).put(CITY, 0).put("Created", 0).put("CreatedBy", 0)
-            .put("Currency", 0).put("Description", 0).put("Distributor", 0).put("Email", 0)
-            .put("ExpiredDate", 0).put(FIRST_NAME, 0).put("FirstPurchaseDate", 0)
-            .put("FirstUseDate", 0).put(LAST_NAME, 0).put("LastPurchaseDate", 0)
-            .put("LastUseDate", 0).put("MinBalance", 1).put("Minutes", 1).put("Num", 1)
-            .put("Notes", 0).put(PHONE2, 0).put("Pin", 1).put("Region", 0).put("RedeemDate", 0)
-            .put("ReferralName", 0).put("ReferralPhone", 0).put("RefillAmt", 1).put("Reseller", 0)
-            .put("RegionInt", 0).put("Sku", 0).put(STATE, 0).put("StatementOption", 0)
-            .put("Status", 0).put(STREET, 0).put("Updated", 0).put("UpdatedBy", 0).put(ZIPCODE, 0)
-            .put(SUITE, 0).put(COUNTRY, 0).build();
-
-    /*
-     * POST/Create operation supported resource list
-     */
-    static final ImmutableMap<String, ImmutableSet<String>> CR_PARAM_LIST = ImmutableMap.of(
-            CResource.NewOrder.toString(), ImmutableSet.of(SELLER, CID, SKU, PHONE, PROMO_PHONE,
-                    AMOUNT, QUANTITY, PHONETYPE, LANG, NOTIFY, MERCHANTNAME, MERCHANTID),
-            CResource.Account.toString(), ImmutableSet.of(SELLER, PHONETYPE, LANG, NOTIFY),
-            CResource.VoidTx.toString(), ImmutableSet.of(SELLER, TXID, NOTIFY), CResource.PreOrder
-                    .toString(), ImmutableSet.of(SELLER, CID, SKU, PHONE, AMOUNT));
-
-    static final ImmutableSet<String> ADDRESS_JSONOBJ = ImmutableSet.of(CITY, COUNTRY, STATE,
-            STREET, SUITE, ZIPCODE);
-    /*
-     * GET/Read Resource operation supported resource list
-     */
-    static final ImmutableMap<String, ImmutableSet<String>> RR_PARAM_LIST = new ImmutableMap.Builder<String, ImmutableSet<String>>()
-            .put(RResource.GetAccount.toString(),
-                    new ImmutableSet.Builder<String>().add(SELLER).add(PASSCODE).add(PIN).build())
-            .put(RResource.GetOrderStatus.toString(),
-                    new ImmutableSet.Builder<String>().add(SELLER).add(CID).build())
-            .put(RResource.GetSeller.toString(),
-                    new ImmutableSet.Builder<String>().add(SELLER).add(CID).build())
-            .put(RResource.GetTime.toString(), new ImmutableSet.Builder<String>().build())
-            .put(RResource.GetAutoITU.toString(),
-                    new ImmutableSet.Builder<String>().add(SELLER).add(TYPE).add(PHONE).build())
-            .put(RResource.ListAccount.toString(),
-                    new ImmutableSet.Builder<String>().add(SELLER).add(SKU).add(PHONE).build())
-            .put(RResource.ListDidByState.toString(),
-                    new ImmutableSet.Builder<String>().add(SELLER).add(STATE2).add(LANG).add(TYPE)
-                            .build())
-            .put(RResource.ListProduct.toString(),
-                    new ImmutableSet.Builder<String>().add(SELLER).build())
-            .put(RResource.ListRegisterPhone.toString(),
-                    new ImmutableSet.Builder<String>().add(SELLER).add(PIN).add(PASSCODE).build())
-            .put(RResource.ListSpeedDial.toString(),
-                    new ImmutableSet.Builder<String>().add(SELLER).add(PIN).add(PASSCODE).build())
-            .put(RResource.ListTransactions.toString(),
-                    new ImmutableSet.Builder<String>().add(SELLER).add(SUB).add(TYPE).add(PIN)
-                            .add(FROMDATE).add(TODATE).build())
-            .put(RResource.TopUpOrder.toString(),
-                    new ImmutableSet.Builder<String>().add(SELLER).add(ORDER).add(SKU).add(PHONE)
-                            .add(AMOUNT).build()).build();
-
-    /*
-     * PUT/UpdateResource operation supported resource list
-     */
-    static final ImmutableMap<String, ImmutableSet<String>> UR_PARAM_LIST = new ImmutableMap.Builder<String, ImmutableSet<String>>()
-            .put(UResource.PostOrder.toString(),
-                    new ImmutableSet.Builder<String>().add(SELLER).add(CID).add(PROMO_PHONE)
-                            .build())
-            .put(UResource.UpdateAccount.toString(),
-                    new ImmutableSet.Builder<String>().add(SELLER).add(PIN).build())
-            .put(UResource.UpdateRegisterPhone.toString(),
-                    new ImmutableSet.Builder<String>().add(SELLER).add(PIN).add(NOTIFY).build())
-            .put(UResource.UpdateSpeedDial.toString(),
-                    new ImmutableSet.Builder<String>().add(SELLER).add(PIN).build()).build();
-    /*
-     * DELETE/Delete Resource operation supported resource list
-     */
-    static final ImmutableMap<String, ImmutableSet<String>> DR_PARAM_LIST = new ImmutableMap.Builder<String, ImmutableSet<String>>()
-            .put(DResource.DeleteRegisterPhone.toString(),
-                    new ImmutableSet.Builder<String>().add(SELLER).add(PIN).add(REGISTERPHONE)
-                            .build())
-            .put(DResource.DeleteSpeedDial.toString(),
-                    new ImmutableSet.Builder<String>().add(SELLER).add(PIN).add(SPEEDDIAL).build())
-            .put(DResource.RemoveCustomer.toString(),
-                    new ImmutableSet.Builder<String>().add(SELLER).add(SKU).add(PHONE).build())
-            .build();
 }

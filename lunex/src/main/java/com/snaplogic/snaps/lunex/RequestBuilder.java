@@ -22,7 +22,6 @@ import java.util.List;
 
 import static com.snaplogic.snaps.lunex.Constants.CLOSETAG;
 import static com.snaplogic.snaps.lunex.Constants.COLON;
-import static com.snaplogic.snaps.lunex.Constants.CONTENT_LENGTH;
 import static com.snaplogic.snaps.lunex.Constants.DOUBLE_SLASH;
 import static com.snaplogic.snaps.lunex.Constants.HTTP;
 import static com.snaplogic.snaps.lunex.Constants.OPENTAG;
@@ -30,7 +29,7 @@ import static com.snaplogic.snaps.lunex.Messages.INVALID_URI;
 import static com.snaplogic.snaps.lunex.Messages.INVALID_URI_RESOLUTION;
 
 /**
- * This will take care of http request preparation
+ * Request builder for Lunex snap
  *
  * @author svatada
  */
@@ -38,7 +37,7 @@ import static com.snaplogic.snaps.lunex.Messages.INVALID_URI_RESOLUTION;
 public class RequestBuilder {
     private Document doc = null;
     private List<Pair<String, String>> Headers = null;
-    private String lunexEndpontHostIP = null;
+    private String IPAddress = null;
     private HttpMethodNames method;
     private List<Pair<String, ExpressionProperty>> queryParams;
     private StringBuilder requestBody = null;
@@ -51,7 +50,7 @@ public class RequestBuilder {
     }
 
     public RequestBuilder addEndPointIP(String host) {
-        this.lunexEndpontHostIP = host;
+        this.IPAddress = host;
         return this;
     }
 
@@ -98,7 +97,7 @@ public class RequestBuilder {
     }
 
     public String getRequestBodyLenght() {
-        return requestBody.length() + "";
+        return String.valueOf(requestBody.length());
     }
 
     public Object getResource() {
@@ -113,6 +112,7 @@ public class RequestBuilder {
         return resolveUrl(doc);
     }
 
+    /* Converts a relative Url into the URL that is usable by the Lunex RequestProcessor. */
     private String resolveUrl(final Document document) {
         try {
             String resourceSpecificUri = null;
@@ -140,10 +140,10 @@ public class RequestBuilder {
                 }
             }
             return new StringBuilder().append(HTTP).append(COLON).append(DOUBLE_SLASH)
-                    .append(lunexEndpontHostIP).append(resourceSpecificUri).toString();
+                    .append(IPAddress).append(resourceSpecificUri).toString();
         } catch (Exception e) {
             String msg = String.format(INVALID_URI, new StringBuilder().append(HTTP).append(COLON)
-                    .append(DOUBLE_SLASH).append(lunexEndpontHostIP).toString());
+                    .append(DOUBLE_SLASH).append(IPAddress).toString());
             throw new ExecutionException(e, msg).withReason(msg).withResolution(
                     INVALID_URI_RESOLUTION);
         }

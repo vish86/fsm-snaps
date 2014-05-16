@@ -10,7 +10,6 @@
  */
 package com.snaplogic.snaps.lunex;
 
-import static com.snaplogic.snaps.lunex.Constants.CLOSEBRACKET;
 import com.snaplogic.snaps.lunex.Constants.LunexSnaps;
 import com.snaplogic.snaps.lunex.Constants.RResource;
 
@@ -21,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,26 +29,17 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import static com.snaplogic.snaps.lunex.Constants.CLOSETAG;
-import static com.snaplogic.snaps.lunex.Constants.COLON;
-import static com.snaplogic.snaps.lunex.Constants.OPENBRACKET;
-import static com.snaplogic.snaps.lunex.Constants.OPENTAG;
-import static com.snaplogic.snaps.lunex.Constants.QUOTE;
+import static com.snaplogic.snaps.lunex.Constants.*;
 
 /**
- * This will take care of http request execution.
+ * This Request Processor manage the submission and handling of all the requests. This class performs the
+ * processing of all the requests received and return back with formatted Json object.
  *
  * @author svatada
  */
 public class RequestProcessor {
-    private static final String LUNEX_HTTP_INFO = "[{\"ResourceType\": \"%s\"}, {\"Lunex URL\":\"%s\"}, {\"Header\": \"%s\"}]";
-    private static final String LUNEX_HTTP_REQ_INFO = "Lunex Request Body: %s";
-    private static final String HTTP_STATUS = "###HTTPStatus: %s ";
-    private static final Logger log = LoggerFactory.getLogger(RequestProcessor.class);
-    private static final String REGEX = "[^\\p{L}\\p{Nd}]";
+    static final Logger log = LoggerFactory.getLogger(RequestProcessor.class);
     private static RequestProcessor rHandler = null;
-    private static final String TIME_STAMP_TAG = "TimeStamp";
-    private static final String DELETE_RESPONSE_FLAG = "DeleteResponse";
     static {
         rHandler = new RequestProcessor();
     }
@@ -58,6 +49,7 @@ public class RequestProcessor {
         return rHandler;
     }
 
+    /* Provides the functionality to process the HTTP request and response handling */
     public String execute(RequestBuilder rBuilder) throws MalformedURLException, IOException {
         try {
             URL api_url = new URL(rBuilder.getURL());
@@ -82,12 +74,10 @@ public class RequestProcessor {
                     log.debug(String.format(LUNEX_HTTP_REQ_INFO, paramsJson));
                     cgiInput.writeBytes(paramsJson);
                     cgiInput.flush();
-                    cgiInput.close();
+                    close(cgiInput);
                 }
             }
-
             BufferedReader reader;
-            StringBuffer response = new StringBuffer();
             InputStream iStream = httpConnection.getInputStream();
             if ((statusCode = httpConnection.getResponseCode()) == HttpStatus.SC_OK) {
                 reader = new BufferedReader(new InputStreamReader(iStream));
@@ -95,19 +85,13 @@ public class RequestProcessor {
                 reader = new BufferedReader(new InputStreamReader(httpConnection.getErrorStream()));
             }
             String line;
+            StringBuilder response = new StringBuilder();
             while ((line = reader.readLine()) != null) {
                 response.append(line);
             }
-            reader.close();
+            close(reader);
             log.debug(String.format(HTTP_STATUS, statusCode));
-
-            if (rBuilder.getResource().toString().equals(RResource.GetTime.toString())) {
-                return getTimeJson(response.toString());
-            } else if (rBuilder.getSnapType() == LunexSnaps.Delete) {
-                return getDeleteJson(response.toString());
-            }
-            return formatResponse(response.toString());
-            
+            return formatResponse(response, rBuilder);
         } catch (MalformedURLException me) {
             log.error(me.getMessage(), me);
             throw me;
@@ -120,30 +104,46 @@ public class RequestProcessor {
         }
     }
 
+    /* Handles IO close operation */
+    private void close(Object obj) {
+        if (null != obj) {
+            try {
+                if (obj instanceof DataInputStream) {
+                    ((DataInputStream) obj).close();
+                } else {
+                    ((BufferedReader) obj).close();
+                }
+            } catch (IOException ioe) {
+                log.error(ioe.getLocalizedMessage(), ioe);
+            }
+        }
+    }
+
     public int getStatusCode() {
         return statusCode;
     }
 
-    private String getTimeJson(String response) {
-        // ""\/Date(928178400000-0800)\/""
-        return formatResponse(new StringBuilder().append(OPENTAG).append(QUOTE).append(TIME_STAMP_TAG)
-                .append(QUOTE).append(COLON).append(QUOTE)
-                .append(response.replaceAll(REGEX, "").substring(4)).append(QUOTE).append(CLOSETAG)
-                .toString());
-    }
-
-    private String getDeleteJson(String response) {
-        // "[true]"
-        return formatResponse(new StringBuilder().append(OPENTAG).append(QUOTE).append(DELETE_RESPONSE_FLAG)
-                .append(QUOTE).append(COLON).append(QUOTE)
-                .append(response).append(QUOTE).append(CLOSETAG)
-                .toString());
-    }
-
-    private String formatResponse(String response) {
-        if (!response.endsWith(CLOSEBRACKET) && !response.startsWith(OPENBRACKET)) {
-            response = new StringBuilder().append(OPENBRACKET).append(response).append(CLOSEBRACKET).toString();
+    /* format the json response */
+    private String formatResponse(StringBuilder response, RequestBuilder rBuilder) {
+        StringBuilder sBuilder = new StringBuilder();
+        if (rBuilder.getResource().toString().equals(RResource.GetTime.toString())) {
+            sBuilder.append(OPENTAG).append(QUOTE).append(TIME_STAMP_TAG).append(QUOTE)
+                    .append(COLON).append(QUOTE)
+                    .append(response.toString().replaceAll(REGEX, "").substring(4)).append(QUOTE)
+                    .append(CLOSETAG);
+        } else if (rBuilder.getSnapType() == LunexSnaps.Delete) {
+            sBuilder.append(OPENTAG).append(QUOTE).append(DELETE_RESPONSE_FLAG).append(QUOTE)
+                    .append(COLON).append(QUOTE).append(response).append(QUOTE).append(CLOSETAG);
         }
-        return response;
+        return formatResponse(sBuilder);
+    }
+
+    /* convert the json object into array of objects */
+    private static String formatResponse(StringBuilder response) {
+        if (!response.toString().endsWith(CLOSEBRACKET)
+                && !response.toString().startsWith(OPENBRACKET)) {
+            response.insert(0, OPENBRACKET).append(CLOSEBRACKET);
+        }
+        return response.toString();
     }
 }
