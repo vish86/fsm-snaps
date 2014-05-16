@@ -32,8 +32,8 @@ import java.net.URL;
 import static com.snaplogic.snaps.lunex.Constants.*;
 
 /**
- * This Request Processor manage the submission and handling of all the requests. This class performs the
- * processing of all the requests received and return back with formatted Json object.
+ * The Request Processor manage submission and handling of all the request. This class performs the
+ * processing of all the requests received by the snap and return back with formatted Json object.
  *
  * @author svatada
  */
@@ -77,6 +77,7 @@ public class RequestProcessor {
                     close(cgiInput);
                 }
             }
+
             BufferedReader reader;
             InputStream iStream = httpConnection.getInputStream();
             if ((statusCode = httpConnection.getResponseCode()) == HttpStatus.SC_OK) {
@@ -108,8 +109,8 @@ public class RequestProcessor {
     private void close(Object obj) {
         if (null != obj) {
             try {
-                if (obj instanceof DataInputStream) {
-                    ((DataInputStream) obj).close();
+                if (obj instanceof DataOutputStream) {
+                    ((DataOutputStream) obj).close();
                 } else {
                     ((BufferedReader) obj).close();
                 }
