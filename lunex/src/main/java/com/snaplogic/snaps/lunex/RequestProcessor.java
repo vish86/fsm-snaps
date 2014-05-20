@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,7 +34,7 @@ import static com.snaplogic.snaps.lunex.Constants.*;
 /**
  * The Request Processor manage submission and handling of all the request. This class performs the
  * processing of all the requests received by the snap and return back with formatted Json object.
- *
+ * 
  * @author svatada
  */
 public class RequestProcessor {
@@ -137,7 +138,6 @@ public class RequestProcessor {
         } else {
             sBuilder.append(response);
         }
-            
         return formatResponse(sBuilder);
     }
 

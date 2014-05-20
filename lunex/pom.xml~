@@ -6,68 +6,13 @@
 	<artifactId>lunex</artifactId>
 	<version>1-${sl_build}</version>
 	<packaging>jar</packaging>
-
 	<name>Lunex</name>
 	<url>http://www.SnapLogic.com</url>
-	<repositories>
-		<repository>
-			<id>Snaplogic-Maven-Repository</id>
-			<name>Snaplogic Maven Repository</name>
-			<url>http://maven.clouddev.snaplogic.com:8080/nexus/content/repositories/releases/</url>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-				<updatePolicy>daily</updatePolicy>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>Snaplogic-Maven-Snapshot-Repository</id>
-			<name>Snaplogic Maven Snapshot Repository</name>
-			<url>http://maven.clouddev.snaplogic.com:8080/nexus/content/repositories/snapshots/</url>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
-			</snapshots>
-		</repository>
-	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>Snaplogic-Maven-Repository</id>
-			<name>Snaplogic Maven Repository</name>
-			<url>http://maven.clouddev.snaplogic.com:8080/nexus/content/repositories/releases/</url>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-				<updatePolicy>daily</updatePolicy>
-			</snapshots>
-		</pluginRepository>
-		<pluginRepository>
-			<id>Snaplogic-Maven-Snapshot-Repository</id>
-			<name>Snaplogic Maven Snapshot Repository</name>
-			<url>http://maven.clouddev.snaplogic.com:8080/nexus/content/repositories/snapshots/</url>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
-
-
-	<!-- Snap zip assembly descriptor -->
+	<parent>
+		<artifactId>snaps</artifactId>
+		<groupId>com.snaplogic</groupId>
+		<version>4.0</version>
+	</parent>
 	<build>
 		<finalName>${project.artifactId}</finalName>
 		<pluginManagement>
@@ -108,7 +53,6 @@
 					<target>1.7</target>
 				</configuration>
 			</plugin>
-			<!-- Snaplogic Maven Plugins -->
 			<plugin>
 				<groupId>com.snaplogic.tools</groupId>
 				<artifactId>snappack-installer</artifactId>
@@ -117,12 +61,10 @@
 						<goals>
 							<goal>generate-schema</goal>
 						</goals>
-						<configuration>
-						</configuration>
+						<configuration />
 					</execution>
 				</executions>
 			</plugin>
-			<!-- Assembly instructions for creating snap zip -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
@@ -143,7 +85,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- Set the final name for the jar file -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -156,7 +97,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- Read the version from the directives file -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>properties-maven-plugin</artifactId>
@@ -184,13 +124,13 @@
 						<phase>generate-resources</phase>
 						<configuration>
 							<target>
-								<!-- This will add the build number and version in the resources 
-									file. Don't change the formatting below. -->
-								<echo file="${project.build.directory}/classes/build.properties">build_number=${sl_build}
+								<echo file="${project.build.directory}/classes/build.properties">
+									build_number=${sl_build}
 									snap_pack_version=${VERSION}
 									snap_pack_fqid=${snap}-snap-${VERSION}-${sl_build}.zip
 									snap_pack_url=$SNAP_HOME/${snap}/target/${snap}-build
-									snap_pack_name=${NAME}</echo>
+									snap_pack_name=${NAME}
+								</echo>
 							</target>
 						</configuration>
 						<goals>
@@ -204,49 +144,38 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<company>SnapLogic</company>
-		<snap>Lunex</snap>
-		<!-- This is the build number for the ZIP, will be SNAPSHOT by default 
-			( or whatever else is defined in Tectonic's pom.xml as the default value 
-			for the sl_build property). Use mvn install -Dsl_build=b1234 to change that. -->
+		<snap>lunex</snap>
 		<package.build_no>${sl_build}</package.build_no>
-		<!-- This identifies the classes which represent the actual snaps (and 
-			become accessible on the jcc after deployment). Don't change the formatting, 
-			all classes must be within the same line as below.! -->
 		<account.classes>
 			com.snaplogic.snaps.lunex.LunexBasicAuthAccount
 		</account.classes>
 		<snap.classes>
-			com.snaplogic.snaps.lunex.Create
+			com.snaplogic.snaps.lunex.Create,
+			com.snaplogic.snaps.lunex.Read,
+			com.snaplogic.snaps.lunex.Update,
+			com.snaplogic.snaps.lunex.Delete
 		</snap.classes>
-		<!-- Enter your cc key prefix from keys.properties -->
-		<key.prefix>cc</key.prefix>
-		<!-- This is the username that is authorized to deploy snaps to server -->
-		<user>svatada@snaplogic.com</user>
-		<!-- This is the path where the snap will be deployed. In case of sidekick, 
-			use the path {your_company}/{user} -->
-		<path>SnapLogic/svatada</path>
+		<key.prefix>local-snapadmin</key.prefix>
+		<user>snapadmin@snaplogic.com</user>
+		<path>snaplogic</path>
 		<sl_build>SNAPSHOT</sl_build>
 		<VERSION>1</VERSION>
 	</properties>
-	<!-- Dependencies -->
 	<dependencies>
 		<!-- Test dependencies -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.11</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.easymock</groupId>
 			<artifactId>easymock</artifactId>
-			<version>3.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.snaplogic</groupId>
 			<artifactId>jtest</artifactId>
-			<version>4.0</version>
 			<scope>test</scope>
 			<exclusions>
 				<exclusion>
@@ -259,62 +188,52 @@
 		<dependency>
 			<groupId>com.snaplogic</groupId>
 			<artifactId>jsdk</artifactId>
-			<version>4.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.snaplogic</groupId>
 			<artifactId>jutils</artifactId>
-			<version>4.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- Other libraries -->
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>14.0.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.inject</groupId>
 			<artifactId>guice</artifactId>
-			<version>3.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.inject.extensions</groupId>
 			<artifactId>guice-multibindings</artifactId>
-			<version>3.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
-			<version>2.0.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.0.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-joda</artifactId>
-			<version>2.1.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.7.4</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>2.4</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

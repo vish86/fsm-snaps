@@ -20,7 +20,7 @@ import com.snaplogic.snaps.lunex.Constants.UResource;
 import static com.snaplogic.snaps.lunex.Constants.*;
 
 /**
- * This class holds all the resource information and resource specific Lunex API  URI information.
+ * This class holds all the resource specific Lunex API resource and URI information.
  *
  * @author svatada
  */

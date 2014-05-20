@@ -74,7 +74,7 @@ import static com.snaplogic.snaps.lunex.ServiceURIInfo.UR_PARAM_LIST;
 /**
  * Abstract base class for Lunex snap pack which contains common snap properties, authentication and
  * request handling.
- *
+ * 
  * @author svatada
  */
 @Inputs(min = 0, max = 1, accepts = { ViewType.DOCUMENT })
@@ -109,7 +109,7 @@ public abstract class BaseService extends SimpleSnap implements
     private static final Logger log = LoggerFactory.getLogger(BaseService.class);
     private final HttpMethodNames httpMethod;
 
-    /* Constructor to initialise the respective snap */
+    /** Constructor to initialise the respective snap */
     public BaseService(LunexSnaps snaps, HttpMethodNames httpMethod) {
         this.snapsType = snaps;
         this.httpMethod = httpMethod;
