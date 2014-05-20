@@ -41,7 +41,7 @@ public class UniTellerBasicAuthAccount extends BasicAuthAccount<AccountBean> {
     private String securityFilePath;
 
     @Override
-    public void defineProperties(PropertyBuilder propertyBuilder) {
+    public void defineAdditionalProperties(PropertyBuilder propertyBuilder) {
         propertyBuilder.describe(CONFIG_FILEPATH_PROP, CONFIG_FILEPATH_LABEL, CONFIG_FILEPATH_DESC)
                 .fileBrowsing().add();
         propertyBuilder
