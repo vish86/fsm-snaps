@@ -13,7 +13,7 @@ package com.snaplogic.snaps.uniteller;
 import com.snaplogic.snap.api.capabilities.General;
 import com.snaplogic.snaps.uniteller.Constants.SnapType;
 
-import static com.snaplogic.snaps.uniteller.Messages.UPDATE_DESC;
+import static com.snaplogic.snaps.uniteller.Messages.SNAP_DESC;
 import static com.snaplogic.snaps.uniteller.Messages.UPDATE_LABEL;
 
 /**
@@ -21,9 +21,10 @@ import static com.snaplogic.snaps.uniteller.Messages.UPDATE_LABEL;
  * 
  * @author svatada
  **/
-@General(title = UPDATE_LABEL, purpose = UPDATE_DESC)
+@General(title = UPDATE_LABEL, purpose = SNAP_DESC)
 public class Update extends BaseService {
-    public Update() {
-        super(SnapType.Update);
+    @Override
+    protected SnapType getSnapType() {
+        return SnapType.Update;
     }
 }

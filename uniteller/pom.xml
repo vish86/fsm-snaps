@@ -13,103 +13,13 @@
 	<packaging>jar</packaging>
 	<name>UniTeller</name>
 	<url>http://www.SnapLogic.com</url>
-	<profiles>
-		<profile>
-			<id>develop</id>
-			<activation>
-			</activation>
-			<repositories>
-				<repository>
-					<id>Snaplogic-Maven-Cloud-Repository</id>
-					<name>Snaplogic Maven Repository</name>
-					<url>http://maven.clouddev.snaplogic.com:8080/nexus/content/repositories/develop/</url>
-					<releases>
-					</releases>
-					<snapshots>
-					</snapshots>
-				</repository>
-			</repositories>
-		</profile>
-		<profile>
-			<id>release</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<repositories>
-				<repository>
-					<id>sl_release</id>
-					<name>Snaplogic Maven Repository</name>
-					<url>http://maven.clouddev.snaplogic.com:8080/nexus/content/repositories/releases/</url>
-					<releases>
-					</releases>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
-				</repository>
-			</repositories>
-			<pluginRepositories>
-				<pluginRepository>
-					<id>sl_release</id>
-					<name>Snaplogic Maven Repository</name>
-					<url>http://maven.clouddev.snaplogic.com:8080/nexus/content/repositories/releases/</url>
-					<releases>
-					</releases>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
-				</pluginRepository>
-				<pluginRepository>
-					<id>sl_develop_snapshot</id>
-					<name>Snaplogic Maven Snapshot Repository</name>
-					<url>http://maven.clouddev.snaplogic.com:8080/nexus/content/repositories/develop-snapshot/</url>
-					<releases>
-					</releases>
-					<snapshots>
-						<updatePolicy>daily</updatePolicy>
-					</snapshots>
-				</pluginRepository>
-			</pluginRepositories>
-		</profile>
-		<profile>
-			<id>master</id>
-			<activation>
-			</activation>
-			<repositories>
-				<repository>
-					<id>sl_master</id>
-					<name>Snaplogic Maven Repository</name>
-					<url>http://maven.clouddev.snaplogic.com:8080/nexus/content/repositories/master/</url>
-					<releases>
-					</releases>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
-				</repository>
-			</repositories>
-			<pluginRepositories>
-				<pluginRepository>
-					<id>sl_master</id>
-					<name>Snaplogic Maven Repository</name>
-					<url>http://maven.clouddev.snaplogic.com:8080/nexus/content/repositories/master/</url>
-					<releases>
-					</releases>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
-				</pluginRepository>
-				<pluginRepository>
-					<id>sl_master_snapshot</id>
-					<name>Snaplogic Maven Snapshot Repository</name>
-					<url>http://maven.clouddev.snaplogic.com:8080/nexus/content/repositories/master-snapshot/</url>
-					<releases>
-					</releases>
-					<snapshots>
-						<updatePolicy>daily</updatePolicy>
-					</snapshots>
-				</pluginRepository>
-			</pluginRepositories>
-		</profile>
-	</profiles>
+	<repositories>
+		<repository>
+			<id>project.local</id>
+			<name>project</name>
+			<url>file:${project.basedir}/lib</url>
+		</repository>
+	</repositories>
 	<build>
 		<finalName>${project.artifactId}</finalName>
 		<pluginManagement>
@@ -344,8 +254,8 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.axis2</groupId>
-			<artifactId>axis2</artifactId>
+			<groupId>org.apache.axis</groupId>
+			<artifactId>axis</artifactId>
 			<version>1.4</version>
 		</dependency>
 		<dependency>
@@ -369,18 +279,14 @@
 			<version>1.6.2</version>
 		</dependency>
 		<dependency>
-			<groupId>UFSCommon</groupId>
-			<artifactId>com.uniteller</artifactId>
+			<groupId>com.uniteller</groupId>
+			<artifactId>UFSCommons</artifactId>
 			<version>1.0</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/lib/UFSCommonClient.jar</systemPath>
 		</dependency>
 		<dependency>
-			<groupId>UFSFolioCreation</groupId>
-			<artifactId>com.uniteller</artifactId>
+			<groupId>com.uniteller</groupId>
+			<artifactId>UFSFolioCreation</artifactId>
 			<version>1.0</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/lib/UFSFolioCreationClient.jar</systemPath>
 		</dependency>
 	</dependencies>
 </project>

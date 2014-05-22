@@ -13,17 +13,18 @@ package com.snaplogic.snaps.uniteller;
 import com.snaplogic.snap.api.capabilities.General;
 import com.snaplogic.snaps.uniteller.Constants.SnapType;
 
-import static com.snaplogic.snaps.uniteller.Messages.READ_DESC;
 import static com.snaplogic.snaps.uniteller.Messages.READ_LABEL;
+import static com.snaplogic.snaps.uniteller.Messages.SNAP_DESC;
 
 /**
  * Performs read operation in UniTeller making use of UniTeller client.
  * 
  * @author svatada
  **/
-@General(title = READ_LABEL, purpose = READ_DESC)
+@General(title = READ_LABEL, purpose = SNAP_DESC)
 public class Read extends BaseService {
-    public Read() {
-        super(SnapType.Read);
+    @Override
+    protected SnapType getSnapType() {
+        return SnapType.Read;
     }
 }

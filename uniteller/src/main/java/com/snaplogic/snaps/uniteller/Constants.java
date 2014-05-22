@@ -19,12 +19,19 @@ import com.google.common.collect.ImmutableSet;
  * @author svatada
  */
 public class Constants {
+    static final String CHANGE_PASSWORD = "ChangePassword";
+    static final String IS_REGEX = "^is[A-Z].*";
+    static final String GET_REGEX = "^get[A-Z].*";
+    static final String UFS_FOLIO_CREATION_CLIENT_PKG_URI = "com.uniteller.support.foliocreationclient.UFSFolioCreationClient";
+    static final String FILE_PROTOCOL = "file:///%s";
+    static final String REGEX_SET = "^set[A-Z].*";
     static final String ERROR_TAG = "Error";
     static final String STATUS_CODE_TAG = "statusCode";
     static final String RESOLUTION_TAG = "Resolution";
     static final String REASON_TAG = "Reason";
     static final String MESSAGE_TAG = "Message";
     static final String UNITELLER_PKG_PREFIX = "com.uniteller.support.foliocreationclient.UFS";
+    static final String UNITELLER_CHANGE_PASS_PKG = "com.uniteller.support.common.ChangePassword";
     static final String UNITELLER_REQ_TAG = "Req";
     static final String UNITELLER_RESP_TAG = "Resp";
 
@@ -44,8 +51,8 @@ public class Constants {
 
     static final ImmutableMap<String, ImmutableSet<String>> RESOUCE_LIST = ImmutableMap.of(
             SnapType.Create.toString(),
-            ImmutableSet.of("CreateSCTx", "ConfirmSCTx", "NotificationConfirm", "QuickQuote"),
-            SnapType.Read.toString(), ImmutableSet.of("GetNotification", "GetTxDetails"),
-            SnapType.Update.toString(), ImmutableSet.of("InfoModify", "ChangePassword"),
+            ImmutableSet.of("CreateTx","CreateSCTx", "ConfirmSCTx", "NotificationConfirm", "QuickQuote"),
+            SnapType.Read.toString(), ImmutableSet.of("Notification", "GetTxDetails"),
+            SnapType.Update.toString(), ImmutableSet.of("InfoModify", CHANGE_PASSWORD),
             SnapType.Delete.toString(), ImmutableSet.of("CancelTx"));
 }

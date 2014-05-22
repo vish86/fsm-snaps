@@ -11,17 +11,20 @@
 package com.snaplogic.snaps.uniteller;
 
 import com.snaplogic.snap.api.capabilities.General;
-import static com.snaplogic.snaps.uniteller.Constants.*;
-import static com.snaplogic.snaps.uniteller.Messages.*;
+import com.snaplogic.snaps.uniteller.Constants.SnapType;
+
+import static com.snaplogic.snaps.uniteller.Messages.CREATE_LABEL;
+import static com.snaplogic.snaps.uniteller.Messages.SNAP_DESC;
 
 /**
  * Performs create operation in UniTeller making use of UniTeller client.
  * 
  * @author svatada
  **/
-@General(title = CREATE_LABEL, purpose = CREATE_DESC)
+@General(title = CREATE_LABEL, purpose = SNAP_DESC)
 public class Create extends BaseService {
-	public Create() {
-		super(SnapType.Create);
-	}
+    @Override
+    protected SnapType getSnapType() {
+        return SnapType.Create;
+    }
 }

@@ -50,7 +50,7 @@ public class UniTellerBasicAuthAccount extends BasicAuthAccount<AccountBean> {
     }
 
     @Override
-    public void configure(PropertyValues propertyValues) {
+    public void configureAdditionalProperties(PropertyValues propertyValues) {
         configFilePath = propertyValues.get(CONFIG_FILEPATH_PROP);
         securityFilePath = propertyValues.get(SECURITY_FILEPATH_PROP);
     }

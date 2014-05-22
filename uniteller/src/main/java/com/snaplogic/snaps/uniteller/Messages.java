@@ -16,6 +16,11 @@ package com.snaplogic.snaps.uniteller;
  * @author svatada
  */
 class Messages {
+    // Metric
+    static final String COUNTER_DESCRIPTION = "A metric that indicates the number of "
+            + "successfully written records into NetSuite";
+    static final String COUNTER_UNIT = "Documents";
+    static final String DOCUMENT_COUNTER = "Document Counter";
     // Snap label for Account
     static final String BASIC_AUTH_ACCOUNT_TITLE = "UniTeller basic auth account";
     static final String CONFIG_FILEPATH_PROP = "UFS_Config";
@@ -26,19 +31,44 @@ class Messages {
     static final String SECURITY_FILEPATH_DESC = "UniTeller security file path";
     // Snap labels and descriptions
     static final String CREATE_LABEL = "UniTeller - Create";
-    static final String CREATE_DESC = "Issues an HTTP Postto " + "UniTeller API service endpoint.";
     static final String UPDATE_LABEL = "UniTeller - Update";
-    static final String UPDATE_DESC = "Issues an HTTP Put to " + "UniTeller API service endpoint.";
     static final String DELETE_LABEL = "UniTeller - Delete";
-    static final String DELETE_DESC = "Issues an HTTP Delete to"
-            + " UniTeller API service endpoint.";
     static final String READ_LABEL = "UniTeller - Read";
-    static final String READ_DESC = "Issues an HTTP GET to " + "UniTeller API service endpoint.";
+    static final String SNAP_DESC = "Provides the integration machanisum with UniTeller Web Services for the correspondent resources.";
     // Common properties labels and descriptions
     static final String RESOURCE_LABEL = "Resource type";
     static final String RESOURCE_PROP = "Resource";
     static final String RESOURCE_DESC = "Available UniTeller resources";
     // Error messages
+    static final String RESOLUTION_CUSTOMER_SUPPORT = "Please report to customer support for"
+            + " further investigation";
+    static final String ERR_CLOSE_FILESYSTEM = "Cannot close file system for %s";
+    static final String ERR_CLOSE_FILESYSTEM_REASON = "Failed to close the file system due to an"
+            + " unknown reason";
+    static final String ERR_DIFFERENT_SCHEMES = "Different schemes in the same reader are not"
+            + " allowed: %s, %s";
+    static final String RESOLUTION_DIFFERENT_SCHEMES = "Please use a secondary reader that uses"
+            + " the secondary scheme.";
+    static final String ERR_MALFORMED_URL_RESOLUTION = "Please enter a valid file name.";
+    static final String ERR_URI_SYNTAX = "URI Syntax error: %s, detail: %s";
+    static final String ERR_URL_CONNECT = "Attempted to open an connection, but returned a null"
+            + " connection object for URL: %s";
+    static final String ERR_DIR_NOT_FOUND = "Directory not found: %s, detail: %s";
+    static final String RESOLUTION_DIR_NOT_FOUND = "Please check if the directory exists,"
+            + " you have access right and all Snap properties and credentials are valid.";
+    static final String ERR_CREATE_FILESYSTEM = "Unable to create filesystem object for %s";
+    static final String ERR_CREATE_FILESYSTEM_RESOLUTION = "Please check all properties and"
+            + "credentials";
+    static final String ERR_FILE_NOT_FOUND = "File not found: %s";
+    static final String ERR_FILE_NOT_FOUND_REASON = "Failed to get file attribute, the requested"
+            + " file may not exist or you may not have the access privilege";
+    static final String ERR_FILE_NOT_FOUND_RESOLUTION = "Please enter a correct file name or"
+            + " account.";
+    static final String ERR_UNSUPPORTED_FILE_TYPE = "Unsupported file type: %s";
+    static final String ERR_UNSUPPORTED_FILE_TYPE_REASON = "File is not a regular file nor a"
+            + " directory";
+    static final String ERR_UNSUPPORTED_FILE_TYPE_RESOLUTION = "Please enter a correct file name.";
+
     static final String AUTH_ERROR_RESOLUTION = "Please provide valid "
             + "Basic auth account or Authorization header.";
     static final String AUTH_ERROR_REASON = "Missing Account or Authorization"
