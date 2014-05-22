@@ -16,6 +16,8 @@ import com.uniteller.support.common.UFSSecurityMgrException;
 
 import org.apache.axis.encoding.Base64;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,6 +43,7 @@ public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
     private FileInputStream securityFileInput;
     private FileOutputStream securityFileOutput;
     private Properties securityProps = null;
+    private static final Logger log = LoggerFactory.getLogger(CustomUFSSecurityMgr.class);
     @Inject
     private Utilities util;
     static {
@@ -53,8 +56,10 @@ public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
             File file = new File(util.getUriFor(fileLocation));
             this.securityFileInput = new FileInputStream(file);
         } catch (FileNotFoundException e) {
+            log.error(e.getMessage(), e);
             throw new UFSSecurityMgrException(e.getMessage());
         } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
             throw new UFSSecurityMgrException(ex.getMessage());
         }
         this.securityProps = new Properties();
@@ -79,6 +84,7 @@ public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
             try {
                 this.securityProps.load(this.securityFileInput);
             } catch (IOException e) {
+                log.error(e.getMessage(), e);
                 throw new UFSSecurityMgrException(e.getMessage());
             }
             passcode = this.securityProps.getProperty(machineId);
@@ -96,8 +102,10 @@ public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
             }
             this.securityFileOutput = new FileOutputStream(file);
         } catch (FileNotFoundException e) {
+            log.error(e.getMessage(), e);
             throw new UFSSecurityMgrException(e.getMessage());
         } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
             throw new UFSSecurityMgrException(ex.getMessage());
         }
 
@@ -106,6 +114,7 @@ public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
             try {
                 this.securityProps.store(this.securityFileOutput, null);
             } catch (IOException e) {
+                log.error(e.getMessage(), e);
                 throw new UFSSecurityMgrException(e.getMessage());
             }
         }
@@ -124,6 +133,7 @@ public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
             byteArr = md.digest();
             id = Base64.encode(byteArr, 0, 12);
         } catch (Exception e) {
+            log.error(e.getMessage(), e);
             throw new UFSSecurityMgrException(e.getMessage());
         }
         return id;
@@ -138,6 +148,7 @@ public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
             id = password + nonce_S;
             id = Base64.encode(id.getBytes());
         } catch (Exception e) {
+            log.error(e.getMessage(), e);
             throw new UFSSecurityMgrException(e.getMessage());
         }
         return id;
@@ -157,6 +168,7 @@ public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
             else
                 id = password;
         } catch (Exception e) {
+            log.error(e.getMessage(), e);
             throw new UFSSecurityMgrException(e.getMessage());
         }
         return id;

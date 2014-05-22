@@ -10,6 +10,7 @@
  */
 package com.snaplogic.snaps.uniteller;
 
+import com.snaplogic.account.api.Account;
 import com.snaplogic.account.api.AccountType;
 import com.snaplogic.account.api.capabilities.AccountCategory;
 import com.snaplogic.api.ExecutionException;
@@ -36,7 +37,7 @@ import static com.snaplogic.snaps.uniteller.Messages.SECURITY_FILEPATH_PROP;
 @General(title = BASIC_AUTH_ACCOUNT_TITLE)
 @Version(snap = 1)
 @AccountCategory(type = AccountType.CUSTOM)
-public class UniTellerBasicAuthAccount extends BasicAuthAccount<AccountBean> {
+public class UniTellerBasicAuthAccount implements Account<AccountBean> {
     private String configFilePath;
     private String securityFilePath;
 
@@ -57,8 +58,8 @@ public class UniTellerBasicAuthAccount extends BasicAuthAccount<AccountBean> {
 
     @Override
     public AccountBean connect() throws ExecutionException {
-        return new AccountBean().setUsername(username).setPassword(password)
-                .setConfigFilePath(configFilePath).setSecurityFilePath(securityFilePath);
+        return new AccountBean().setConfigFilePath(configFilePath).setSecurityFilePath(
+                securityFilePath);
     }
 
     @Override

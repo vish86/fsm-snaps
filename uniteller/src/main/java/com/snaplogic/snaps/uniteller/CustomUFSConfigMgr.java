@@ -47,8 +47,10 @@ public class CustomUFSConfigMgr implements IUFSConfigMgr {
             this.configProperties = new Properties();
             this.configProperties.load(fis);
         } catch (IOException e) {
+            log.error(e.getMessage(), e);
             throw new UFSConfigMgrException(e.getMessage());
         } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
             throw new UFSConfigMgrException(ex.getMessage());
         }
     }
