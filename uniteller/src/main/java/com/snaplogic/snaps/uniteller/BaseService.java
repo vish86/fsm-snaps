@@ -212,12 +212,12 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
 
     /* Writes the exception records to error view */
     private void writeToErrorView(final String errMsg, final String errReason,
-            final String errResoulution, Throwable ex) {
+            final String errResoulution, Exception ex) {
         log.error(ex.getMessage(), ex);
         Map<String, Object> map = new HashMap<String, Object>();
         map.put(ERROR_TAG, errMsg);
         map.put(MESSAGE_TAG, ex.getMessage());
-        map.put(REASON_TAG, ex.getStackTrace());
+        map.put(REASON_TAG, errReason);
         map.put(RESOLUTION_TAG, errResoulution);
         SnapDataException snapException = new SnapDataException(documentUtility.newDocument(map),
                 ex.getMessage()).withReason(errReason).withResolution(errResoulution);
