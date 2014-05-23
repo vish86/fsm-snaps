@@ -17,11 +17,15 @@ import com.uniteller.support.common.UFSConfigMgrException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Properties;
+
+import static com.snaplogic.snaps.uniteller.Messages.ERR_URL_CONNECT;
 
 /*
  * Custom UFS configuration manager
@@ -31,8 +35,6 @@ import java.util.Properties;
 public class CustomUFSConfigMgr implements IUFSConfigMgr {
     private static HashMap<String, Object> instanceMap = null;
     private Properties configProperties = null;
-    @Inject
-    private Utilities util;
     private static final Logger log = LoggerFactory.getLogger(CustomUFSConfigMgr.class);
     static {
         instanceMap = new HashMap<String, Object>();
@@ -40,12 +42,11 @@ public class CustomUFSConfigMgr implements IUFSConfigMgr {
 
     private CustomUFSConfigMgr(String fileLocation) throws UFSConfigMgrException {
         try {
-            File file = new File(util.getUriFor(fileLocation));
-            log.debug("UFS config file: ", file);
-            FileInputStream fis = new FileInputStream(file);
-            log.debug("UFS config file stream: ", fis);
+            URI fileUri = new URI(fileLocation);
+            URL fileUrl = fileUri.toURL();
+            log.debug("URL:" + fileUrl.toString());
             this.configProperties = new Properties();
-            this.configProperties.load(fis);
+            this.configProperties.load(getInputStream(fileUrl));
         } catch (IOException e) {
             log.error(e.getMessage(), e);
             throw new UFSConfigMgrException(e.getMessage());
@@ -65,6 +66,19 @@ public class CustomUFSConfigMgr implements IUFSConfigMgr {
             }
         }
         return customUFSConfigMgr;
+    }
+
+    static InputStream getInputStream(final URL fileUrl) throws IOException, UFSConfigMgrException {
+        URLConnection urlConnection = null;
+        urlConnection = fileUrl.openConnection();
+        if (urlConnection == null) {
+            log.error(String.format(ERR_URL_CONNECT, fileUrl.getPath()));
+            throw new UFSConfigMgrException(String.format(ERR_URL_CONNECT, fileUrl.getPath()));
+        }
+        log.debug("Opening the Url connection");
+        urlConnection.connect();
+        log.debug("Opened the Url connection " + urlConnection);
+        return urlConnection.getInputStream();
     }
 
     public String getProperty(String propertyName) throws UFSConfigMgrException {

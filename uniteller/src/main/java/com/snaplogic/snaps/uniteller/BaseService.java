@@ -18,6 +18,7 @@ import com.snaplogic.api.InputSchemaProvider;
 import com.snaplogic.api.MetricsProvider;
 import com.snaplogic.common.metrics.Counter;
 import com.snaplogic.common.properties.builders.PropertyBuilder;
+import com.snaplogic.common.url.protocol.sldb.SldbUrlConnection;
 import com.snaplogic.common.utilities.URLEncoder;
 import com.snaplogic.snap.api.Document;
 import com.snaplogic.snap.api.MetricsBuilder;
@@ -45,10 +46,15 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.snaplogic.snaps.uniteller.Messages.ERR_MALFORMED_URL_RESOLUTION;
+import static com.snaplogic.snaps.uniteller.Messages.ERR_URI_SYNTAX;
 
 import static com.snaplogic.snaps.uniteller.Constants.*;
 import static com.snaplogic.snaps.uniteller.Messages.COUNTER_DESCRIPTION;
@@ -127,10 +133,10 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
     protected void process(Document document, String inputViewName) {
         try {
             AccountBean bean = account.connect();
-            String UFSConfigFilePath = new File(urlEncoder.validateAndEncodeURI(
-                    bean.getConfigFilePath()).toString()).getAbsolutePath();
-            String UFSSecurityFilePath = new File(urlEncoder.validateAndEncodeURI(
-                    bean.getSecurityPermFilePath()).toString()).getAbsolutePath();
+            String UFSConfigFilePath = urlEncoder.validateAndEncodeURI(bean.getConfigFilePath(),
+                    PATTERN, null).toString();
+            String UFSSecurityFilePath = urlEncoder.validateAndEncodeURI(
+                    bean.getSecurityPermFilePath(), PATTERN, null).toString();
             log.debug("###" + UFSConfigFilePath + " " + UFSSecurityFilePath);
             /* instantiating USFCreationClient */
             Class USFCreationClient = Class.forName(UFS_FOLIO_CREATION_CLIENT_PKG_URI);

@@ -13,12 +13,17 @@ package com.snaplogic.snaps.uniteller;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
+import java.util.regex.Pattern;
+
 /**
  * This class holds all the static final variables and enum types.
  * 
  * @author svatada
  */
 public class Constants {
+    static final String REGEX_PATTERN_PROTOCOL = "^sldb:///|^http://|^https://|^s3://|^s3n://|^sftp://|^ftp://|"
+            + "^ftps://|^hdfs://|^file:///";
+    static final Pattern PATTERN = Pattern.compile(REGEX_PATTERN_PROTOCOL);
     static final String CHANGE_PASSWORD = "ChangePassword";
     static final String IS_REGEX = "^is[A-Z].*";
     static final String GET_REGEX = "^get[A-Z].*";

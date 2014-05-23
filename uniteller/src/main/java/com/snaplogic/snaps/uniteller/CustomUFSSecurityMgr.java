@@ -12,6 +12,7 @@ package com.snaplogic.snaps.uniteller;
 
 import com.google.inject.Inject;
 import com.uniteller.support.common.IUFSSecurityMgr;
+import com.uniteller.support.common.UFSConfigMgrException;
 import com.uniteller.support.common.UFSSecurityMgrException;
 
 import org.apache.axis.encoding.Base64;
@@ -20,14 +21,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Properties;
+
+import static com.snaplogic.snaps.uniteller.Messages.ERR_URL_CONNECT;
 
 /* Custom UFS security manager
  * 
@@ -40,12 +46,10 @@ public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
     private static HashMap<String, Object> instanceMap = null;
     private static String nonce_S = "ItSihNsYzB495QQ6J5MXr0/O1rI=";
     private String fileLocation = null;
-    private FileInputStream securityFileInput;
+    private InputStream securityInputStream;
     private FileOutputStream securityFileOutput;
     private Properties securityProps = null;
     private static final Logger log = LoggerFactory.getLogger(CustomUFSSecurityMgr.class);
-    @Inject
-    private Utilities util;
     static {
         instanceMap = new HashMap<String, Object>();
     }
@@ -53,8 +57,9 @@ public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
     private CustomUFSSecurityMgr(String fileLocation) throws UFSSecurityMgrException {
         this.fileLocation = fileLocation;
         try {
-            File file = new File(util.getUriFor(fileLocation));
-            this.securityFileInput = new FileInputStream(file);
+            URL fileUrl = new URI(fileLocation).toURL();
+            log.debug("URL:" + fileUrl.toString());
+            this.securityInputStream = getInputStream(fileUrl);
         } catch (FileNotFoundException e) {
             log.error(e.getMessage(), e);
             throw new UFSSecurityMgrException(e.getMessage());
@@ -63,6 +68,17 @@ public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
             throw new UFSSecurityMgrException(ex.getMessage());
         }
         this.securityProps = new Properties();
+    }
+
+    static InputStream getInputStream(final URL fileUrl) throws IOException, UFSConfigMgrException {
+        URLConnection urlConnection = null;
+        urlConnection = fileUrl.openConnection();
+        if (urlConnection == null) {
+            log.error(String.format(ERR_URL_CONNECT, fileUrl.getPath()));
+            throw new UFSConfigMgrException(String.format(ERR_URL_CONNECT, fileUrl.getPath()));
+        }
+        urlConnection.connect();
+        return urlConnection.getInputStream();
     }
 
     public static IUFSSecurityMgr getInstance(String filePath) throws UFSSecurityMgrException {
@@ -82,7 +98,7 @@ public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
 
         synchronized (this.securityProps) {
             try {
-                this.securityProps.load(this.securityFileInput);
+                this.securityProps.load(this.securityInputStream);
             } catch (IOException e) {
                 log.error(e.getMessage(), e);
                 throw new UFSSecurityMgrException(e.getMessage());
