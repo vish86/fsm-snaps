@@ -32,6 +32,28 @@ import java.util.regex.Pattern;
  * @author svatada
  */
 public class Constants {
+    static final String TX_STATUS = "PENDING";
+    static final String PRIMARY_CURRECNCY = "MXN";
+    static final String CURRENTCY = "USD";
+    static final String DISCLAIMER = "Demo";
+    static final String MODE = "DEMO MODE";
+    static final String SUCCESS_DEMO_STATUS = "Success - DEMO MODE";
+    static final String FOLIOCREATIONAPIURLSUFFIX = "FOLIO_CREATION_API_URL_SUFFIX";
+    static final String LIBVERSION = "1.0";
+    static final String TXCONTEXTPREFIX = "UFC";
+    static final String DEFAULTORGANIZATIONID = "DEFAULT_ORGANIZATION_ID";
+    static final String DEFAULTCOMPANYID = "DEFAULT_COMPANY_ID";
+    static final String DEFAULTMACHINEID = "DEFAULT_MACHINE_ID";
+    static final String CHANGEPASSWORDERRORCODE = "19905001";
+    static final String SUCCESSRESPONSE = "00000000";
+    static final String PROXYTXIDENTIFIER = "9999999999";
+    static final int PROXYCOUNT = 9999;
+    static final String PROXYPAYMENTLOCATION = "DEMO";
+    static final String WARNINGINDICATOR = "02";
+    static final String BLANK = "";
+    static final String DUMMYPASS = "DUMMYPASS";
+    static final int MINPASSWORDLENGTH = 8;
+    static final int MAXPASSWORDLENGTH = 16;
     static final String RIMED_OUT_ERROR = "29806002";
     static final String COMM_SWITCH_ERROR = "29806001";
     static final String MACHINE_ID_ERROR = "29908003";
@@ -40,8 +62,7 @@ public class Constants {
     static final String SECURITY_MGR_ERROR = "29906004";
     static final String CONFIG_MGR_ERROR = "29906003";
     static final String GENERAL_SYSTEM_ERROR = "29906001";
-    static final String REGEX_PATTERN_PROTOCOL = "^sldb:///"
-            + "^ftps://|^hdfs://|^file:///";
+    static final String REGEX_PATTERN_PROTOCOL = "^sldb:///";
     static final Pattern PATTERN = Pattern.compile(REGEX_PATTERN_PROTOCOL);
     static final String CHANGE_PASSWORD = "ChangePassword";
     static final String IS_REGEX = "^is[A-Z].*";
@@ -73,7 +94,7 @@ public class Constants {
         }
     }
 
-    static final HashMap<String, String> exceptionErrorMap = new HashMap() {
+    static final HashMap<String, String> exceptionErrorMap = new HashMap<String, String>() {
         {
             put(UFSGeneralException.class.getName(), GENERAL_SYSTEM_ERROR);
             put(UFSSystemError.class.getName(), GENERAL_SYSTEM_ERROR);

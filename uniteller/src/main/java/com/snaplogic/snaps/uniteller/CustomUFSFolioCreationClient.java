@@ -29,9 +29,13 @@ import com.uniteller.support.util.UFSSystemError;
 import java.util.GregorianCalendar;
 import java.util.Properties;
 
-import static com.snaplogic.snaps.uniteller.Constants.GENERAL_SYSTEM_ERROR;
-import static com.snaplogic.snaps.uniteller.Constants.UFS_ERROR_MSG_LIST;
-import static com.snaplogic.snaps.uniteller.Constants.exceptionErrorMap;
+import static com.snaplogic.snaps.uniteller.Constants.*;
+import static com.snaplogic.snaps.uniteller.Messages.CHANGE_PASS_ERR;
+import static com.snaplogic.snaps.uniteller.Messages.NORESPONSEIOOBJECT;
+import static com.snaplogic.snaps.uniteller.Messages.NO_PASSWORD_ERROR;
+import static com.snaplogic.snaps.uniteller.Messages.NO_PASSWORD_FOR_MACHINE_ID;
+import static com.snaplogic.snaps.uniteller.Messages.NULLEXCEPTION;
+import static com.snaplogic.snaps.uniteller.Messages.NULLREQUEST;
 import static com.snaplogic.snaps.uniteller.util.Utilities.*;
 
 /**
@@ -40,36 +44,6 @@ import static com.snaplogic.snaps.uniteller.util.Utilities.*;
  * @author svatada
  */
 public class CustomUFSFolioCreationClient {
-    private static final String TX_STATUS = "PENDING";
-    private static final String PRIMARY_CURRECNCY = "MXN";
-    private static final String CURRENTCY = "USD";
-    private static final String DISCLAIMER = "This is a Demo";
-    private static final String DEMO_MODE = "DEMO MODE";
-    static final String SUCCESS_DEMO_MODE = "Success - DEMO MODE";
-    private static final String NO_PASSWORD_ERROR = "Password for machine ID %s was blank or corrupt, using dummy password";
-    static final String CHANGE_PASS_ERR = "Error while doing Change Password";
-    private static final String NO_PASSWORD_FOR_MACHINE_ID = "No password for machine id %s ";
-    static final String NULLREQUEST = "%s was Null";
-    static final String NORESPONSEIOOBJECT = "No Response ioObject in %s";
-    static final String FOLIOCREATIONAPIURLSUFFIX = "FOLIOCREATIONAPIURLSUFFIX";
-    static final String NULLEXCEPTION = "Null Exception!!";
-    private static final String LIBVERSION = "1.0";
-    private static final String TXCONTEXTPREFIX = "UFC";
-    private static final String DEFAULTORGANIZATIONID = "DEFAULTORGANIZATIONID";
-    private static final String DEFAULTCOMPANYID = "DEFAULTCOMPANYID";
-    private static final String DEFAULTMACHINEID = "DEFAULTMACHINEID";
-    private static final String CHANGEPASSWORDERRORCODE = "19905001";
-    private static final String SUCCESSRESPONSE = "00000000";
-    private static final String PROXYTXIDENTIFIER = "9999999999";
-    private static final int PROXYCOUNT = 9999;
-    private static final String PROXYPAYMENTLOCATION = "DEMO";
-    private static final String WARNINGINDICATOR = "02";
-    private static final String BLANK = "";
-    private static final String DUMMYPASS = "DUMMYPASS";
-    private static final int MINPASSWORDLENGTH = 8;
-    private static final int MAXPASSWORDLENGTH = 16;
-    // private static final Logger log =
-    // LoggerFactory.getLogger(CustomUFSFolioCreationClient.class);
     private static final UFSClientLogger log = UFSClientLogger
             .getLogger(CustomUFSFolioCreationClient.class);
     private static boolean initialized = false;
@@ -1141,11 +1115,11 @@ public class CustomUFSFolioCreationClient {
             logUFSCreateTxReq(request);
             ufsCreateTxResp = new UFSCreateTxResp();
             ufsCreateTxResp.setResponseCode(SUCCESSRESPONSE);
-            ufsCreateTxResp.setResponseString(SUCCESS_DEMO_MODE);
+            ufsCreateTxResp.setResponseString(SUCCESS_DEMO_STATUS);
             ufsCreateTxResp.setTxIdentifier(PROXYTXIDENTIFIER);
             ufsCreateTxResp.setCorrespondentRefNumber(request.getCorrespondentRefNumber());
             ufsCreateTxResp.setProcessingDateEST(new GregorianCalendar());
-            ufsCreateTxResp.setReserved1(DEMO_MODE);
+            ufsCreateTxResp.setReserved1(MODE);
             logUFSCreateTxResp(ufsCreateTxResp);
             return ufsCreateTxResp;
         } catch (Exception e) {
@@ -1160,7 +1134,7 @@ public class CustomUFSFolioCreationClient {
             logUFSCreateSCTxReq(request);
             ufsCreateSCTxResp = new UFSCreateSCTxResp();
             ufsCreateSCTxResp.setResponseCode(SUCCESSRESPONSE);
-            ufsCreateSCTxResp.setResponseString(SUCCESS_DEMO_MODE);
+            ufsCreateSCTxResp.setResponseString(SUCCESS_DEMO_STATUS);
             ufsCreateSCTxResp.setTxIdentifier(PROXYTXIDENTIFIER);
             ufsCreateSCTxResp.setCorrespondentRefNumber(request.getCorrespondentRefNumber());
             ufsCreateSCTxResp.setProcessingDateEST(new GregorianCalendar());
@@ -1174,7 +1148,7 @@ public class CustomUFSFolioCreationClient {
             ufsCreateSCTxResp.setTxExchangeRate(10.0D);
             ufsCreateSCTxResp.setTxFeeTotal(3.0D);
             ufsCreateSCTxResp.setTxUTLRFee(1.0D);
-            ufsCreateSCTxResp.setReserved1(DEMO_MODE);
+            ufsCreateSCTxResp.setReserved1(MODE);
             ufsCreateSCTxResp.setTxStatus(TX_STATUS);
             logUFSCreateSCTxResp(ufsCreateSCTxResp);
             return ufsCreateSCTxResp;
@@ -1190,8 +1164,8 @@ public class CustomUFSFolioCreationClient {
             logUFSConfirmSCTxReq(request);
             ufsConfirmSCTxResp = new UFSConfirmSCTxResp();
             ufsConfirmSCTxResp.setResponseCode(SUCCESSRESPONSE);
-            ufsConfirmSCTxResp.setResponseString(SUCCESS_DEMO_MODE);
-            ufsConfirmSCTxResp.setReserved1(DEMO_MODE);
+            ufsConfirmSCTxResp.setResponseString(SUCCESS_DEMO_STATUS);
+            ufsConfirmSCTxResp.setReserved1(MODE);
             logUFSConfirmSCTxResp(ufsConfirmSCTxResp);
             return ufsConfirmSCTxResp;
         } catch (Exception e) {
@@ -1206,11 +1180,11 @@ public class CustomUFSFolioCreationClient {
             logUFSCancelTxReq(request);
             ufsCancelTxResp = new UFSCancelTxResp();
             ufsCancelTxResp.setResponseCode(SUCCESSRESPONSE);
-            ufsCancelTxResp.setResponseString(SUCCESS_DEMO_MODE);
+            ufsCancelTxResp.setResponseString(SUCCESS_DEMO_STATUS);
             ufsCancelTxResp.setTxIdentifier(PROXYTXIDENTIFIER);
             ufsCancelTxResp.setCorrespondentRefNumber(request.getCorrespondentRefNumber());
             ufsCancelTxResp.setProcessingDateEST(new GregorianCalendar());
-            ufsCancelTxResp.setReserved1(DEMO_MODE);
+            ufsCancelTxResp.setReserved1(MODE);
             logUFSCancelTxResp(ufsCancelTxResp);
             return ufsCancelTxResp;
         } catch (Exception e) {
@@ -1225,11 +1199,11 @@ public class CustomUFSFolioCreationClient {
             logUFSInfoModifyReq(request);
             ufsInfoModifyResp = new UFSInfoModifyResp();
             ufsInfoModifyResp.setResponseCode(SUCCESSRESPONSE);
-            ufsInfoModifyResp.setResponseString(SUCCESS_DEMO_MODE);
+            ufsInfoModifyResp.setResponseString(SUCCESS_DEMO_STATUS);
             ufsInfoModifyResp.setTxIdentifier(PROXYTXIDENTIFIER);
             ufsInfoModifyResp.setCorrespondentRefNumber(request.getCorrespondentRefNumber());
             ufsInfoModifyResp.setProcessingDateEST(new GregorianCalendar());
-            ufsInfoModifyResp.setReserved1(DEMO_MODE);
+            ufsInfoModifyResp.setReserved1(MODE);
             logUFSInfoModifyResp(ufsInfoModifyResp);
             return ufsInfoModifyResp;
         } catch (Exception e) {
@@ -1244,8 +1218,8 @@ public class CustomUFSFolioCreationClient {
             logUFSNotificationReq(request);
             ufsNotifiationResp = new UFSNotificationResp();
             ufsNotifiationResp.setResponseCode(SUCCESSRESPONSE);
-            ufsNotifiationResp.setResponseString(SUCCESS_DEMO_MODE);
-            ufsNotifiationResp.setReserved1(DEMO_MODE);
+            ufsNotifiationResp.setResponseString(SUCCESS_DEMO_STATUS);
+            ufsNotifiationResp.setReserved1(MODE);
             UFSNotificationItem ufsNotificationItem1 = new UFSNotificationItem();
             ufsNotificationItem1.setNotificationRefNumber("1");
             ufsNotificationItem1.setDescription("DEMO NOTIFICATION ITEM #1");
@@ -1254,7 +1228,7 @@ public class CustomUFSFolioCreationClient {
             ufsNotificationItem1.setNotificationType("008");
             ufsNotificationItem1
                     .setMessageText("DEMO NOTIFICATION ITEM #1 - Transaction OFAC hold");
-            ufsNotificationItem1.setReserved1(DEMO_MODE);
+            ufsNotificationItem1.setReserved1(MODE);
             UFSNotificationItem ufsNotificationItem2 = new UFSNotificationItem();
             ufsNotificationItem2.setNotificationRefNumber("4");
             ufsNotificationItem2.setDescription("DEMO NOTIFICATION ITEM #2");
@@ -1263,7 +1237,7 @@ public class CustomUFSFolioCreationClient {
             ufsNotificationItem2.setNotificationType("010");
             ufsNotificationItem2
                     .setMessageText("DEMO NOTIFICATION ITEM #2 - Transaction OFAC unhold");
-            ufsNotificationItem2.setReserved1(DEMO_MODE);
+            ufsNotificationItem2.setReserved1(MODE);
             UFSNotificationItem ufsNotificationItem3 = new UFSNotificationItem();
             ufsNotificationItem3.setNotificationRefNumber("7");
             ufsNotificationItem3.setDescription("DEMO NOTIFICATION ITEM #3");
@@ -1277,7 +1251,7 @@ public class CustomUFSFolioCreationClient {
             ufsNotificationItem3.setBeneIdentificationNumber("1111111");
             ufsNotificationItem3.setPaymentLocalTime(new GregorianCalendar());
             ufsNotificationItem3.setMessageText("DEMO NOTIFICATION ITEM #3 - Transaction paid");
-            ufsNotificationItem3.setReserved1(DEMO_MODE);
+            ufsNotificationItem3.setReserved1(MODE);
             UFSNotificationItem[] notificationItems = new UFSNotificationItem[3];
             notificationItems[0] = ufsNotificationItem1;
             notificationItems[1] = ufsNotificationItem2;
@@ -1297,7 +1271,7 @@ public class CustomUFSFolioCreationClient {
             logUFSNotificationConfirmReq(request);
             ufsNotifiationConfirmResp = new UFSNotificationConfirmResp();
             ufsNotifiationConfirmResp.setResponseCode(SUCCESSRESPONSE);
-            ufsNotifiationConfirmResp.setReserved1(DEMO_MODE);
+            ufsNotifiationConfirmResp.setReserved1(MODE);
             logUFSNotificationConfirmResp(ufsNotifiationConfirmResp);
             return ufsNotifiationConfirmResp;
         } catch (Exception e) {
@@ -1312,7 +1286,7 @@ public class CustomUFSFolioCreationClient {
             logUFSGetTxDetailsReq(request);
             ufsGetTxDetailsResp = new UFSGetTxDetailsResp();
             ufsGetTxDetailsResp.setResponseCode(SUCCESSRESPONSE);
-            ufsGetTxDetailsResp.setResponseString(SUCCESS_DEMO_MODE);
+            ufsGetTxDetailsResp.setResponseString(SUCCESS_DEMO_STATUS);
             ufsGetTxDetailsResp.setTxIdentifier(PROXYTXIDENTIFIER);
             ufsGetTxDetailsResp.setCorrespondentRefNumber(request.getCorrespondentRefNumber());
             ufsGetTxDetailsResp.setBeneAddress1("123 MAIN STREET");
@@ -1349,7 +1323,7 @@ public class CustomUFSFolioCreationClient {
             ufsGetTxDetailsResp.setTxOriginCountry("US");
             ufsGetTxDetailsResp.setTxOriginCurrency(CURRENTCY);
             ufsGetTxDetailsResp.setTxStatus("PAYABLE");
-            ufsGetTxDetailsResp.setReserved1(DEMO_MODE);
+            ufsGetTxDetailsResp.setReserved1(MODE);
             logUFSGetTxDetailsResp(ufsGetTxDetailsResp);
             return ufsGetTxDetailsResp;
         } catch (Exception e) {
@@ -1364,13 +1338,13 @@ public class CustomUFSFolioCreationClient {
             logUFSQuickQuoteReq(request);
             ufsQuickQuoteResp = new UFSQuickQuoteResp();
             ufsQuickQuoteResp.setResponseCode(SUCCESSRESPONSE);
-            ufsQuickQuoteResp.setResponseString(SUCCESS_DEMO_MODE);
+            ufsQuickQuoteResp.setResponseString(SUCCESS_DEMO_STATUS);
             ufsQuickQuoteResp.setPaymentAmount(100.0D);
             ufsQuickQuoteResp.setTxCorrespondentFee(2.0D);
             ufsQuickQuoteResp.setTxUTLRFee(1.0D);
             ufsQuickQuoteResp.setTxFeeTotal(3.0D);
             ufsQuickQuoteResp.setTxExchangeRate(10.0D);
-            ufsQuickQuoteResp.setReserved1(DEMO_MODE);
+            ufsQuickQuoteResp.setReserved1(MODE);
             logUFSQuickQuoteResp(ufsQuickQuoteResp);
             return ufsQuickQuoteResp;
         } catch (Exception e) {

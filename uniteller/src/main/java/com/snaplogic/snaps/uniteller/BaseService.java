@@ -130,7 +130,7 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
                     PATTERN, null).toString();
             String UFSSecurityFilePath = urlEncoder.validateAndEncodeURI(
                     bean.getSecurityPermFilePath(), PATTERN, null).toString();
-            log.debug("###" + UFSConfigFilePath + " " + UFSSecurityFilePath);
+            log.debug(UFSConfigFilePath + " " + UFSSecurityFilePath);
             /* instantiating USFCreationClient */
             Class CustomUSFCreationClient = Class.forName(UFS_FOLIO_CREATION_CLIENT_PKG_URI);
             Constructor constructor = CustomUSFCreationClient.getDeclaredConstructor(new Class[] {

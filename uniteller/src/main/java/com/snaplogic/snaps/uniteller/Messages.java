@@ -40,6 +40,12 @@ class Messages {
     static final String RESOURCE_PROP = "Resource";
     static final String RESOURCE_DESC = "Available UniTeller resources";
     // Error messages
+    static final String NO_PASSWORD_ERROR = "Password for machine ID %s was blank or corrupt, using dummy password";
+    static final String CHANGE_PASS_ERR = "Error while doing Change Password";
+    static final String NO_PASSWORD_FOR_MACHINE_ID = "No password for machine id %s ";
+    static final String NULLREQUEST = "%s was Null";
+    static final String NORESPONSEIOOBJECT = "No Response ioObject in %s";
+    static final String NULLEXCEPTION = "Null Exception!!";
     static final String RESOLUTION_CUSTOMER_SUPPORT = "Please report to customer support for"
             + " further investigation";
     static final String ERR_CLOSE_FILESYSTEM = "Cannot close file system for %s";
