@@ -149,17 +149,36 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
                     Method[] declaredMethods = UFSRequest.getDeclaredMethods();
                     for (Method method : declaredMethods) {
                         if (isSetter(method)) {
-                            method.invoke(UFSRequestObj, map.get(method.getName().substring(3)));
+                            try {
+                                method.invoke(UFSRequestObj, map.get(method.getName().substring(3)));
+                            } catch (IllegalArgumentException iae) {
+                                log.error(iae.getMessage(), iae);
+                            } catch (InvocationTargetException ite) {
+                                log.error(ite.getMessage(), ite);
+                            } catch (Exception ex) {
+                                log.error(ex.getMessage(), ex);
+                            }
                         }
                     }
                     /* Invoking the request over USFCreationClient */
                     Method creationClientMethod = CustomUSFCreationClient.getMethod(resourceType,
                             UFSRequest);
-                    Object UFSResponseObj = creationClientMethod.invoke(USFCreationClientObj,
-                            UFSRequestObj);
+                    Object UFSResponseObj = null;
+                    try {
+                        UFSResponseObj = creationClientMethod.invoke(USFCreationClientObj,
+                                UFSRequestObj);
+                    } catch (IllegalArgumentException iae) {
+                        log.error(iae.getMessage(), iae);
+                    } catch (InvocationTargetException ite) {
+                        log.error(ite.getMessage(), ite);
+                    } catch (Exception ex) {
+                        log.error(ex.getMessage(), ex);
+                    }
                     outputViews.write(documentUtility
                             .newDocument(processResponseObj(UFSResponseObj)));
                     counter.inc();
+                } else {
+                    //
                 }
             }
         } catch (Exception ex) {
