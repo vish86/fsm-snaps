@@ -10,7 +10,6 @@
  */
 package com.snaplogic.snaps.uniteller;
 
-import com.google.inject.Inject;
 import com.uniteller.support.common.IUFSConfigMgr;
 import com.uniteller.support.common.UFSConfigMgrException;
 

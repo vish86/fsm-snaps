@@ -1,0 +1,609 @@
+/*
+ * SnapLogic - Data Integration
+ *
+ * Copyright (C) 2014, SnapLogic, Inc. All rights reserved.
+ *
+ * This program is licensed under the terms of
+ * the SnapLogic Commercial Subscription agreement
+ *
+ * "SnapLogic" is a trademark of SnapLogic, Inc.
+ */
+package com.snaplogic.snaps.uniteller.util;
+
+import com.uniteller.support.communication.foliocreation.*;
+import com.uniteller.support.foliocreationclient.*;
+import com.uniteller.support.util.GlobalFunctions;
+
+/**
+ * Contains all utility methods which are usefull to convert the UFS request objects to TX objects.
+ * 
+ * @author svatada
+ */
+public class Utilities {
+    public static TxCancelRequest convertToTxCancelRequestObject(UFSCancelTxReq request,
+            String _companyId, String _orgId) {
+        TxCancelRequest req = new TxCancelRequest();
+
+        if (request.getCorrespondentCode() == null)
+            req.setCorrespondentCode(_companyId);
+        else {
+            req.setCorrespondentCode(request.getCorrespondentCode());
+        }
+        req.setTxIdentifier(request.getTxIdentifier());
+        req.setCorrespondentRefNumber(request.getCorrespondentRefNumber());
+        req.setOperator(request.getOperator());
+        req.setTxCancelType(request.getTxCancelType());
+        if (request.getProcessingDateLocal() != null) {
+            req.setProcessingDateLocal(GlobalFunctions.mMDDYYYYHH24MISSFromDate(request
+                    .getProcessingDateLocal().getTime()));
+        }
+        req.setCancellationFee(String.valueOf(request.getCancellationFee()));
+        req.setReserved1(request.getReserved1());
+        req.setReserved2(request.getReserved2());
+        req.setReserved3(request.getReserved3());
+
+        return req;
+    }
+
+    public static ConfirmSCTxRequest convertToConfirmSCTxRequestObject(UFSConfirmSCTxReq request,
+            String _companyId, String _orgId) {
+        ConfirmSCTxRequest req = new ConfirmSCTxRequest();
+
+        if (request.getCorrespondentCode() == null)
+            req.setCorrespondentCode(_companyId);
+        else {
+            req.setCorrespondentCode(request.getCorrespondentCode());
+        }
+
+        req.setTxIdentifier(request.getTxIdentifier());
+        req.setCorrespondentRefNumber(request.getCorrespondentRefNumber());
+        req.setTxAmount(String.valueOf(request.getTxAmount()));
+        req.setPaymentAmount(String.valueOf(request.getPaymentAmount()));
+        req.setReserved1(request.getReserved1());
+        req.setReserved2(request.getReserved2());
+        req.setReserved3(request.getReserved3());
+
+        return req;
+    }
+
+    public static CreateSCTxRequest convertToCreateSCTxRequestObject(UFSCreateSCTxReq request,
+            String _companyId, String _orgId) {
+        CreateSCTxRequest req = new CreateSCTxRequest();
+
+        if (request.getCorrespondentCode() == null) {
+            req.setCorrespondentCode(_companyId);
+        } else {
+            req.setCorrespondentCode(request.getCorrespondentCode());
+        }
+
+        req.setTxIdentifier(request.getTxIdentifier());
+        req.setCorrespondentRefNumber(request.getCorrespondentRefNumber());
+        req.setPaymentAmount(String.valueOf(request.getPaymentAmount()));
+        req.setPaymentCurrency(request.getPaymentCurrency());
+        req.setPaymentCountry(request.getPaymentCountry());
+        req.setPaymentType(request.getPaymentType());
+        req.setPaymentLocation(request.getPaymentLocation());
+        req.setAccountNumber(request.getAccountNumber());
+        req.setAccountType(request.getAccountType());
+        req.setPayingAgentBranchCode(request.getPayingAgentBranchCode());
+        req.setTxAgentCode(request.getTxAgentCode());
+        req.setTxAgentState(request.getTxAgentState());
+        req.setTxOriginCountry(request.getTxOriginCountry());
+        req.setTxOriginCurrency(request.getTxOriginCurrency());
+        req.setTxAmount(String.valueOf(request.getTxAmount()));
+        req.setTxFee(String.valueOf(request.getTxFee()));
+        req.setTxExchangeRate(String.valueOf(request.getTxExchangeRate()));
+        req.setTxCaptureMethod(request.getTxCaptureMethod());
+        if (request.getTxCreationDateLocal() != null) {
+            req.setTxCreationDateLocal(GlobalFunctions.mMDDYYYYHH24MISSFromDate(request
+                    .getTxCreationDateLocal().getTime()));
+        }
+        req.setBeneRefNumber(request.getBeneRefNumber());
+        req.setBeneFirstName(request.getBeneFirstName());
+        req.setBeneMidName(request.getBeneMidName());
+        req.setBeneLastName(request.getBeneLastName());
+        req.setBeneSecondLastName(request.getBeneSecondLastName());
+        req.setBeneAddress1(request.getBeneAddress1());
+        req.setBeneAddress2(request.getBeneAddress2());
+        req.setBeneCity(request.getBeneCity());
+        req.setBeneState(request.getBeneState());
+        req.setBeneCountry(request.getBeneCountry());
+        req.setBenePostalCode(request.getBenePostalCode());
+        req.setBenePhone(request.getBenePhone());
+        if (request.getBeneBirthDate() != null) {
+            req.setBeneBirthDate(GlobalFunctions.mMDDYYYYFromDate(request.getBeneBirthDate()
+                    .getTime()));
+        }
+        req.setBeneIdentificationType(request.getBeneIdentificationType());
+        req.setBeneIdentificationNumber(request.getBeneIdentificationNumber());
+        req.setBeneEmail(request.getBeneEmail());
+        req.setSenderRefNumber(request.getSenderRefNumber());
+        req.setSenderFirstName(request.getSenderFirstName());
+        req.setSenderMidName(request.getSenderMidName());
+        req.setSenderLastName(request.getSenderLastName());
+        req.setSenderSecondLastName(request.getSenderSecondLastName());
+        req.setSenderAddress1(request.getSenderAddress1());
+        req.setSenderAddress2(request.getSenderAddress2());
+        req.setSenderCity(request.getSenderCity());
+        req.setSenderState(request.getSenderState());
+        req.setSenderPostalCode(request.getSenderPostalCode());
+        req.setSenderPhone(request.getSenderPhone());
+        if (request.getSenderBirthDate() != null) {
+            req.setSenderBirthDate(GlobalFunctions.mMDDYYYYFromDate(request.getSenderBirthDate()
+                    .getTime()));
+        }
+        req.setSenderIdentificationType(request.getSenderIdentificationType());
+        req.setSenderIdentificationNumber(request.getSenderIdentificationNumber());
+        req.setSenderEmail(request.getSenderEmail());
+        req.setReserved1(request.getReserved1());
+        req.setReserved2(request.getReserved2());
+        req.setReserved3(request.getReserved3());
+
+        return req;
+    }
+
+    public static CreateTxRequest convertToCreateTxRequestObject(UFSCreateTxReq request,
+            String _companyId, String _orgId) {
+        CreateTxRequest req = new CreateTxRequest();
+
+        if (request.getCorrespondentCode() == null)
+            req.setCorrespondentCode(_companyId);
+        else {
+            req.setCorrespondentCode(request.getCorrespondentCode());
+        }
+
+        req.setTxIdentifier(request.getTxIdentifier());
+        req.setCorrespondentRefNumber(request.getCorrespondentRefNumber());
+        req.setPaymentAmount(String.valueOf(request.getPaymentAmount()));
+        req.setPaymentCurrency(request.getPaymentCurrency());
+        req.setPaymentCountry(request.getPaymentCountry());
+        req.setPaymentType(request.getPaymentType());
+        req.setPaymentLocation(request.getPaymentLocation());
+        req.setAccountNumber(request.getAccountNumber());
+        req.setAccountType(request.getAccountType());
+        req.setPayingAgentBranchCode(request.getPayingAgentBranchCode());
+        req.setTxAgentCode(request.getTxAgentCode());
+        req.setTxAgentState(request.getTxAgentState());
+        req.setTxOriginCountry(request.getTxOriginCountry());
+        req.setTxOriginCurrency(request.getTxOriginCurrency());
+        req.setTxAmount(String.valueOf(request.getTxAmount()));
+        req.setTxFee(String.valueOf(request.getTxFee()));
+        req.setTxExchangeRate(String.valueOf(request.getTxExchangeRate()));
+        req.setTxCaptureMethod(request.getTxCaptureMethod());
+        if (request.getTxCreationDateLocal() != null) {
+            req.setTxCreationDateLocal(GlobalFunctions.mMDDYYYYHH24MISSFromDate(request
+                    .getTxCreationDateLocal().getTime()));
+        }
+        req.setBeneRefNumber(request.getBeneRefNumber());
+        req.setBeneFirstName(request.getBeneFirstName());
+        req.setBeneMidName(request.getBeneMidName());
+        req.setBeneLastName(request.getBeneLastName());
+        req.setBeneSecondLastName(request.getBeneSecondLastName());
+        req.setBeneAddress1(request.getBeneAddress1());
+        req.setBeneAddress2(request.getBeneAddress2());
+        req.setBeneCity(request.getBeneCity());
+        req.setBeneState(request.getBeneState());
+        req.setBeneCountry(request.getBeneCountry());
+        req.setBenePostalCode(request.getBenePostalCode());
+        req.setBenePhone(request.getBenePhone());
+        if (request.getBeneBirthDate() != null) {
+            req.setBeneBirthDate(GlobalFunctions.mMDDYYYYFromDate(request.getBeneBirthDate()
+                    .getTime()));
+        }
+        req.setBeneIdentificationType(request.getBeneIdentificationType());
+        req.setBeneIdentificationNumber(request.getBeneIdentificationNumber());
+        req.setBeneEmail(request.getBeneEmail());
+        req.setSenderRefNumber(request.getSenderRefNumber());
+        req.setSenderFirstName(request.getSenderFirstName());
+        req.setSenderMidName(request.getSenderMidName());
+        req.setSenderLastName(request.getSenderLastName());
+        req.setSenderSecondLastName(request.getSenderSecondLastName());
+        req.setSenderAddress1(request.getSenderAddress1());
+        req.setSenderAddress2(request.getSenderAddress2());
+        req.setSenderCity(request.getSenderCity());
+        req.setSenderState(request.getSenderState());
+        req.setSenderPostalCode(request.getSenderPostalCode());
+        req.setSenderPhone(request.getSenderPhone());
+        if (request.getSenderBirthDate() != null) {
+            req.setSenderBirthDate(GlobalFunctions.mMDDYYYYFromDate(request.getSenderBirthDate()
+                    .getTime()));
+        }
+        req.setSenderIdentificationType(request.getSenderIdentificationType());
+        req.setSenderIdentificationNumber(request.getSenderIdentificationNumber());
+        req.setSenderEmail(request.getSenderEmail());
+        req.setReserved1(request.getReserved1());
+        req.setReserved2(request.getReserved2());
+        req.setReserved3(request.getReserved3());
+
+        return req;
+    }
+
+    public static GetTxDetailsRequest convertToGetTxDetailsRequestObject(
+            UFSGetTxDetailsReq request, String _companyId, String _orgId) {
+        GetTxDetailsRequest req = new GetTxDetailsRequest();
+
+        if (request.getCorrespondentCode() == null) {
+            req.setCorrespondentCode(_companyId);
+        } else {
+            req.setCorrespondentCode(request.getCorrespondentCode());
+        }
+
+        req.setTxIdentifier(request.getTxIdentifier());
+        req.setCorrespondentRefNumber(request.getCorrespondentRefNumber());
+        req.setReserved1(request.getReserved1());
+        req.setReserved2(request.getReserved2());
+        req.setReserved3(request.getReserved3());
+
+        return req;
+    }
+
+    public static InfoModifyRequest convertToInfoModifyRequestObject(UFSInfoModifyReq request,
+            String _companyId, String _orgId) {
+        InfoModifyRequest req = new InfoModifyRequest();
+
+        if (request.getCorrespondentCode() == null)
+            req.setCorrespondentCode(_companyId);
+        else {
+            req.setCorrespondentCode(request.getCorrespondentCode());
+        }
+        req.setTxIdentifier(request.getTxIdentifier());
+        req.setCorrespondentRefNumber(request.getCorrespondentRefNumber());
+        req.setBeneFirstName(request.getBeneFirstName());
+        req.setBeneMidName(request.getBeneMidName());
+        req.setBeneLastName(request.getBeneLastName());
+        req.setBeneSecondLastName(request.getBeneSecondLastName());
+        req.setBeneAddress1(request.getBeneAddress1());
+        req.setBeneAddress2(request.getBeneAddress2());
+        req.setBeneCity(request.getBeneCity());
+        req.setBeneState(request.getBeneState());
+        req.setBenePostalCode(request.getBenePostalCode());
+        req.setBenePhone(request.getBenePhone());
+        if (request.getBeneBirthDate() != null) {
+            req.setBeneBirthDate(GlobalFunctions.mMDDYYYYFromDate(request.getBeneBirthDate()
+                    .getTime()));
+        }
+        req.setBeneIdentificationType(request.getBeneIdentificationType());
+        req.setBeneIdentificationNumber(request.getBeneIdentificationNumber());
+        req.setBeneEmail(request.getBeneEmail());
+        req.setAccountNumber(request.getAccountNumber());
+        req.setAccountType(request.getAccountType());
+        req.setPayingAgentBranchCode(request.getPayingAgentBranchCode());
+        req.setInfoModifyFee(String.valueOf(request.getInfoModifyFee()));
+        req.setInfoModifyReason(request.getInfoModifyReason());
+        if (request.getProcessingDateLocal() != null) {
+            req.setProcessingDateLocal(GlobalFunctions.mMDDYYYYHH24MISSFromDate(request
+                    .getProcessingDateLocal().getTime()));
+        }
+        req.setOperator(request.getOperator());
+        req.setReserved1(request.getReserved1());
+        req.setReserved2(request.getReserved2());
+        req.setReserved3(request.getReserved3());
+
+        return req;
+    }
+
+    public static NotificationConfirmRequest convertToNotificationConfirmRequestObject(
+            UFSNotificationConfirmReq request, String _companyId, String _orgId) {
+        NotificationConfirmRequest req = new NotificationConfirmRequest();
+
+        if (request.getCorrespondentCode() == null)
+            req.setCorrespondentCode(_companyId);
+        else {
+            req.setCorrespondentCode(request.getCorrespondentCode());
+        }
+        req.setTxIdentifier(request.getTxIdentifier());
+        req.setCorrespondentRefNumber(request.getCorrespondentRefNumber());
+        req.setNotificationRefNumber(request.getNotificationRefNumber());
+        req.setReserved1(request.getReserved1());
+        req.setReserved2(request.getReserved2());
+        req.setReserved3(request.getReserved3());
+
+        return req;
+    }
+
+    public static NotificationRequest convertToNotificationRequestObject(
+            UFSNotificationReq request, String _companyId, String _orgId) {
+        NotificationRequest req = new NotificationRequest();
+
+        if (request.getCorrespondentCode() == null)
+            req.setCorrespondentCode(_companyId);
+        else {
+            req.setCorrespondentCode(request.getCorrespondentCode());
+        }
+        req.setNotificationCount(String.valueOf(request.getNotificationCount()));
+        req.setReserved1(request.getReserved1());
+        req.setReserved2(request.getReserved2());
+        req.setReserved3(request.getReserved3());
+
+        return req;
+    }
+
+    public static QuickQuoteRequest convertToQuickQuoteRequestObject(UFSQuickQuoteReq request,
+            String _companyId, String _orgId) {
+        QuickQuoteRequest req = new QuickQuoteRequest();
+
+        if (request.getCorrespondentCode() == null)
+            req.setCorrespondentCode(_companyId);
+        else {
+            req.setCorrespondentCode(request.getCorrespondentCode());
+        }
+
+        req.setPaymentCountry(request.getPaymentCountry());
+        req.setPaymentCurrency(request.getPaymentCurrency());
+        req.setPaymentLocation(request.getPaymentLocation());
+        req.setPaymentType(request.getPaymentType());
+        req.setTxAgentCode(request.getTxAgentCode());
+        req.setTxAmount(String.valueOf(request.getTxAmount()));
+        req.setTxOriginCurrency(request.getTxOriginCurrency());
+        req.setReserved1(request.getReserved1());
+        req.setReserved2(request.getReserved2());
+        req.setReserved3(request.getReserved3());
+
+        return req;
+    }
+
+    public static UFSCancelTxResp convertToUFSCancelTxRespObject(TxCancelResponse cancelTxResponse) {
+        UFSCancelTxResp ufsCancelTxResp = new UFSCancelTxResp();
+        ufsCancelTxResp.setResponseCode(cancelTxResponse.getResponseCode());
+        ufsCancelTxResp.setResponseString(cancelTxResponse.getResponseString());
+        ufsCancelTxResp.setTxIdentifier(cancelTxResponse.getTxIdentifier());
+        ufsCancelTxResp.setCorrespondentRefNumber(cancelTxResponse.getCorrespondentRefNumber());
+        ufsCancelTxResp.setProcessingDateEST(GlobalFunctions
+                .calendarFromMMDDYYYYHH24MISS(cancelTxResponse.getProcessingDateEST()));
+        ufsCancelTxResp.setReserved1(cancelTxResponse.getReserved1());
+        ufsCancelTxResp.setReserved2(cancelTxResponse.getReserved2());
+        ufsCancelTxResp.setReserved3(cancelTxResponse.getReserved3());
+
+        return ufsCancelTxResp;
+    }
+
+    public static UFSConfirmSCTxResp convertToUFSConfirmSCTxRespObject(
+            ConfirmSCTxResponse confirmSCTxResponse) {
+        UFSConfirmSCTxResp ufsConfirmSCTxResp = new UFSConfirmSCTxResp();
+        ufsConfirmSCTxResp.setResponseCode(confirmSCTxResponse.getResponseCode());
+        ufsConfirmSCTxResp.setResponseString(confirmSCTxResponse.getResponseString());
+        ufsConfirmSCTxResp.setReserved1(confirmSCTxResponse.getReserved1());
+        ufsConfirmSCTxResp.setReserved2(confirmSCTxResponse.getReserved2());
+        ufsConfirmSCTxResp.setReserved3(confirmSCTxResponse.getReserved3());
+
+        return ufsConfirmSCTxResp;
+    }
+
+    public static UFSCreateSCTxResp convertToUFSCreateSCTxRespObject(
+            CreateSCTxResponse createSCTxResponse) {
+        UFSCreateSCTxResp ufsCreateSCTxResp = new UFSCreateSCTxResp();
+        ufsCreateSCTxResp.setCorrespondentRefNumber(createSCTxResponse.getCorrespondentRefNumber());
+        ufsCreateSCTxResp.setCreationDateEST(GlobalFunctions
+                .calendarFromMMDDYYYYHH24MISS(createSCTxResponse.getCreationDateEST()));
+        ufsCreateSCTxResp.setDisclaimer(createSCTxResponse.getDisclaimer());
+        ufsCreateSCTxResp.setOriginCurrency(createSCTxResponse.getOriginCurrency());
+        ufsCreateSCTxResp.setPaymentAmount(GlobalFunctions.doubleFromString(createSCTxResponse
+                .getPaymentAmount()));
+        ufsCreateSCTxResp.setPaymentCurrency(createSCTxResponse.getPaymentCurrency());
+        ufsCreateSCTxResp.setProcessingDateEST(GlobalFunctions
+                .calendarFromMMDDYYYYHH24MISS(createSCTxResponse.getProcessingDateEST()));
+        ufsCreateSCTxResp.setReceiptHTML(createSCTxResponse.getReceiptHTML());
+        ufsCreateSCTxResp.setReserved1(createSCTxResponse.getReserved1());
+        ufsCreateSCTxResp.setReserved2(createSCTxResponse.getReserved2());
+        ufsCreateSCTxResp.setReserved3(createSCTxResponse.getReserved3());
+        ufsCreateSCTxResp.setResponseCode(createSCTxResponse.getResponseCode());
+        ufsCreateSCTxResp.setResponseString(createSCTxResponse.getResponseString());
+        ufsCreateSCTxResp.setTxAmount(GlobalFunctions.doubleFromString(createSCTxResponse
+                .getTxAmount()));
+        ufsCreateSCTxResp.setTxCorrespondentFee(GlobalFunctions.doubleFromString(createSCTxResponse
+                .getTxCorrespondentFee()));
+        ufsCreateSCTxResp.setTxExchangeRate(GlobalFunctions.doubleFromString(createSCTxResponse
+                .getTxExchangeRate()));
+        ufsCreateSCTxResp.setTxFeeTotal(GlobalFunctions.doubleFromString(createSCTxResponse
+                .getTxFeeTotal()));
+        ufsCreateSCTxResp.setTxIdentifier(createSCTxResponse.getTxIdentifier());
+        ufsCreateSCTxResp.setTxUTLRFee(GlobalFunctions.doubleFromString(createSCTxResponse
+                .getTxUTLRFee()));
+        ufsCreateSCTxResp.setTxStatus(createSCTxResponse.getTxStatus());
+
+        return ufsCreateSCTxResp;
+    }
+
+    public static UFSCreateTxResp convertToUFSCreateTxRespObject(CreateTxResponse createTxResponse) {
+        UFSCreateTxResp ufsCreateTxResp = new UFSCreateTxResp();
+        ufsCreateTxResp.setResponseCode(createTxResponse.getResponseCode());
+        ufsCreateTxResp.setResponseString(createTxResponse.getResponseString());
+        ufsCreateTxResp.setTxIdentifier(createTxResponse.getTxIdentifier());
+        ufsCreateTxResp.setCorrespondentRefNumber(createTxResponse.getCorrespondentRefNumber());
+        ufsCreateTxResp.setProcessingDateEST(GlobalFunctions
+                .calendarFromMMDDYYYYHH24MISS(createTxResponse.getProcessingDateEST()));
+        ufsCreateTxResp.setReserved1(createTxResponse.getReserved1());
+        ufsCreateTxResp.setReserved2(createTxResponse.getReserved2());
+        ufsCreateTxResp.setReserved3(createTxResponse.getReserved3());
+
+        return ufsCreateTxResp;
+    }
+
+    public static UFSGetTxDetailsResp convertToUFSGetTxDetailsRespObject(
+            GetTxDetailsResponse getTxDetailsResponse) {
+        UFSGetTxDetailsResp ufsGetTxDetailsResp = new UFSGetTxDetailsResp();
+
+        ufsGetTxDetailsResp.setAccountNumber(getTxDetailsResponse.getAccountNumber());
+        ufsGetTxDetailsResp.setAccountType(getTxDetailsResponse.getAccountType());
+        ufsGetTxDetailsResp.setBeneAddress1(getTxDetailsResponse.getBeneAddress1());
+        ufsGetTxDetailsResp.setBeneAddress2(getTxDetailsResponse.getBeneAddress2());
+        ufsGetTxDetailsResp.setBeneBirthDate(GlobalFunctions
+                .calendarFromMMDDYYYY(getTxDetailsResponse.getBeneBirthDate()));
+        ufsGetTxDetailsResp.setBeneCity(getTxDetailsResponse.getBeneCity());
+        ufsGetTxDetailsResp.setBeneCountry(getTxDetailsResponse.getBeneCountry());
+        ufsGetTxDetailsResp.setBeneEmail(getTxDetailsResponse.getBeneEmail());
+        ufsGetTxDetailsResp.setBeneFirstName(getTxDetailsResponse.getBeneFirstName());
+        ufsGetTxDetailsResp.setBeneIdentificationNumber(getTxDetailsResponse
+                .getBeneIdentificationNumber());
+        ufsGetTxDetailsResp.setBeneIdentificationType(getTxDetailsResponse
+                .getBeneIdentificationType());
+        ufsGetTxDetailsResp.setBeneLastName(getTxDetailsResponse.getBeneLastName());
+        ufsGetTxDetailsResp.setBeneMidName(getTxDetailsResponse.getBeneMidName());
+        ufsGetTxDetailsResp.setBenePhone(getTxDetailsResponse.getBenePhone());
+        ufsGetTxDetailsResp.setBenePostalCode(getTxDetailsResponse.getBenePostalCode());
+        ufsGetTxDetailsResp.setBeneRefNumber(getTxDetailsResponse.getBeneRefNumber());
+        ufsGetTxDetailsResp.setBeneSecondLastName(getTxDetailsResponse.getBeneSecondLastName());
+        ufsGetTxDetailsResp.setBeneState(getTxDetailsResponse.getBeneState());
+        ufsGetTxDetailsResp.setCancelLocalTime(GlobalFunctions
+                .calendarFromMMDDYYYYHH24MISS(getTxDetailsResponse.getCancelLocalTime()));
+        ufsGetTxDetailsResp.setCorrespondentRefNumber(getTxDetailsResponse
+                .getCorrespondentRefNumber());
+        ufsGetTxDetailsResp.setLastNotificationDate(GlobalFunctions
+                .calendarFromMMDDYYYYHH24MISS(getTxDetailsResponse.getLastNotificationDate()));
+        ufsGetTxDetailsResp.setLastNotificationMessage(getTxDetailsResponse
+                .getLastNotificationMessage());
+        ufsGetTxDetailsResp.setLastNotificationType(getTxDetailsResponse.getLastNotificationType());
+        ufsGetTxDetailsResp.setLastStatusChangeTimeStamp(GlobalFunctions
+                .calendarFromMMDDYYYYHH24MISS(getTxDetailsResponse.getLastStatusChangeTimeStamp()));
+        ufsGetTxDetailsResp.setPayingAgentBranchCode(getTxDetailsResponse
+                .getPayingAgentBranchCode());
+        ufsGetTxDetailsResp.setPayingAgentOperator(getTxDetailsResponse.getPayingAgentOperator());
+        ufsGetTxDetailsResp.setPayingLocalTime(GlobalFunctions
+                .calendarFromMMDDYYYYHH24MISS(getTxDetailsResponse.getPayingLocalTime()));
+        ufsGetTxDetailsResp.setPaymentAmount(GlobalFunctions.doubleFromString(getTxDetailsResponse
+                .getPaymentAmount()));
+        ufsGetTxDetailsResp.setPaymentCountry(getTxDetailsResponse.getPaymentCountry());
+        ufsGetTxDetailsResp.setPaymentCurrency(getTxDetailsResponse.getPaymentCurrency());
+        ufsGetTxDetailsResp.setPaymentLocation(getTxDetailsResponse.getPaymentLocation());
+        ufsGetTxDetailsResp.setPaymentType(getTxDetailsResponse.getPaymentType());
+        ufsGetTxDetailsResp.setReserved1(getTxDetailsResponse.getReserved1());
+        ufsGetTxDetailsResp.setReserved2(getTxDetailsResponse.getReserved2());
+        ufsGetTxDetailsResp.setReserved3(getTxDetailsResponse.getReserved3());
+        ufsGetTxDetailsResp.setResponseCode(getTxDetailsResponse.getResponseCode());
+        ufsGetTxDetailsResp.setResponseString(getTxDetailsResponse.getResponseString());
+        ufsGetTxDetailsResp.setSenderAddress1(getTxDetailsResponse.getSenderAddress1());
+        ufsGetTxDetailsResp.setSenderAddress2(getTxDetailsResponse.getSenderAddress2());
+        ufsGetTxDetailsResp.setSenderBirthDate(GlobalFunctions
+                .calendarFromMMDDYYYY(getTxDetailsResponse.getSenderBirthDate()));
+        ufsGetTxDetailsResp.setSenderCity(getTxDetailsResponse.getSenderCity());
+        ufsGetTxDetailsResp.setSenderEmail(getTxDetailsResponse.getSenderEmail());
+        ufsGetTxDetailsResp.setSenderFirstName(getTxDetailsResponse.getSenderFirstName());
+        ufsGetTxDetailsResp.setSenderIdentificationNumber(getTxDetailsResponse
+                .getSenderIdentificationNumber());
+        ufsGetTxDetailsResp.setSenderIdentificationType(getTxDetailsResponse
+                .getSenderIdentificationType());
+        ufsGetTxDetailsResp.setSenderLastName(getTxDetailsResponse.getSenderLastName());
+        ufsGetTxDetailsResp.setSenderMidName(getTxDetailsResponse.getSenderMidName());
+        ufsGetTxDetailsResp.setSenderPhone(getTxDetailsResponse.getSenderPhone());
+        ufsGetTxDetailsResp.setSenderPostalCode(getTxDetailsResponse.getSenderPostalCode());
+        ufsGetTxDetailsResp.setSenderRefNumber(getTxDetailsResponse.getSenderRefNumber());
+        ufsGetTxDetailsResp.setSenderSecondLastName(getTxDetailsResponse.getSenderSecondLastName());
+        ufsGetTxDetailsResp.setSenderState(getTxDetailsResponse.getSenderState());
+        ufsGetTxDetailsResp.setTxAmount(GlobalFunctions.doubleFromString(getTxDetailsResponse
+                .getTxAmount()));
+        ufsGetTxDetailsResp.setTxCreationDate(GlobalFunctions
+                .calendarFromMMDDYYYYHH24MISS(getTxDetailsResponse.getTxCreationDate()));
+        ufsGetTxDetailsResp.setTxExchangeRate(GlobalFunctions.doubleFromString(getTxDetailsResponse
+                .getTxExchangeRate()));
+        ufsGetTxDetailsResp.setTxFee(GlobalFunctions.doubleFromString(getTxDetailsResponse
+                .getTxFee()));
+        ufsGetTxDetailsResp.setTxIdentifier(getTxDetailsResponse.getTxIdentifier());
+        ufsGetTxDetailsResp.setTxOriginCountry(getTxDetailsResponse.getTxOriginCountry());
+        ufsGetTxDetailsResp.setTxOriginCurrency(getTxDetailsResponse.getTxOriginCurrency());
+        ufsGetTxDetailsResp.setTxStatus(getTxDetailsResponse.getTxStatus());
+
+        return ufsGetTxDetailsResp;
+    }
+
+    public static UFSInfoModifyResp convertToUFSInfoModifyRespObject(
+            InfoModifyResponse infoModifyResponse) {
+        UFSInfoModifyResp ufsInfoModifyResp = new UFSInfoModifyResp();
+        ufsInfoModifyResp.setResponseCode(infoModifyResponse.getResponseCode());
+        ufsInfoModifyResp.setResponseString(infoModifyResponse.getResponseString());
+        ufsInfoModifyResp.setTxIdentifier(infoModifyResponse.getTxIdentifier());
+        ufsInfoModifyResp.setCorrespondentRefNumber(infoModifyResponse.getCorrespondentRefNumber());
+        ufsInfoModifyResp.setProcessingDateEST(GlobalFunctions
+                .calendarFromMMDDYYYYHH24MISS(infoModifyResponse.getProcessingDateEST()));
+        ufsInfoModifyResp.setReserved1(infoModifyResponse.getReserved1());
+        ufsInfoModifyResp.setReserved2(infoModifyResponse.getReserved2());
+        ufsInfoModifyResp.setReserved3(infoModifyResponse.getReserved3());
+
+        return ufsInfoModifyResp;
+    }
+
+    public static UFSNotificationConfirmResp convertToUFSNotificationConfirmRespObject(
+            NotificationConfirmResponse notificationConfirmResponse) {
+        UFSNotificationConfirmResp ufsNotificationResp = new UFSNotificationConfirmResp();
+        ufsNotificationResp.setResponseCode(notificationConfirmResponse.getResponseCode());
+        ufsNotificationResp.setReserved1(notificationConfirmResponse.getReserved1());
+        ufsNotificationResp.setReserved2(notificationConfirmResponse.getReserved2());
+        ufsNotificationResp.setReserved3(notificationConfirmResponse.getReserved3());
+
+        return ufsNotificationResp;
+    }
+
+    private static UFSNotificationItem convertToUFSNotificationItemObject(
+            NotificationItem notificationItem) {
+        UFSNotificationItem ufsNotificationItem = new UFSNotificationItem();
+
+        ufsNotificationItem.setNotificationRefNumber(notificationItem.getNotificationRefNumber());
+        ufsNotificationItem.setDescription(notificationItem.getDescription());
+        ufsNotificationItem.setTxIdentifier(notificationItem.getTxIdentifier());
+        ufsNotificationItem.setCorrespondentRefNumber(notificationItem.getCorrespondentRefNumber());
+        ufsNotificationItem.setNotificationType(notificationItem.getNotificationType());
+        ufsNotificationItem.setPayingAgent(notificationItem.getPayingAgent());
+        ufsNotificationItem.setPayingAgentBranchCode(notificationItem.getPayingAgentBranchCode());
+        ufsNotificationItem.setPayingAgentOperator(notificationItem.getPayingAgentOperator());
+        ufsNotificationItem.setBeneIdentificationType(notificationItem.getBeneIdentificationType());
+        ufsNotificationItem.setBeneIdentificationNumber(notificationItem
+                .getBeneIdentificationNumber());
+        ufsNotificationItem.setPaymentLocalTime(GlobalFunctions
+                .calendarFromMMDDYYYYHH24MISS(notificationItem.getPaymentLocalTime()));
+        ufsNotificationItem.setReasonForReversal(notificationItem.getReasonForReversal());
+        ufsNotificationItem.setMessageText(notificationItem.getMessageText());
+        ufsNotificationItem.setReversalLocalTime(GlobalFunctions
+                .calendarFromMMDDYYYYHH24MISS(notificationItem.getReversalLocalTime()));
+        ufsNotificationItem.setReserved1(notificationItem.getReserved1());
+        ufsNotificationItem.setReserved2(notificationItem.getReserved2());
+        ufsNotificationItem.setReserved3(notificationItem.getReserved3());
+
+        return ufsNotificationItem;
+    }
+
+    public static UFSNotificationResp convertToUFSNotificationRespObject(
+            NotificationResponse notificationResponse) {
+        UFSNotificationResp ufsNotificationResp = new UFSNotificationResp();
+        ufsNotificationResp.setResponseCode(notificationResponse.getResponseCode());
+        ufsNotificationResp.setResponseString(notificationResponse.getResponseString());
+
+        NotificationItem[] items = notificationResponse.getNotificationData();
+        if (items != null) {
+            UFSNotificationItem[] ufsItems = new UFSNotificationItem[items.length];
+            for (int i = 0; i < items.length; i++) {
+                ufsItems[i] = convertToUFSNotificationItemObject(items[i]);
+            }
+            ufsNotificationResp.setNotificationData(ufsItems);
+        } else {
+            ufsNotificationResp.setNotificationData(null);
+        }
+
+        ufsNotificationResp.setReserved1(notificationResponse.getReserved1());
+        ufsNotificationResp.setReserved2(notificationResponse.getReserved2());
+        ufsNotificationResp.setReserved3(notificationResponse.getReserved3());
+
+        return ufsNotificationResp;
+    }
+
+    public static UFSQuickQuoteResp convertToUFSQuickQuoteRespObject(
+            QuickQuoteResponse quickQuoteResponse) {
+        UFSQuickQuoteResp ufsQuickQuoteResp = new UFSQuickQuoteResp();
+
+        ufsQuickQuoteResp.setPaymentAmount(GlobalFunctions.doubleFromString(quickQuoteResponse
+                .getPaymentAmount()));
+        ufsQuickQuoteResp.setReserved1(quickQuoteResponse.getReserved1());
+        ufsQuickQuoteResp.setReserved2(quickQuoteResponse.getReserved2());
+        ufsQuickQuoteResp.setReserved3(quickQuoteResponse.getReserved3());
+        ufsQuickQuoteResp.setResponseCode(quickQuoteResponse.getResponseCode());
+        ufsQuickQuoteResp.setResponseString(quickQuoteResponse.getResponseString());
+        ufsQuickQuoteResp.setTxCorrespondentFee(GlobalFunctions.doubleFromString(quickQuoteResponse
+                .getTxCorrespondentFee()));
+        ufsQuickQuoteResp.setTxExchangeRate(GlobalFunctions.doubleFromString(quickQuoteResponse
+                .getTxExchangeRate()));
+        ufsQuickQuoteResp.setTxFeeTotal(GlobalFunctions.doubleFromString(quickQuoteResponse
+                .getTxFeeTotal()));
+        ufsQuickQuoteResp.setTxUTLRFee(GlobalFunctions.doubleFromString(quickQuoteResponse
+                .getTxUTLRFee()));
+
+        return ufsQuickQuoteResp;
+    }
+}

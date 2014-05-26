@@ -16,7 +16,6 @@ import com.snaplogic.account.api.capabilities.AccountCategory;
 import com.snaplogic.api.ExecutionException;
 import com.snaplogic.common.properties.builders.PropertyBuilder;
 import com.snaplogic.snap.api.PropertyValues;
-import com.snaplogic.snap.api.account.basic.BasicAuthAccount;
 import com.snaplogic.snap.api.capabilities.General;
 import com.snaplogic.snap.api.capabilities.Version;
 import com.snaplogic.snaps.uniteller.bean.AccountBean;
