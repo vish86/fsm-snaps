@@ -10,12 +10,18 @@
  */
 package com.snaplogic.snaps.uniteller.util;
 
+import com.snaplogic.common.SnapType;
+import com.snaplogic.snap.api.SnapCategory;
 import com.uniteller.support.communication.foliocreation.*;
 import com.uniteller.support.foliocreationclient.*;
 import com.uniteller.support.util.GlobalFunctions;
 
+import org.apache.commons.lang3.StringUtils;
+
+import java.lang.reflect.Method;
+
 /**
- * Contains all utility methods which are usefull to convert the UFS request objects to TX objects.
+ * Contains all utility methods which are useful to convert the UFS request objects to TX objects.
  * 
  * @author svatada
  */
@@ -23,7 +29,6 @@ public class Utilities {
     public static TxCancelRequest convertToTxCancelRequestObject(UFSCancelTxReq request,
             String _companyId, String _orgId) {
         TxCancelRequest req = new TxCancelRequest();
-
         if (request.getCorrespondentCode() == null)
             req.setCorrespondentCode(_companyId);
         else {
@@ -41,20 +46,17 @@ public class Utilities {
         req.setReserved1(request.getReserved1());
         req.setReserved2(request.getReserved2());
         req.setReserved3(request.getReserved3());
-
         return req;
     }
 
     public static ConfirmSCTxRequest convertToConfirmSCTxRequestObject(UFSConfirmSCTxReq request,
             String _companyId, String _orgId) {
         ConfirmSCTxRequest req = new ConfirmSCTxRequest();
-
         if (request.getCorrespondentCode() == null)
             req.setCorrespondentCode(_companyId);
         else {
             req.setCorrespondentCode(request.getCorrespondentCode());
         }
-
         req.setTxIdentifier(request.getTxIdentifier());
         req.setCorrespondentRefNumber(request.getCorrespondentRefNumber());
         req.setTxAmount(String.valueOf(request.getTxAmount()));
@@ -62,20 +64,17 @@ public class Utilities {
         req.setReserved1(request.getReserved1());
         req.setReserved2(request.getReserved2());
         req.setReserved3(request.getReserved3());
-
         return req;
     }
 
     public static CreateSCTxRequest convertToCreateSCTxRequestObject(UFSCreateSCTxReq request,
             String _companyId, String _orgId) {
         CreateSCTxRequest req = new CreateSCTxRequest();
-
         if (request.getCorrespondentCode() == null) {
             req.setCorrespondentCode(_companyId);
         } else {
             req.setCorrespondentCode(request.getCorrespondentCode());
         }
-
         req.setTxIdentifier(request.getTxIdentifier());
         req.setCorrespondentRefNumber(request.getCorrespondentRefNumber());
         req.setPaymentAmount(String.valueOf(request.getPaymentAmount()));
@@ -138,20 +137,17 @@ public class Utilities {
         req.setReserved1(request.getReserved1());
         req.setReserved2(request.getReserved2());
         req.setReserved3(request.getReserved3());
-
         return req;
     }
 
     public static CreateTxRequest convertToCreateTxRequestObject(UFSCreateTxReq request,
             String _companyId, String _orgId) {
         CreateTxRequest req = new CreateTxRequest();
-
         if (request.getCorrespondentCode() == null)
             req.setCorrespondentCode(_companyId);
         else {
             req.setCorrespondentCode(request.getCorrespondentCode());
         }
-
         req.setTxIdentifier(request.getTxIdentifier());
         req.setCorrespondentRefNumber(request.getCorrespondentRefNumber());
         req.setPaymentAmount(String.valueOf(request.getPaymentAmount()));
@@ -214,33 +210,28 @@ public class Utilities {
         req.setReserved1(request.getReserved1());
         req.setReserved2(request.getReserved2());
         req.setReserved3(request.getReserved3());
-
         return req;
     }
 
     public static GetTxDetailsRequest convertToGetTxDetailsRequestObject(
             UFSGetTxDetailsReq request, String _companyId, String _orgId) {
         GetTxDetailsRequest req = new GetTxDetailsRequest();
-
         if (request.getCorrespondentCode() == null) {
             req.setCorrespondentCode(_companyId);
         } else {
             req.setCorrespondentCode(request.getCorrespondentCode());
         }
-
         req.setTxIdentifier(request.getTxIdentifier());
         req.setCorrespondentRefNumber(request.getCorrespondentRefNumber());
         req.setReserved1(request.getReserved1());
         req.setReserved2(request.getReserved2());
         req.setReserved3(request.getReserved3());
-
         return req;
     }
 
     public static InfoModifyRequest convertToInfoModifyRequestObject(UFSInfoModifyReq request,
             String _companyId, String _orgId) {
         InfoModifyRequest req = new InfoModifyRequest();
-
         if (request.getCorrespondentCode() == null)
             req.setCorrespondentCode(_companyId);
         else {
@@ -278,14 +269,12 @@ public class Utilities {
         req.setReserved1(request.getReserved1());
         req.setReserved2(request.getReserved2());
         req.setReserved3(request.getReserved3());
-
         return req;
     }
 
     public static NotificationConfirmRequest convertToNotificationConfirmRequestObject(
             UFSNotificationConfirmReq request, String _companyId, String _orgId) {
         NotificationConfirmRequest req = new NotificationConfirmRequest();
-
         if (request.getCorrespondentCode() == null)
             req.setCorrespondentCode(_companyId);
         else {
@@ -297,14 +286,12 @@ public class Utilities {
         req.setReserved1(request.getReserved1());
         req.setReserved2(request.getReserved2());
         req.setReserved3(request.getReserved3());
-
         return req;
     }
 
     public static NotificationRequest convertToNotificationRequestObject(
             UFSNotificationReq request, String _companyId, String _orgId) {
         NotificationRequest req = new NotificationRequest();
-
         if (request.getCorrespondentCode() == null)
             req.setCorrespondentCode(_companyId);
         else {
@@ -314,20 +301,17 @@ public class Utilities {
         req.setReserved1(request.getReserved1());
         req.setReserved2(request.getReserved2());
         req.setReserved3(request.getReserved3());
-
         return req;
     }
 
     public static QuickQuoteRequest convertToQuickQuoteRequestObject(UFSQuickQuoteReq request,
             String _companyId, String _orgId) {
         QuickQuoteRequest req = new QuickQuoteRequest();
-
         if (request.getCorrespondentCode() == null)
             req.setCorrespondentCode(_companyId);
         else {
             req.setCorrespondentCode(request.getCorrespondentCode());
         }
-
         req.setPaymentCountry(request.getPaymentCountry());
         req.setPaymentCurrency(request.getPaymentCurrency());
         req.setPaymentLocation(request.getPaymentLocation());
@@ -338,7 +322,6 @@ public class Utilities {
         req.setReserved1(request.getReserved1());
         req.setReserved2(request.getReserved2());
         req.setReserved3(request.getReserved3());
-
         return req;
     }
 
@@ -353,7 +336,6 @@ public class Utilities {
         ufsCancelTxResp.setReserved1(cancelTxResponse.getReserved1());
         ufsCancelTxResp.setReserved2(cancelTxResponse.getReserved2());
         ufsCancelTxResp.setReserved3(cancelTxResponse.getReserved3());
-
         return ufsCancelTxResp;
     }
 
@@ -365,7 +347,6 @@ public class Utilities {
         ufsConfirmSCTxResp.setReserved1(confirmSCTxResponse.getReserved1());
         ufsConfirmSCTxResp.setReserved2(confirmSCTxResponse.getReserved2());
         ufsConfirmSCTxResp.setReserved3(confirmSCTxResponse.getReserved3());
-
         return ufsConfirmSCTxResp;
     }
 
@@ -400,7 +381,6 @@ public class Utilities {
         ufsCreateSCTxResp.setTxUTLRFee(GlobalFunctions.doubleFromString(createSCTxResponse
                 .getTxUTLRFee()));
         ufsCreateSCTxResp.setTxStatus(createSCTxResponse.getTxStatus());
-
         return ufsCreateSCTxResp;
     }
 
@@ -415,14 +395,12 @@ public class Utilities {
         ufsCreateTxResp.setReserved1(createTxResponse.getReserved1());
         ufsCreateTxResp.setReserved2(createTxResponse.getReserved2());
         ufsCreateTxResp.setReserved3(createTxResponse.getReserved3());
-
         return ufsCreateTxResp;
     }
 
     public static UFSGetTxDetailsResp convertToUFSGetTxDetailsRespObject(
             GetTxDetailsResponse getTxDetailsResponse) {
         UFSGetTxDetailsResp ufsGetTxDetailsResp = new UFSGetTxDetailsResp();
-
         ufsGetTxDetailsResp.setAccountNumber(getTxDetailsResponse.getAccountNumber());
         ufsGetTxDetailsResp.setAccountType(getTxDetailsResponse.getAccountType());
         ufsGetTxDetailsResp.setBeneAddress1(getTxDetailsResponse.getBeneAddress1());
@@ -501,7 +479,6 @@ public class Utilities {
         ufsGetTxDetailsResp.setTxOriginCountry(getTxDetailsResponse.getTxOriginCountry());
         ufsGetTxDetailsResp.setTxOriginCurrency(getTxDetailsResponse.getTxOriginCurrency());
         ufsGetTxDetailsResp.setTxStatus(getTxDetailsResponse.getTxStatus());
-
         return ufsGetTxDetailsResp;
     }
 
@@ -517,7 +494,6 @@ public class Utilities {
         ufsInfoModifyResp.setReserved1(infoModifyResponse.getReserved1());
         ufsInfoModifyResp.setReserved2(infoModifyResponse.getReserved2());
         ufsInfoModifyResp.setReserved3(infoModifyResponse.getReserved3());
-
         return ufsInfoModifyResp;
     }
 
@@ -528,14 +504,12 @@ public class Utilities {
         ufsNotificationResp.setReserved1(notificationConfirmResponse.getReserved1());
         ufsNotificationResp.setReserved2(notificationConfirmResponse.getReserved2());
         ufsNotificationResp.setReserved3(notificationConfirmResponse.getReserved3());
-
         return ufsNotificationResp;
     }
 
     private static UFSNotificationItem convertToUFSNotificationItemObject(
             NotificationItem notificationItem) {
         UFSNotificationItem ufsNotificationItem = new UFSNotificationItem();
-
         ufsNotificationItem.setNotificationRefNumber(notificationItem.getNotificationRefNumber());
         ufsNotificationItem.setDescription(notificationItem.getDescription());
         ufsNotificationItem.setTxIdentifier(notificationItem.getTxIdentifier());
@@ -556,7 +530,6 @@ public class Utilities {
         ufsNotificationItem.setReserved1(notificationItem.getReserved1());
         ufsNotificationItem.setReserved2(notificationItem.getReserved2());
         ufsNotificationItem.setReserved3(notificationItem.getReserved3());
-
         return ufsNotificationItem;
     }
 
@@ -565,7 +538,6 @@ public class Utilities {
         UFSNotificationResp ufsNotificationResp = new UFSNotificationResp();
         ufsNotificationResp.setResponseCode(notificationResponse.getResponseCode());
         ufsNotificationResp.setResponseString(notificationResponse.getResponseString());
-
         NotificationItem[] items = notificationResponse.getNotificationData();
         if (items != null) {
             UFSNotificationItem[] ufsItems = new UFSNotificationItem[items.length];
@@ -576,18 +548,15 @@ public class Utilities {
         } else {
             ufsNotificationResp.setNotificationData(null);
         }
-
         ufsNotificationResp.setReserved1(notificationResponse.getReserved1());
         ufsNotificationResp.setReserved2(notificationResponse.getReserved2());
         ufsNotificationResp.setReserved3(notificationResponse.getReserved3());
-
         return ufsNotificationResp;
     }
 
     public static UFSQuickQuoteResp convertToUFSQuickQuoteRespObject(
             QuickQuoteResponse quickQuoteResponse) {
         UFSQuickQuoteResp ufsQuickQuoteResp = new UFSQuickQuoteResp();
-
         ufsQuickQuoteResp.setPaymentAmount(GlobalFunctions.doubleFromString(quickQuoteResponse
                 .getPaymentAmount()));
         ufsQuickQuoteResp.setReserved1(quickQuoteResponse.getReserved1());
@@ -603,7 +572,24 @@ public class Utilities {
                 .getTxFeeTotal()));
         ufsQuickQuoteResp.setTxUTLRFee(GlobalFunctions.doubleFromString(quickQuoteResponse
                 .getTxUTLRFee()));
-
         return ufsQuickQuoteResp;
+    }
+
+    public static SnapType getDataTypes(Method method) {
+        String type = method.getGenericParameterTypes()[0].toString();
+        if (StringUtils.contains(type, "String")) {
+            return SnapType.STRING;
+        } else if (StringUtils.contains(type, "int")) {
+            return SnapType.INTEGER;
+        } else if (StringUtils.contains(type, "long")|| StringUtils.contains(type, "double")) {
+            return SnapType.NUMBER;
+        } else if (StringUtils.contains(type, "Calendar")) {
+            return SnapType.DATETIME;
+        }
+        return SnapType.ANY;
+    }
+
+    public static Object getData() {
+        return null;
     }
 }

@@ -11,7 +11,7 @@
 package com.snaplogic.snaps.uniteller;
 
 import com.snaplogic.snap.api.capabilities.General;
-import com.snaplogic.snaps.uniteller.Constants.SnapType;
+import com.snaplogic.snaps.uniteller.Constants.SnapCatogery;
 
 import static com.snaplogic.snaps.uniteller.Messages.SNAP_DESC;
 import static com.snaplogic.snaps.uniteller.Messages.UPDATE_LABEL;
@@ -24,7 +24,7 @@ import static com.snaplogic.snaps.uniteller.Messages.UPDATE_LABEL;
 @General(title = UPDATE_LABEL, purpose = SNAP_DESC)
 public class Update extends BaseService {
     @Override
-    protected SnapType getSnapType() {
-        return SnapType.Update;
+    protected SnapCatogery getSnapType() {
+        return SnapCatogery.Update;
     }
 }

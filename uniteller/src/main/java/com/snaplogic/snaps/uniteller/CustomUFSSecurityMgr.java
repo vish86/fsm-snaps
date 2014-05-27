@@ -19,11 +19,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
@@ -32,6 +31,9 @@ import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Properties;
 
+import javax.net.ssl.HttpsURLConnection;
+
+import static com.snaplogic.snaps.uniteller.Constants.DUMMY_PASS;
 import static com.snaplogic.snaps.uniteller.Messages.ERR_URL_CONNECT;
 
 /* Custom UFS security manager
@@ -39,14 +41,12 @@ import static com.snaplogic.snaps.uniteller.Messages.ERR_URL_CONNECT;
  * @author svatada
  * */
 public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
-    protected static final String DUMMY_PASS = "DUMMY_PASS";
-    protected static final int MIN_PASSWORD_LENGTH = 8;
-    protected static final int MAX_PASSWORD_LENGTH = 16;
     private static HashMap<String, Object> instanceMap = null;
-    private static String nonce_S = "ItSihNsYzB495QQ6J5MXr0/O1rI=";
+    private static String nonce = "ItSihNsYzB495QQ6J5MXr0/O1rI=";
     private String fileLocation = null;
     private InputStream securityInputStream;
-    private FileOutputStream securityFileOutput;
+    private OutputStream securityOutputStream;
+    private URLConnection urlConnection;
     private Properties securityProps = null;
     private static final Logger log = LoggerFactory.getLogger(CustomUFSSecurityMgr.class);
     static {
@@ -94,7 +94,6 @@ public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
 
     public String getPassword(String machineId) throws UFSSecurityMgrException {
         String passcode = null;
-
         synchronized (this.securityProps) {
             try {
                 this.securityProps.load(this.securityInputStream);
@@ -104,18 +103,15 @@ public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
             }
             passcode = this.securityProps.getProperty(machineId);
         }
-
         return passcode;
     }
 
     public void changePassword(String machineId, String password) throws UFSSecurityMgrException {
-        File file = null;
         try {
-            file = new File(this.fileLocation);
-            if (this.securityFileOutput != null) {
-                this.securityFileOutput.close();
+            if (this.securityOutputStream != null) {
+                cleanup(securityOutputStream, urlConnection);
             }
-            this.securityFileOutput = new FileOutputStream(file);
+            initOutputStream();
         } catch (FileNotFoundException e) {
             log.error(e.getMessage(), e);
             throw new UFSSecurityMgrException(e.getMessage());
@@ -127,7 +123,7 @@ public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
         synchronized (this.securityProps) {
             this.securityProps.put(machineId, password);
             try {
-                this.securityProps.store(this.securityFileOutput, null);
+                this.securityProps.store(this.securityOutputStream, null);
             } catch (IOException e) {
                 log.error(e.getMessage(), e);
                 throw new UFSSecurityMgrException(e.getMessage());
@@ -160,7 +156,7 @@ public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
             if ((password == null) || (password.trim().length() == 0)) {
                 throw new Exception("Password is null or empty");
             }
-            id = password + nonce_S;
+            id = password + nonce;
             id = Base64.encode(id.getBytes());
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -177,7 +173,7 @@ public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
             }
             byte[] pwdBytes = Base64.decode(password);
             String pwdStr = new String(pwdBytes);
-            int nIndex = pwdStr.indexOf(nonce_S);
+            int nIndex = pwdStr.indexOf(nonce);
             if (nIndex != -1)
                 id = pwdStr.substring(0, nIndex);
             else
@@ -201,5 +197,29 @@ public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
             }
         }
         return passcode;
+    }
+
+    private void initOutputStream() throws IOException {
+        urlConnection = new URL(this.fileLocation).openConnection();
+        if (urlConnection != null) {
+            urlConnection.connect();
+            securityOutputStream = urlConnection.getOutputStream();
+        }
+    }
+
+    private void cleanup(OutputStream outputStream, URLConnection urlConnection) {
+        if (outputStream != null) {
+            try {
+                outputStream.close();
+            } catch (IOException e) {
+
+            }
+        }
+        if (urlConnection != null) {
+            try {
+                ((HttpsURLConnection) urlConnection).disconnect();
+            } catch (Exception e) {
+            }
+        }
     }
 }

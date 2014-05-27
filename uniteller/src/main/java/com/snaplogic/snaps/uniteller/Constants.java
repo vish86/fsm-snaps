@@ -51,9 +51,9 @@ public class Constants {
     static final String PROXYPAYMENTLOCATION = "DEMO";
     static final String WARNINGINDICATOR = "02";
     static final String BLANK = "";
-    static final String DUMMYPASS = "DUMMYPASS";
-    static final int MINPASSWORDLENGTH = 8;
-    static final int MAXPASSWORDLENGTH = 16;
+    static final String DUMMY_PASS = "DUMMY_PASS";
+    static final int MIN_PASSWORD_LENGTH = 8;
+    static final int MAX_PASSWORD_LENGTH = 16;
     static final String RIMED_OUT_ERROR = "29806002";
     static final String COMM_SWITCH_ERROR = "29806001";
     static final String MACHINE_ID_ERROR = "29908003";
@@ -80,11 +80,11 @@ public class Constants {
     static final String UNITELLER_REQ_TAG = "Req";
     static final String UNITELLER_RESP_TAG = "Resp";
 
-    static enum SnapType {
+    static enum SnapCatogery {
         Create("Create"), Update("Update"), Read("Read"), Delete("Delete");
         private final String resource;
 
-        private SnapType(String resource) {
+        private SnapCatogery(String resource) {
             this.resource = resource;
         }
 
@@ -122,9 +122,9 @@ public class Constants {
     };
 
     static final ImmutableMap<String, ImmutableSet<String>> RESOUCE_LIST = ImmutableMap.of(
-            SnapType.Create.toString(), ImmutableSet.of("CreateTx", "CreateSCTx", "ConfirmSCTx",
-                    "NotificationConfirm", "QuickQuote"), SnapType.Read.toString(), ImmutableSet
-                    .of("Notification", "GetTxDetails"), SnapType.Update.toString(), ImmutableSet
-                    .of("InfoModify", CHANGE_PASSWORD), SnapType.Delete.toString(), ImmutableSet
+            SnapCatogery.Create.toString(), ImmutableSet.of("CreateTx", "CreateSCTx", "ConfirmSCTx",
+                    "NotificationConfirm", "QuickQuote"), SnapCatogery.Read.toString(), ImmutableSet
+                    .of("Notification", "GetTxDetails"), SnapCatogery.Update.toString(), ImmutableSet
+                    .of("InfoModify", CHANGE_PASSWORD), SnapCatogery.Delete.toString(), ImmutableSet
                     .of("CancelTx"));
 }

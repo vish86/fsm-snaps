@@ -485,7 +485,7 @@ public class CustomUFSFolioCreationClient {
         }
     }
 
-    public UFSNotificationResp getNotifications(UFSNotificationReq request)
+    public UFSNotificationResp notification(UFSNotificationReq request)
             throws UFSFolioCreationClientException {
         if (request == null) {
             throw new UFSFolioCreationClientException(GENERAL_SYSTEM_ERROR, String.format(
@@ -519,7 +519,6 @@ public class CustomUFSFolioCreationClient {
                 throw new UFSUnknownMachineIdException(String.format(NO_PASSWORD_FOR_MACHINE_ID,
                         machineIdS));
             }
-
             String oldPassword = getPasswordFromEncryptedPassword(encryptedPassword);
             notificationReq.setMachineId(machineIdS);
             notificationReq.setMachinePassword(oldPassword);
@@ -557,8 +556,10 @@ public class CustomUFSFolioCreationClient {
             logUFSNotificationResp(ufsNotificationResp);
             return ufsNotificationResp;
         } catch (UFSFolioCreationClientException ex) {
+            log.error(ex.getMessage(),ex);
             throw ex;
         } catch (Exception e) {
+            log.error(e.getMessage(),e);
             throw getUFSFolioCreationClientException(e);
         } finally {
             UFSClientLogger.removeContext();
@@ -1080,15 +1081,15 @@ public class CustomUFSFolioCreationClient {
             throws UFSSecurityMgrException {
         String ret = null;
         if (BLANK.equals(encryptedPassword.trim())) {
-            ret = DUMMYPASS;
+            ret = DUMMY_PASS;
         } else {
             ret = this.securityMgr.decryptPassword(encryptedPassword);
-            if ((ret.length() < MINPASSWORDLENGTH) || (ret.length() > MAXPASSWORDLENGTH)) {
-                ret = DUMMYPASS;
+            if ((ret.length() < MIN_PASSWORD_LENGTH) || (ret.length() > MAX_PASSWORD_LENGTH)) {
+                ret = DUMMY_PASS;
             }
         }
 
-        if (DUMMYPASS.equals(ret)) {
+        if (DUMMY_PASS.equals(ret)) {
             log.info(String.format(NO_PASSWORD_ERROR, machineIdS));
         }
         return ret;

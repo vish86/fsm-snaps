@@ -11,7 +11,7 @@
 package com.snaplogic.snaps.uniteller;
 
 import com.snaplogic.snap.api.capabilities.General;
-import com.snaplogic.snaps.uniteller.Constants.SnapType;
+import com.snaplogic.snaps.uniteller.Constants.SnapCatogery;
 
 import static com.snaplogic.snaps.uniteller.Messages.READ_LABEL;
 import static com.snaplogic.snaps.uniteller.Messages.SNAP_DESC;
@@ -24,7 +24,7 @@ import static com.snaplogic.snaps.uniteller.Messages.SNAP_DESC;
 @General(title = READ_LABEL, purpose = SNAP_DESC)
 public class Read extends BaseService {
     @Override
-    protected SnapType getSnapType() {
-        return SnapType.Read;
+    protected SnapCatogery getSnapType() {
+        return SnapCatogery.Read;
     }
 }

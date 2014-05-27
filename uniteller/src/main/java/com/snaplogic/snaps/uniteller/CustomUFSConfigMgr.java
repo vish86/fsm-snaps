@@ -24,6 +24,8 @@ import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Properties;
 
+import javax.net.ssl.HttpsURLConnection;
+
 import static com.snaplogic.snaps.uniteller.Messages.ERR_URL_CONNECT;
 
 /*
@@ -34,6 +36,7 @@ import static com.snaplogic.snaps.uniteller.Messages.ERR_URL_CONNECT;
 public class CustomUFSConfigMgr implements IUFSConfigMgr {
     private static HashMap<String, Object> instanceMap = null;
     private Properties configProperties = null;
+    private URLConnection urlConnection = null;
     private static final Logger log = LoggerFactory.getLogger(CustomUFSConfigMgr.class);
     static {
         instanceMap = new HashMap<String, Object>();
@@ -52,6 +55,13 @@ public class CustomUFSConfigMgr implements IUFSConfigMgr {
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
             throw new UFSConfigMgrException(ex.getMessage());
+        } finally {
+            if (urlConnection != null) {
+                try {
+                    ((HttpsURLConnection) urlConnection).disconnect();
+                } catch (Exception e) {
+                }
+            }
         }
     }
 
@@ -67,16 +77,13 @@ public class CustomUFSConfigMgr implements IUFSConfigMgr {
         return customUFSConfigMgr;
     }
 
-    static InputStream getInputStream(final URL fileUrl) throws IOException, UFSConfigMgrException {
-        URLConnection urlConnection = null;
+    private InputStream getInputStream(final URL fileUrl) throws IOException, UFSConfigMgrException {
         urlConnection = fileUrl.openConnection();
         if (urlConnection == null) {
             log.error(String.format(ERR_URL_CONNECT, fileUrl.getPath()));
             throw new UFSConfigMgrException(String.format(ERR_URL_CONNECT, fileUrl.getPath()));
         }
-        log.debug("Opening the Url connection");
         urlConnection.connect();
-        log.debug("Opened the Url connection " + urlConnection);
         return urlConnection.getInputStream();
     }
 
