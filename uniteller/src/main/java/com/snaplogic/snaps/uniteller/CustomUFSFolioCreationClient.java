@@ -26,6 +26,9 @@ import com.uniteller.support.util.UFSClientLogger;
 import com.uniteller.support.util.UFSGeneralException;
 import com.uniteller.support.util.UFSSystemError;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.GregorianCalendar;
 import java.util.Properties;
 
@@ -44,8 +47,9 @@ import static com.snaplogic.snaps.uniteller.util.Utilities.*;
  * @author svatada
  */
 public class CustomUFSFolioCreationClient {
-    private static final UFSClientLogger log = UFSClientLogger
+    private static final UFSClientLogger ufsLogger = UFSClientLogger
             .getLogger(CustomUFSFolioCreationClient.class);
+    private static final Logger log = LoggerFactory.getLogger(BaseService.class);
     private static boolean initialized = false;
     private static String organizationIdS;
     private static String companyIdS;
@@ -152,6 +156,7 @@ public class CustomUFSFolioCreationClient {
             logUFSCreateSCTxResp(ufsCreateSCTxResp);
             return ufsCreateSCTxResp;
         } catch (UFSFolioCreationClientException ex) {
+            log.error(ex.getMessage(), ex);
             throw ex;
         } catch (Exception e) {
             throw getUFSFolioCreationClientException(e);
@@ -234,6 +239,7 @@ public class CustomUFSFolioCreationClient {
             logUFSConfirmSCTxResp(ufsConfirmSCTxResp);
             return ufsConfirmSCTxResp;
         } catch (UFSFolioCreationClientException ex) {
+            log.error(ex.getMessage(), ex);
             throw ex;
         } catch (Exception e) {
             throw getUFSFolioCreationClientException(e);
@@ -315,6 +321,7 @@ public class CustomUFSFolioCreationClient {
             logUFSCreateTxResp(ufsCreateTxResp);
             return ufsCreateTxResp;
         } catch (UFSFolioCreationClientException ex) {
+            log.error(ex.getMessage(), ex);
             throw ex;
         } catch (Exception e) {
             throw getUFSFolioCreationClientException(e);
@@ -396,6 +403,7 @@ public class CustomUFSFolioCreationClient {
             logUFSCancelTxResp(ufsCancelTxResp);
             return ufsCancelTxResp;
         } catch (UFSFolioCreationClientException ex) {
+            log.error(ex.getMessage(), ex);
             throw ex;
         } catch (Exception e) {
             throw getUFSFolioCreationClientException(e);
@@ -477,6 +485,7 @@ public class CustomUFSFolioCreationClient {
             logUFSInfoModifyResp(ufsInfoModifyResp);
             return ufsInfoModifyResp;
         } catch (UFSFolioCreationClientException ex) {
+            log.error(ex.getMessage(), ex);
             throw ex;
         } catch (Exception e) {
             throw getUFSFolioCreationClientException(e);
@@ -556,10 +565,9 @@ public class CustomUFSFolioCreationClient {
             logUFSNotificationResp(ufsNotificationResp);
             return ufsNotificationResp;
         } catch (UFSFolioCreationClientException ex) {
-            log.error(ex.getMessage(),ex);
+            log.error(ex.getMessage(), ex);
             throw ex;
         } catch (Exception e) {
-            log.error(e.getMessage(),e);
             throw getUFSFolioCreationClientException(e);
         } finally {
             UFSClientLogger.removeContext();
@@ -636,6 +644,7 @@ public class CustomUFSFolioCreationClient {
             logUFSNotificationConfirmResp(ufsNotificationConfirmResp);
             return ufsNotificationConfirmResp;
         } catch (UFSFolioCreationClientException ex) {
+            log.error(ex.getMessage(), ex);
             throw ex;
         } catch (Exception e) {
             throw getUFSFolioCreationClientException(e);
@@ -717,6 +726,7 @@ public class CustomUFSFolioCreationClient {
             logUFSGetTxDetailsResp(ufsGetTxDetailsResp);
             return ufsGetTxDetailsResp;
         } catch (UFSFolioCreationClientException ex) {
+            log.error(ex.getMessage(), ex);
             throw ex;
         } catch (Exception e) {
             throw getUFSFolioCreationClientException(e);
@@ -791,6 +801,7 @@ public class CustomUFSFolioCreationClient {
             logUFSQuickQuoteResp(ufsQuickQuoteResp);
             return ufsQuickQuoteResp;
         } catch (UFSFolioCreationClientException ex) {
+            log.error(ex.getMessage(), ex);
             throw ex;
         } catch (Exception e) {
             throw getUFSFolioCreationClientException(e);
@@ -812,10 +823,12 @@ public class CustomUFSFolioCreationClient {
                         confMgr.getProperty(UFSClientLogger.requiredPropsArr[i]));
             }
             UFSClientLogger.init(errorProps);
-            organizationIdS = CommonFunctions.getProperty(confMgr, DEFAULTORGANIZATIONID, log);
-            companyIdS = CommonFunctions.getProperty(confMgr, DEFAULTCOMPANYID, log);
-            machineIdS = CommonFunctions.getProperty(confMgr, DEFAULTMACHINEID, log);
-            fclAPIURLSuffix = CommonFunctions.getProperty(confMgr, FOLIOCREATIONAPIURLSUFFIX, log);
+            organizationIdS = CommonFunctions.getProperty(confMgr, DEFAULTORGANIZATIONID,
+                    ufsLogger);
+            companyIdS = CommonFunctions.getProperty(confMgr, DEFAULTCOMPANYID, ufsLogger);
+            machineIdS = CommonFunctions.getProperty(confMgr, DEFAULTMACHINEID, ufsLogger);
+            fclAPIURLSuffix = CommonFunctions.getProperty(confMgr, FOLIOCREATIONAPIURLSUFFIX,
+                    ufsLogger);
             initialized = true;
         }
     }
@@ -830,6 +843,7 @@ public class CustomUFSFolioCreationClient {
         if (ex == null) {
             ex = new UFSGeneralException(NULLEXCEPTION);
         }
+        log.error(ex.getMessage(), ex);
         String errorCode = exceptionErrorMap.get(ex.getClass().getName());
         if (errorCode == null) {
             errorCode = GENERAL_SYSTEM_ERROR;
@@ -1000,75 +1014,75 @@ public class CustomUFSFolioCreationClient {
     }
 
     private void logUFSCreateTxReq(UFSCreateTxReq ufsReq) {
-        ufsReq.log(log, UFSClientLogger.peekContext());
+        ufsReq.log(ufsLogger, UFSClientLogger.peekContext());
     }
 
     private void logUFSCreateTxResp(UFSCreateTxResp ufsResp) {
-        ufsResp.log(log, UFSClientLogger.peekContext());
+        ufsResp.log(ufsLogger, UFSClientLogger.peekContext());
     }
 
     private void logUFSCreateSCTxReq(UFSCreateSCTxReq ufsReq) {
-        ufsReq.log(log, UFSClientLogger.peekContext());
+        ufsReq.log(ufsLogger, UFSClientLogger.peekContext());
     }
 
     private void logUFSCreateSCTxResp(UFSCreateSCTxResp ufsResp) {
-        ufsResp.log(log, UFSClientLogger.peekContext());
+        ufsResp.log(ufsLogger, UFSClientLogger.peekContext());
     }
 
     private void logUFSConfirmSCTxReq(UFSConfirmSCTxReq ufsReq) {
-        ufsReq.log(log, UFSClientLogger.peekContext());
+        ufsReq.log(ufsLogger, UFSClientLogger.peekContext());
     }
 
     private void logUFSConfirmSCTxResp(UFSConfirmSCTxResp ufsResp) {
-        ufsResp.log(log, UFSClientLogger.peekContext());
+        ufsResp.log(ufsLogger, UFSClientLogger.peekContext());
     }
 
     private void logUFSCancelTxReq(UFSCancelTxReq ufsReq) {
-        ufsReq.log(log, UFSClientLogger.peekContext());
+        ufsReq.log(ufsLogger, UFSClientLogger.peekContext());
     }
 
     private void logUFSCancelTxResp(UFSCancelTxResp ufsResp) {
-        ufsResp.log(log, UFSClientLogger.peekContext());
+        ufsResp.log(ufsLogger, UFSClientLogger.peekContext());
     }
 
     private void logUFSInfoModifyReq(UFSInfoModifyReq ufsReq) {
-        ufsReq.log(log, UFSClientLogger.peekContext());
+        ufsReq.log(ufsLogger, UFSClientLogger.peekContext());
     }
 
     private void logUFSInfoModifyResp(UFSInfoModifyResp ufsResp) {
-        ufsResp.log(log, UFSClientLogger.peekContext());
+        ufsResp.log(ufsLogger, UFSClientLogger.peekContext());
     }
 
     private void logUFSNotificationReq(UFSNotificationReq ufsReq) {
-        ufsReq.log(log, UFSClientLogger.peekContext());
+        ufsReq.log(ufsLogger, UFSClientLogger.peekContext());
     }
 
     private void logUFSNotificationResp(UFSNotificationResp ufsResp) {
-        ufsResp.log(log, UFSClientLogger.peekContext());
+        ufsResp.log(ufsLogger, UFSClientLogger.peekContext());
     }
 
     private void logUFSNotificationConfirmReq(UFSNotificationConfirmReq ufsReq) {
-        ufsReq.log(log, UFSClientLogger.peekContext());
+        ufsReq.log(ufsLogger, UFSClientLogger.peekContext());
     }
 
     private void logUFSNotificationConfirmResp(UFSNotificationConfirmResp ufsResp) {
-        ufsResp.log(log, UFSClientLogger.peekContext());
+        ufsResp.log(ufsLogger, UFSClientLogger.peekContext());
     }
 
     private void logUFSGetTxDetailsReq(UFSGetTxDetailsReq ufsReq) {
-        ufsReq.log(log, UFSClientLogger.peekContext());
+        ufsReq.log(ufsLogger, UFSClientLogger.peekContext());
     }
 
     private void logUFSGetTxDetailsResp(UFSGetTxDetailsResp ufsResp) {
-        ufsResp.log(log, UFSClientLogger.peekContext());
+        ufsResp.log(ufsLogger, UFSClientLogger.peekContext());
     }
 
     private void logUFSQuickQuoteReq(UFSQuickQuoteReq ufsReq) {
-        ufsReq.log(log, UFSClientLogger.peekContext());
+        ufsReq.log(ufsLogger, UFSClientLogger.peekContext());
     }
 
     private void logUFSQuickQuoteResp(UFSQuickQuoteResp ufsResp) {
-        ufsResp.log(log, UFSClientLogger.peekContext());
+        ufsResp.log(ufsLogger, UFSClientLogger.peekContext());
     }
 
     private boolean isSuccessOrWarning(String errorCode) {
@@ -1090,7 +1104,7 @@ public class CustomUFSFolioCreationClient {
         }
 
         if (DUMMY_PASS.equals(ret)) {
-            log.info(String.format(NO_PASSWORD_ERROR, machineIdS));
+            ufsLogger.info(String.format(NO_PASSWORD_ERROR, machineIdS));
         }
         return ret;
     }

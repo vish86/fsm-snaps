@@ -16,7 +16,6 @@ import com.snaplogic.api.ConfigurationException;
 import com.snaplogic.api.ExecutionException;
 import com.snaplogic.api.InputSchemaProvider;
 import com.snaplogic.api.MetricsProvider;
-import com.snaplogic.common.SnapType;
 import com.snaplogic.common.metrics.Counter;
 import com.snaplogic.common.properties.builders.PropertyBuilder;
 import com.snaplogic.common.utilities.URLEncoder;
@@ -37,7 +36,6 @@ import com.snaplogic.snaps.uniteller.Constants.SnapCatogery;
 import com.snaplogic.snaps.uniteller.bean.AccountBean;
 import com.uniteller.support.common.IUFSConfigMgr;
 import com.uniteller.support.common.IUFSSecurityMgr;
-import com.uniteller.support.foliocreationclient.UFSFolioCreationClientException;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -57,15 +55,7 @@ import java.util.Map;
 
 import static com.snaplogic.snaps.uniteller.Constants.*;
 import static com.snaplogic.snaps.uniteller.Messages.*;
-import static com.snaplogic.snaps.uniteller.Messages.COUNTER_UNIT;
-import static com.snaplogic.snaps.uniteller.Messages.DOCUMENT_COUNTER;
-import static com.snaplogic.snaps.uniteller.Messages.ERRORMSG;
-import static com.snaplogic.snaps.uniteller.Messages.ERROR_REASON;
-import static com.snaplogic.snaps.uniteller.Messages.ERROR_RESOLUTION;
-import static com.snaplogic.snaps.uniteller.Messages.RESOURCE_DESC;
-import static com.snaplogic.snaps.uniteller.Messages.RESOURCE_LABEL;
-import static com.snaplogic.snaps.uniteller.Messages.RESOURCE_PROP;
-import static com.snaplogic.snaps.uniteller.util.Utilities.*;
+import static com.snaplogic.snaps.uniteller.util.Utilities.getDataTypes;
 
 /**
  * Abstract base class for UniTeller snap pack which contains common snap properties,
@@ -85,7 +75,6 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
     private String resourceType;
     @Inject
     private UniTellerBasicAuthAccount account;
-
     @Inject
     private URLEncoder urlEncoder;
     private static final Logger log = LoggerFactory.getLogger(BaseService.class);
@@ -103,7 +92,7 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
     @Override
     public void defineInputSchema(SchemaProvider provider) {
         for (String viewName : provider.getRegisteredViewNames()) {
-            Class classType = null;
+            Class<?> classType = null;
             try {
                 classType = Class.forName(getUFSReqClassType());
             } catch (ClassNotFoundException e) {
@@ -139,19 +128,18 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
             String UFSSecurityFilePath = urlEncoder.validateAndEncodeURI(
                     bean.getSecurityPermFilePath(), PATTERN, null).toString();
             /* instantiating USFCreationClient */
-            Class CustomUSFCreationClient = Class.forName(UFS_FOLIO_CREATION_CLIENT_PKG_URI);
-            Constructor constructor = CustomUSFCreationClient.getDeclaredConstructor(new Class[] {
+            Class<?> CustomUSFCreationClient = Class.forName(UFS_FOLIO_CREATION_CLIENT_PKG_URI);
+            Constructor<?> constructor = CustomUSFCreationClient.getDeclaredConstructor(new Class[] {
                     IUFSConfigMgr.class, IUFSSecurityMgr.class });
             Object USFCreationClientObj = constructor.newInstance(
                     CustomUFSConfigMgr.getInstance(UFSConfigFilePath),
                     CustomUFSSecurityMgr.getInstance(UFSSecurityFilePath));
             /* Preparing the request for USF */
-            Map<String, Object> map;
             Object data;
             if (document != null && (data = document.get()) != null) {
                 if (data instanceof Map) {
-                    map = (Map<String, Object>) data;
-                    Class UFSRequest = Class.forName(getUFSReqClassType());
+                    Map<String, Object> map = (Map<String, Object>) data;
+                    Class<?> UFSRequest = Class.forName(getUFSReqClassType());
                     Object UFSRequestObj = UFSRequest.newInstance();
                     Object inputFieldValue = null;
                     for (Method method : UFSRequest.getDeclaredMethods()) {
@@ -225,7 +213,7 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
             throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         Map<String, Object> map = new HashMap<String, Object>();
         /* Preparing the map to writing the values to output document */
-        Class UFSResponse = UFSResponseObj.getClass();
+        Class<? extends Object> UFSResponse = UFSResponseObj.getClass();
         for (Method method : findGetters(UFSResponse)) {
             if (method.getReturnType().isPrimitive()
                     || method.getReturnType().isAssignableFrom(String.class)

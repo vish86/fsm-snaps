@@ -1,0 +1,16 @@
+{
+   "inp":[
+      {
+         "CorrespondentCode":"",
+         "TxIdentifier":"",
+         "CorrespondentRefNumber":"",
+         "Operator":"",
+         "TxCancelType":"",
+         "ProcessingDateLocal":"",
+         "CancellationFee":0.00,
+         "Reserved1":"",
+         "Reserved2":"",
+         "Reserved3":""
+      }
+   ]
+}

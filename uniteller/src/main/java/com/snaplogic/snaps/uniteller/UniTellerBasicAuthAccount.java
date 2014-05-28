@@ -37,8 +37,8 @@ import static com.snaplogic.snaps.uniteller.Messages.SECURITY_FILEPATH_PROP;
 @Version(snap = 1)
 @AccountCategory(type = AccountType.CUSTOM)
 public class UniTellerBasicAuthAccount implements Account<AccountBean> {
-    private String configFilePath;
-    private String securityFilePath;
+    protected String configFilePath;
+    protected String securityFilePath;
 
     @Override
     public void defineProperties(PropertyBuilder propertyBuilder) {

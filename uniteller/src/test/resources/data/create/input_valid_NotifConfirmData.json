@@ -1,0 +1,13 @@
+{
+   "inp":[
+      {
+         "CorrespondentCode":"",
+         "TxIdentifier":"",
+         "CorrespondentRefNumber":"",
+         "NotificationRefNumber":"",
+         "Reserved1":"",
+         "Reserved2":"",
+         "Reserved3":""
+      }
+   ]
+}
