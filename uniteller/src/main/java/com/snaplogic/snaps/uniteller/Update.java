@@ -18,7 +18,7 @@ import static com.snaplogic.snaps.uniteller.Messages.UPDATE_LABEL;
 
 /**
  * Performs update operation in UniTeller making use of UniTeller client.
- * 
+ *
  * @author svatada
  **/
 @General(title = UPDATE_LABEL, purpose = SNAP_DESC)

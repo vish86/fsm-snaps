@@ -15,6 +15,7 @@ import com.uniteller.support.common.UFSConfigMgrException;
 import com.uniteller.support.common.UFSSecurityMgrException;
 
 import org.apache.axis.encoding.Base64;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.MessageDigest;
@@ -31,55 +33,48 @@ import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Properties;
 
-import javax.net.ssl.HttpsURLConnection;
-
+import static com.snaplogic.snaps.uniteller.Constants.DS_ALG;
 import static com.snaplogic.snaps.uniteller.Constants.DUMMY_PASS;
+import static com.snaplogic.snaps.uniteller.Constants.ENC_ALG;
+import static com.snaplogic.snaps.uniteller.Constants.MAX_PASSWORD_LENGTH;
+import static com.snaplogic.snaps.uniteller.Constants.MIN_PASSWORD_LENGTH;
+import static com.snaplogic.snaps.uniteller.Constants.NONCE;
+import static com.snaplogic.snaps.uniteller.Messages.ERR_PASSWORD_EMPTY;
 import static com.snaplogic.snaps.uniteller.Messages.ERR_URL_CONNECT;
 
-/* Custom UFS security manager
- * 
+/**
+ * Customised UFS security manager
+ *
  * @author svatada
- * */
+ */
 public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
-    private static HashMap<String, Object> instanceMap = null;
-    private static String nonce = "ItSihNsYzB495QQ6J5MXr0/O1rI=";
+    private static HashMap<String, Object> instanceMap = new HashMap<String, Object>();
     private String fileLocation = null;
-    private InputStream securityInputStream;
-    private OutputStream securityOutputStream;
-    private URLConnection urlConnection;
+    private URLConnection urlConnection = null;
     private Properties securityProps = null;
     private static final Logger log = LoggerFactory.getLogger(CustomUFSSecurityMgr.class);
-    static {
-        instanceMap = new HashMap<String, Object>();
-    }
 
     private CustomUFSSecurityMgr(String fileLocation) throws UFSSecurityMgrException {
         this.fileLocation = fileLocation;
-        try {
-            URL fileUrl = new URI(fileLocation).toURL();
-            log.debug("URL:" + fileUrl.toString());
-            this.securityInputStream = getInputStream(fileUrl);
-        } catch (FileNotFoundException e) {
-            log.error(e.getMessage(), e);
-            throw new UFSSecurityMgrException(e.getMessage());
-        } catch (Exception ex) {
-            log.error(ex.getMessage(), ex);
-            throw new UFSSecurityMgrException(ex.getMessage());
-        }
         this.securityProps = new Properties();
     }
 
-    static InputStream getInputStream(final URL fileUrl) throws IOException, UFSConfigMgrException {
-        URLConnection urlConnection = null;
-        urlConnection = fileUrl.openConnection();
-        if (urlConnection == null) {
+    private InputStream getInputStream(final URL fileUrl) throws UFSConfigMgrException {
+        try {
+            urlConnection = fileUrl.openConnection();
+            urlConnection.connect();
+            return urlConnection.getInputStream();
+        } catch (IOException e) {
             log.error(String.format(ERR_URL_CONNECT, fileUrl.getPath()));
             throw new UFSConfigMgrException(String.format(ERR_URL_CONNECT, fileUrl.getPath()));
         }
-        urlConnection.connect();
-        return urlConnection.getInputStream();
     }
 
+    /**
+     * @param filePath
+     * @return CustomUFSSecurityMgr
+     * @throws UFSSecurityMgrException
+     */
     public static IUFSSecurityMgr getInstance(String filePath) throws UFSSecurityMgrException {
         CustomUFSSecurityMgr customUFSSecurityMgr = (CustomUFSSecurityMgr) instanceMap
                 .get(filePath);
@@ -92,26 +87,32 @@ public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
         return customUFSSecurityMgr;
     }
 
+    @Override
     public String getPassword(String machineId) throws UFSSecurityMgrException {
         String passcode = null;
+        InputStream securityInputStream = null;
         synchronized (this.securityProps) {
             try {
-                this.securityProps.load(this.securityInputStream);
-            } catch (IOException e) {
+                URL fileUrl = new URI(fileLocation).toURL();
+                securityInputStream = getInputStream(fileUrl);
+                this.securityProps.load(securityInputStream);
+            } catch (IOException | URISyntaxException | UFSConfigMgrException e) {
                 log.error(e.getMessage(), e);
                 throw new UFSSecurityMgrException(e.getMessage());
             }
+            IOUtils.closeQuietly(securityInputStream);
             passcode = this.securityProps.getProperty(machineId);
         }
         return passcode;
     }
 
+    @Override
     public void changePassword(String machineId, String password) throws UFSSecurityMgrException {
+        OutputStream securityOutputStream = null;
         try {
-            if (this.securityOutputStream != null) {
-                cleanup(securityOutputStream, urlConnection);
-            }
-            initOutputStream();
+            urlConnection = new URL(this.fileLocation).openConnection();
+            urlConnection.connect();
+            securityOutputStream = urlConnection.getOutputStream();
         } catch (FileNotFoundException e) {
             log.error(e.getMessage(), e);
             throw new UFSSecurityMgrException(e.getMessage());
@@ -119,25 +120,27 @@ public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
             log.error(ex.getMessage(), ex);
             throw new UFSSecurityMgrException(ex.getMessage());
         }
-
         synchronized (this.securityProps) {
             this.securityProps.put(machineId, password);
             try {
-                this.securityProps.store(this.securityOutputStream, null);
+                this.securityProps.store(securityOutputStream, null);
             } catch (IOException e) {
                 log.error(e.getMessage(), e);
                 throw new UFSSecurityMgrException(e.getMessage());
+            } finally {
+                cleanup(securityOutputStream, urlConnection);
             }
         }
     }
 
+    @Override
     public String generatePassword() throws UFSSecurityMgrException {
         String id = null;
         try {
             byte[] byteArr = new byte[256];
-            SecureRandom secureRnd = SecureRandom.getInstance("SHA1PRNG");
+            SecureRandom secureRnd = SecureRandom.getInstance(ENC_ALG);
             secureRnd.setSeed(new Long(System.currentTimeMillis()).toString().getBytes());
-            MessageDigest md = MessageDigest.getInstance("MD5");
+            MessageDigest md = MessageDigest.getInstance(DS_ALG);
             secureRnd.nextBytes(byteArr);
             md.update(byteArr);
             md.update(new Long(System.currentTimeMillis()).toString().getBytes());
@@ -150,13 +153,14 @@ public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
         return id;
     }
 
+    @Override
     public String encryptPassword(String password) throws UFSSecurityMgrException {
         String id = null;
         try {
-            if ((password == null) || (password.trim().length() == 0)) {
-                throw new Exception("Password is null or empty");
+            if (StringUtils.isEmpty(password)) {
+                throw new Exception(ERR_PASSWORD_EMPTY);
             }
-            id = password + nonce;
+            id = password + NONCE;
             id = Base64.encode(id.getBytes());
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -165,15 +169,16 @@ public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
         return id;
     }
 
+    @Override
     public String decryptPassword(String password) throws UFSSecurityMgrException {
         String id = null;
         try {
-            if ((password == null) || (password.trim().length() == 0)) {
-                throw new Exception("Password is null or empty");
+            if (StringUtils.isEmpty(password)) {
+                throw new Exception(ERR_PASSWORD_EMPTY);
             }
             byte[] pwdBytes = Base64.decode(password);
             String pwdStr = new String(pwdBytes);
-            int nIndex = pwdStr.indexOf(nonce);
+            int nIndex = pwdStr.indexOf(NONCE);
             if (nIndex != -1)
                 id = pwdStr.substring(0, nIndex);
             else
@@ -185,41 +190,24 @@ public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
         return id;
     }
 
-    public static String getPasswordFromEncryptedPassword(IUFSSecurityMgr securityMgr,
+    @SuppressWarnings("unused")
+    private static String getPasswordFromEncryptedPassword(IUFSSecurityMgr securityMgr,
             String encryptedPassword) throws UFSSecurityMgrException {
         String passcode = null;
-        if (StringUtils.isEmpty(encryptedPassword.trim())) {
+        if (StringUtils.isEmpty(encryptedPassword)) {
             passcode = DUMMY_PASS;
         } else {
             passcode = securityMgr.decryptPassword(encryptedPassword);
-            if ((passcode.length() < 8) || (passcode.length() > 16)) {
+            if ((passcode.length() < MIN_PASSWORD_LENGTH)
+                    || (passcode.length() > MAX_PASSWORD_LENGTH)) {
                 passcode = DUMMY_PASS;
             }
         }
         return passcode;
     }
 
-    private void initOutputStream() throws IOException {
-        urlConnection = new URL(this.fileLocation).openConnection();
-        if (urlConnection != null) {
-            urlConnection.connect();
-            securityOutputStream = urlConnection.getOutputStream();
-        }
-    }
-
     private void cleanup(OutputStream outputStream, URLConnection urlConnection) {
-        if (outputStream != null) {
-            try {
-                outputStream.close();
-            } catch (IOException e) {
-
-            }
-        }
-        if (urlConnection != null) {
-            try {
-                ((HttpsURLConnection) urlConnection).disconnect();
-            } catch (Exception e) {
-            }
-        }
+        IOUtils.closeQuietly(outputStream);
+        IOUtils.close(urlConnection);
     }
 }

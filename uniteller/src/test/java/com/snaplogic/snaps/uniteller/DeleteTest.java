@@ -22,9 +22,8 @@ import org.junit.runner.RunWith;
 
 import java.util.Map;
 
-import static junit.framework.Assert.assertNotSame;
-
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotSame;
 import static junit.framework.Assert.assertNull;
 
 /**
@@ -35,7 +34,9 @@ import static junit.framework.Assert.assertNull;
 @SuppressWarnings("unchecked")
 @RunWith(SnapTestRunner.class)
 public class DeleteTest extends ApiTest {
-    @TestFixture(snap = Delete.class, outputs = "out1", errors = "err1", input = "data/delete/input_valid_CancelTxData.json", properties = "data/delete/property_CancelTx.json")
+    @TestFixture(snap = Delete.class, outputs = "out1", errors = "err1",
+            input = "data/delete/input_valid_CancelTxData.json",
+            properties = "data/delete/property_CancelTx.json")
     public void testCancelTxValidData(TestSetup setup) throws Exception {
         setup.inject().fieldName("account").dependency(account).add();
         TestResult testResult = setup.test();
@@ -45,11 +46,9 @@ public class DeleteTest extends ApiTest {
         Snap snap = testResult.getSnap();
         assertEquals(Delete.class, snap.getClass());
         // only 1 document to the output view
-        // only 1 document to the output view
         OutputRecorder outputRecorder = testResult.getOutputViewByName("out1");
         OutputRecorder errRecorder = testResult.getErrorViewByName("err1");
         assertEquals(1, outputRecorder.getDocumentCount() + errRecorder.getDocumentCount());
-        // status code = 200 meaning "OK"
         if (outputRecorder.getDocumentCount() > 0) {
             Document document = outputRecorder.getRecordedDocuments().get(0);
             Map<String, Object> data = document.get(Map.class);
@@ -58,7 +57,8 @@ public class DeleteTest extends ApiTest {
         }
     }
 
-    @TestFixture(snap = Delete.class, input = "data/delete/input_invalid_CancelTxData.json", outputs = "out1", errors = "err1", properties = "data/delete/property_CancelTx.json")
+    @TestFixture(snap = Delete.class, input = "data/delete/input_invalid_CancelTxData.json",
+            outputs = "out1", errors = "err1", properties = "data/delete/property_CancelTx.json")
     public void testCancelTxInvalidData(TestSetup setup) throws Exception {
         setup.inject().fieldName("account").dependency(account).add();
         TestResult testResult = setup.test();
@@ -67,7 +67,6 @@ public class DeleteTest extends ApiTest {
         // check if it is delete Snap
         Snap snap = testResult.getSnap();
         assertEquals(Delete.class, snap.getClass());
-        // only one document to the output view
         // only one document to the output view
         OutputRecorder outputRecorder = testResult.getOutputViewByName("out1");
         assertEquals(0, outputRecorder.getDocumentCount());

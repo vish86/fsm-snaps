@@ -34,6 +34,7 @@ import com.snaplogic.snap.schema.api.SchemaBuilder;
 import com.snaplogic.snap.schema.api.SchemaProvider;
 import com.snaplogic.snaps.uniteller.Constants.SnapCatogery;
 import com.snaplogic.snaps.uniteller.bean.AccountBean;
+import com.snaplogic.snaps.uniteller.util.Utilities;
 import com.uniteller.support.common.IUFSConfigMgr;
 import com.uniteller.support.common.IUFSSecurityMgr;
 
@@ -55,12 +56,10 @@ import java.util.Map;
 
 import static com.snaplogic.snaps.uniteller.Constants.*;
 import static com.snaplogic.snaps.uniteller.Messages.*;
-import static com.snaplogic.snaps.uniteller.util.Utilities.getDataTypes;
 
 /**
- * Abstract base class for UniTeller snap pack which contains common snap properties,
- * authentication.
- * 
+ * Abstract base class for UniTeller snap pack which contains common snap properties, core logic.
+ *
  * @author svatada
  */
 @Inputs(min = 1, max = 1, accepts = { ViewType.DOCUMENT })
@@ -74,6 +73,8 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
     private Counter counter;
     private String resourceType;
     @Inject
+    Utilities util;
+    @Inject
     private UniTellerBasicAuthAccount account;
     @Inject
     private URLEncoder urlEncoder;
@@ -86,24 +87,23 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
     @Override
     public void defineProperties(final PropertyBuilder propertyBuilder) {
         propertyBuilder.describe(RESOURCE_PROP, RESOURCE_LABEL, RESOURCE_DESC)
-                .withAllowedValues(RESOUCE_LIST.get(getSnapType().toString())).add();
+                .withAllowedValues(RESOUCE_LIST.get(getSnapType().toString())).required().add();
     }
 
     @Override
     public void defineInputSchema(SchemaProvider provider) {
+        Class<?> classType = null;
+        try {
+            classType = Class.forName(getUFSReqClassType());
+        } catch (ClassNotFoundException e) {
+            log.error(e.getMessage(), e);
+        }
         for (String viewName : provider.getRegisteredViewNames()) {
-            Class<?> classType = null;
-            try {
-                classType = Class.forName(getUFSReqClassType());
-            } catch (ClassNotFoundException e) {
-                log.error(e.getMessage(), e);
-            }
             SchemaBuilder schemaBuilder = provider.getSchemaBuilder(viewName);
             for (Method method : findSetters(classType)) {
-                schemaBuilder.withChildSchema(provider.createSchema(getDataTypes(method), method
+                schemaBuilder.withChildSchema(provider.createSchema(util.getDataTypes(method), method
                         .getName().substring(3)));
             }
-
             schemaBuilder.build();
         }
     }
@@ -129,8 +129,9 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
                     bean.getSecurityPermFilePath(), PATTERN, null).toString();
             /* instantiating USFCreationClient */
             Class<?> CustomUSFCreationClient = Class.forName(UFS_FOLIO_CREATION_CLIENT_PKG_URI);
-            Constructor<?> constructor = CustomUSFCreationClient.getDeclaredConstructor(new Class[] {
-                    IUFSConfigMgr.class, IUFSSecurityMgr.class });
+            Constructor<?> constructor = CustomUSFCreationClient
+                    .getDeclaredConstructor(new Class[] { IUFSConfigMgr.class,
+                            IUFSSecurityMgr.class });
             Object USFCreationClientObj = constructor.newInstance(
                     CustomUFSConfigMgr.getInstance(UFSConfigFilePath),
                     CustomUFSSecurityMgr.getInstance(UFSSecurityFilePath));
@@ -142,14 +143,11 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
                     Class<?> UFSRequest = Class.forName(getUFSReqClassType());
                     Object UFSRequestObj = UFSRequest.newInstance();
                     Object inputFieldValue = null;
+                    Calendar cal = Calendar.getInstance();
                     for (Method method : UFSRequest.getDeclaredMethods()) {
                         if (isSetter(method)
                                 && (inputFieldValue = map.get(method.getName().substring(3))) != null) {
                             try {
-                                log.debug(method.getName() + " "
-                                        + method.getGenericParameterTypes().length + " "
-                                        + method.getGenericParameterTypes()[0] + " "
-                                        + inputFieldValue);
                                 if (inputFieldValue instanceof String) {
                                     method.invoke(UFSRequest.cast(UFSRequestObj),
                                             String.valueOf(inputFieldValue));
@@ -160,7 +158,6 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
                                     method.invoke(UFSRequest.cast(UFSRequestObj),
                                             ((BigInteger) inputFieldValue).intValue());
                                 } else if (inputFieldValue instanceof Date) {
-                                    Calendar cal = Calendar.getInstance();
                                     cal.setTime(((Date) inputFieldValue));
                                     method.invoke(UFSRequest.cast(UFSRequestObj), cal);
                                 }
@@ -170,8 +167,6 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
                             } catch (InvocationTargetException ite) {
                                 writeToErrorView(ite.getTargetException().getMessage(),
                                         ite.getMessage(), ERROR_RESOLUTION, ite);
-                            } catch (Exception ex) {
-                                writeToErrorView(ERRORMSG, ex.getMessage(), ERROR_RESOLUTION, ex);
                             }
                         }
                     }
@@ -180,16 +175,13 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
                     try {
                         Method creationClientMethod = CustomUSFCreationClient.getMethod(
                                 getCamelCaseForMethod(resourceType), UFSRequest);
-                        UFSResponseObj = creationClientMethod.invoke(
-                                CustomUSFCreationClient.cast(USFCreationClientObj),
+                        UFSResponseObj = creationClientMethod.invoke(USFCreationClientObj,
                                 UFSRequest.cast(UFSRequestObj));
                     } catch (IllegalArgumentException iae) {
                         writeToErrorView(ILLEGAL_ARGS_EXE, iae.getMessage(), ERROR_RESOLUTION, iae);
                     } catch (InvocationTargetException ite) {
                         writeToErrorView(ite.getTargetException().getMessage(), ite.getMessage(),
                                 ERROR_RESOLUTION, ite);
-                    } catch (Exception ex) {
-                        writeToErrorView(ERRORMSG, ex.getMessage(), ERROR_RESOLUTION, ex);
                     }
                     if (null != UFSResponseObj) {
                         outputViews.write(documentUtility
@@ -197,22 +189,33 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
                         counter.inc();
                     }
                 } else {
-                    writeToErrorView(000, NO_DATA_WARNING, NO_DATA_REASON, NO_DATA_RESOLUTION);
+                    writeToErrorView(NO_DATA_ERRMSG, NO_DATA_WARNING, NO_DATA_REASON,
+                            NO_DATA_RESOLUTION);
                 }
             }
         } catch (Exception ex) {
-            writeToErrorView(ERRORMSG, ERROR_REASON, ERROR_RESOLUTION, ex);
+            writeToErrorView(ERRORMSG, ex.getMessage(), ERROR_RESOLUTION, ex);
         }
     }
 
     @Override
     public void cleanup() throws ExecutionException {
+        // NOOP
     }
 
+    /**
+     * Process all the nested UFS response objects
+     *
+     * @param UFSResponseObj
+     * @return Map
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     * @throws InvocationTargetException
+     */
     public Map<String, Object> processResponseObj(Object UFSResponseObj)
             throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         Map<String, Object> map = new HashMap<String, Object>();
-        /* Preparing the map to writing the values to output document */
+        /* Preparing the map to write the values to output */
         Class<? extends Object> UFSResponse = UFSResponseObj.getClass();
         for (Method method : findGetters(UFSResponse)) {
             if (method.getReturnType().isPrimitive()
@@ -223,7 +226,6 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
                 map.put(method.getName().substring(3),
                         processResponseObj(method.invoke(UFSResponseObj, null)));
             }
-
         }
         return map;
     }
@@ -242,6 +244,7 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
     /*
      * Returns absolute class type for UFS response object
      */
+    @SuppressWarnings("unused")
     private String getUFSRespClassType() {
         return new StringBuilder().append(UNITELLER_PKG_PREFIX).append(resourceType)
                 .append(UNITELLER_RESP_TAG).toString();
@@ -261,7 +264,7 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
         log.error(ex.getMessage(), ex);
         Map<String, Object> map = new HashMap<String, Object>();
         map.put(ERROR_TAG, errMsg);
-        map.put(MESSAGE_TAG, ex.getMessage());
+        map.put(MESSAGE_TAG, ex.getLocalizedMessage());
         map.put(REASON_TAG, errReason);
         map.put(RESOLUTION_TAG, errResoulution);
         SnapDataException snapException = new SnapDataException(documentUtility.newDocument(map),
@@ -270,10 +273,10 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
     }
 
     /* Writes the error records to error view */
-    private void writeToErrorView(final int httpErrCode, final String errReason,
+    private void writeToErrorView(final String errMsg, final String errReason,
             final String errResoulution, final String errResponse) {
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put(ERROR_TAG, httpErrCode);
+        map.put(ERROR_TAG, errMsg);
         map.put(MESSAGE_TAG, errResponse);
         map.put(REASON_TAG, errReason);
         map.put(RESOLUTION_TAG, errResoulution);
@@ -288,9 +291,11 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
     static ArrayList<Method> findSetters(Class<?> classType) {
         ArrayList<Method> list = new ArrayList<Method>();
         Method[] methods = classType.getDeclaredMethods();
-        for (Method method : methods)
-            if (isSetter(method))
+        for (Method method : methods) {
+            if (isSetter(method)) {
                 list.add(method);
+            }
+        }
         return list;
     }
 
@@ -300,9 +305,11 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
     static ArrayList<Method> findGetters(Class<?> c) {
         ArrayList<Method> list = new ArrayList<Method>();
         Method[] methods = c.getDeclaredMethods();
-        for (Method method : methods)
-            if (isGetter(method))
+        for (Method method : methods) {
+            if (isGetter(method)) {
                 list.add(method);
+            }
+        }
         return list;
     }
 
@@ -320,9 +327,10 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
      */
     static boolean isGetter(Method method) {
         if (Modifier.isPublic(method.getModifiers()) && method.getParameterTypes().length == 0) {
-            if (method.getName().matches(GET_REGEX) && !method.getReturnType().equals(void.class))
+            String methodName = method.getName();
+            if (methodName.matches(GET_REGEX) && !method.getReturnType().equals(void.class))
                 return true;
-            if (method.getName().matches(IS_REGEX) && method.getReturnType().equals(boolean.class))
+            if (methodName.matches(IS_REGEX) && method.getReturnType().equals(boolean.class))
                 return true;
         }
         return false;

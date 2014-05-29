@@ -30,7 +30,7 @@ import static com.snaplogic.snaps.uniteller.Messages.SECURITY_FILEPATH_PROP;
 
 /**
  * custom account for the UniTeller snap.
- * 
+ *
  * @author svatada
  */
 @General(title = BASIC_AUTH_ACCOUNT_TITLE)
@@ -43,10 +43,10 @@ public class UniTellerBasicAuthAccount implements Account<AccountBean> {
     @Override
     public void defineProperties(PropertyBuilder propertyBuilder) {
         propertyBuilder.describe(CONFIG_FILEPATH_PROP, CONFIG_FILEPATH_LABEL, CONFIG_FILEPATH_DESC)
-                .fileBrowsing().add();
+                .fileBrowsing().required().add();
         propertyBuilder
                 .describe(SECURITY_FILEPATH_PROP, SECURITY_FILEPATH_LABEL, SECURITY_FILEPATH_DESC)
-                .fileBrowsing().add();
+                .fileBrowsing().required().add();
     }
 
     @Override

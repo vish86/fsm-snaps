@@ -68,7 +68,7 @@
 						<goals>
 							<goal>generate-schema</goal>
 						</goals>
-						<configuration></configuration>
+						<configuration />
 					</execution>
 				</executions>
 			</plugin>
@@ -161,8 +161,8 @@
 			com.snaplogic.snaps.uniteller.Delete
 		</snap.classes>
 		<key.prefix>local-snapadmin</key.prefix>
-		<user>satish@snaplogic.com</user>
-		<path>snaplogic/satish</path>
+		<user>snapadmin@snaplogic.com</user>
+		<path>snaplogic</path>
 		<sl_build>SNAPSHOT</sl_build>
 		<VERSION>1</VERSION>
 	</properties>
@@ -170,19 +170,16 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.11</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.easymock</groupId>
 			<artifactId>easymock</artifactId>
-			<version>3.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.snaplogic</groupId>
 			<artifactId>jtest</artifactId>
-			<version>4.0</version>
 			<scope>test</scope>
 			<exclusions>
 				<exclusion>
@@ -191,66 +188,54 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<!-- SDK dependencies -->
 		<dependency>
 			<groupId>com.snaplogic</groupId>
 			<artifactId>jsdk</artifactId>
-			<version>4.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.snaplogic</groupId>
 			<artifactId>jutils</artifactId>
-			<version>4.0</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- Other libraries -->
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>14.0.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.inject</groupId>
 			<artifactId>guice</artifactId>
-			<version>3.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.inject.extensions</groupId>
 			<artifactId>guice-multibindings</artifactId>
-			<version>3.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
-			<version>2.0.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.0.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-joda</artifactId>
-			<version>2.1.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.7.4</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>2.4</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
