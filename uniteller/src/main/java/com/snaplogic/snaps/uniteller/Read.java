@@ -18,7 +18,7 @@ import static com.snaplogic.snaps.uniteller.Messages.SNAP_DESC;
 
 /**
  * Performs read operation in UniTeller making use of UniTeller client.
- * 
+ *
  * @author svatada
  **/
 @General(title = READ_LABEL, purpose = SNAP_DESC)

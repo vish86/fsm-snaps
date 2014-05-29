@@ -30,7 +30,7 @@ import static com.snaplogic.snaps.uniteller.Messages.SECURITY_FILEPATH_PROP;
 
 /**
  * custom account for the UniTeller snap.
- * 
+ *
  * @author svatada
  */
 @General(title = BASIC_AUTH_ACCOUNT_TITLE)

@@ -28,11 +28,11 @@ import javax.net.ssl.HttpsURLConnection;
 
 import static com.snaplogic.snaps.uniteller.Messages.ERR_URL_CONNECT;
 
-/*
+/**
  * Custom UFS configuration manager
- * 
+ *
  * @author svatada
- * */
+ */
 public class CustomUFSConfigMgr implements IUFSConfigMgr {
     private static HashMap<String, Object> instanceMap = null;
     private Properties configProperties = null;
@@ -46,7 +46,6 @@ public class CustomUFSConfigMgr implements IUFSConfigMgr {
         try {
             URI fileUri = new URI(fileLocation);
             URL fileUrl = fileUri.toURL();
-            log.debug("URL:" + fileUrl.toString());
             this.configProperties = new Properties();
             this.configProperties.load(getInputStream(fileUrl));
         } catch (IOException e) {
@@ -65,11 +64,15 @@ public class CustomUFSConfigMgr implements IUFSConfigMgr {
         }
     }
 
+    /**
+     * @param filePath
+     * @return CustomUFSConfigMgr
+     * @throws UFSConfigMgrException
+     */
     public static CustomUFSConfigMgr getInstance(String filePath) throws UFSConfigMgrException {
         CustomUFSConfigMgr customUFSConfigMgr = (CustomUFSConfigMgr) instanceMap.get(filePath);
         if (customUFSConfigMgr == null) {
             synchronized (CustomUFSConfigMgr.class) {
-                log.debug(filePath);
                 customUFSConfigMgr = new CustomUFSConfigMgr(filePath);
                 instanceMap.put(filePath, customUFSConfigMgr);
             }
@@ -87,6 +90,7 @@ public class CustomUFSConfigMgr implements IUFSConfigMgr {
         return urlConnection.getInputStream();
     }
 
+    @Override
     public String getProperty(String propertyName) throws UFSConfigMgrException {
         return this.configProperties.getProperty(propertyName);
     }

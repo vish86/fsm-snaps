@@ -22,9 +22,8 @@ import org.junit.runner.RunWith;
 
 import java.util.Map;
 
-import static junit.framework.Assert.assertNotSame;
-
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotSame;
 import static junit.framework.Assert.assertNull;
 
 /**

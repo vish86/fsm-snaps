@@ -12,48 +12,42 @@ package com.snaplogic.snaps.uniteller.bean;
 
 /**
  * Simple java bean class to hold account information.
- * 
+ *
  * @author svatada
  */
 public class AccountBean {
-	private String configFilePath;
-	private String password;
-	private String securityPermFilePath;
-	private String username;
+    private String configFilePath;
+    private String securityPermFilePath;
 
-	public String getConfigFilePath() {
-		return configFilePath;
-	}
+    /**
+     * @return configFilePath
+     */
+    public String getConfigFilePath() {
+        return configFilePath;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    /**
+     * @return securityPermFilePath
+     */
+    public String getSecurityPermFilePath() {
+        return securityPermFilePath;
+    }
 
-	public String getSecurityPermFilePath() {
-		return securityPermFilePath;
-	}
+    /**
+     * @param configFilePath
+     * @return AccountBean
+     */
+    public AccountBean setConfigFilePath(String configFilePath) {
+        this.configFilePath = configFilePath;
+        return this;
+    }
 
-	public String getUsername() {
-		return username;
-	}
-
-	public AccountBean setConfigFilePath(String configFilePath) {
-		this.configFilePath = configFilePath;
-		return this;
-	}
-
-	public AccountBean setPassword(String password) {
-		this.password = password;
-		return this;
-	}
-
-	public AccountBean setSecurityFilePath(String securityFilePath) {
-		this.securityPermFilePath = securityFilePath;
-		return this;
-	}
-
-	public AccountBean setUsername(String username) {
-		this.username = username;
-		return this;
-	}
+    /**
+     * @param securityFilePath
+     * @return AccountBean
+     */
+    public AccountBean setSecurityFilePath(String securityFilePath) {
+        this.securityPermFilePath = securityFilePath;
+        return this;
+    }
 }

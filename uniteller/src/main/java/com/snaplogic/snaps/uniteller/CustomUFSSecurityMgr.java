@@ -33,16 +33,22 @@ import java.util.Properties;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import static com.snaplogic.snaps.uniteller.Constants.DS_ALG;
 import static com.snaplogic.snaps.uniteller.Constants.DUMMY_PASS;
+import static com.snaplogic.snaps.uniteller.Constants.ENC_ALG;
+import static com.snaplogic.snaps.uniteller.Constants.MAX_PASSWORD_LENGTH;
+import static com.snaplogic.snaps.uniteller.Constants.MIN_PASSWORD_LENGTH;
+import static com.snaplogic.snaps.uniteller.Constants.nonce;
+import static com.snaplogic.snaps.uniteller.Messages.ERR_PASSWORD_EMPTY;
 import static com.snaplogic.snaps.uniteller.Messages.ERR_URL_CONNECT;
 
-/* Custom UFS security manager
- * 
+/**
+ * Customised UFS security manager
+ *
  * @author svatada
- * */
+ */
 public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
     private static HashMap<String, Object> instanceMap = null;
-    private static String nonce = "ItSihNsYzB495QQ6J5MXr0/O1rI=";
     private String fileLocation = null;
     private InputStream securityInputStream;
     private OutputStream securityOutputStream;
@@ -57,7 +63,6 @@ public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
         this.fileLocation = fileLocation;
         try {
             URL fileUrl = new URI(fileLocation).toURL();
-            log.debug("URL:" + fileUrl.toString());
             this.securityInputStream = getInputStream(fileUrl);
         } catch (FileNotFoundException e) {
             log.error(e.getMessage(), e);
@@ -80,6 +85,11 @@ public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
         return urlConnection.getInputStream();
     }
 
+    /**
+     * @param filePath
+     * @return CustomUFSSecurityMgr
+     * @throws UFSSecurityMgrException
+     */
     public static IUFSSecurityMgr getInstance(String filePath) throws UFSSecurityMgrException {
         CustomUFSSecurityMgr customUFSSecurityMgr = (CustomUFSSecurityMgr) instanceMap
                 .get(filePath);
@@ -92,6 +102,7 @@ public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
         return customUFSSecurityMgr;
     }
 
+    @Override
     public String getPassword(String machineId) throws UFSSecurityMgrException {
         String passcode = null;
         synchronized (this.securityProps) {
@@ -106,6 +117,7 @@ public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
         return passcode;
     }
 
+    @Override
     public void changePassword(String machineId, String password) throws UFSSecurityMgrException {
         try {
             if (this.securityOutputStream != null) {
@@ -131,13 +143,14 @@ public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
         }
     }
 
+    @Override
     public String generatePassword() throws UFSSecurityMgrException {
         String id = null;
         try {
             byte[] byteArr = new byte[256];
-            SecureRandom secureRnd = SecureRandom.getInstance("SHA1PRNG");
+            SecureRandom secureRnd = SecureRandom.getInstance(ENC_ALG);
             secureRnd.setSeed(new Long(System.currentTimeMillis()).toString().getBytes());
-            MessageDigest md = MessageDigest.getInstance("MD5");
+            MessageDigest md = MessageDigest.getInstance(DS_ALG);
             secureRnd.nextBytes(byteArr);
             md.update(byteArr);
             md.update(new Long(System.currentTimeMillis()).toString().getBytes());
@@ -150,11 +163,12 @@ public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
         return id;
     }
 
+    @Override
     public String encryptPassword(String password) throws UFSSecurityMgrException {
         String id = null;
         try {
             if ((password == null) || (password.trim().length() == 0)) {
-                throw new Exception("Password is null or empty");
+                throw new Exception(ERR_PASSWORD_EMPTY);
             }
             id = password + nonce;
             id = Base64.encode(id.getBytes());
@@ -165,11 +179,12 @@ public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
         return id;
     }
 
+    @Override
     public String decryptPassword(String password) throws UFSSecurityMgrException {
         String id = null;
         try {
             if ((password == null) || (password.trim().length() == 0)) {
-                throw new Exception("Password is null or empty");
+                throw new Exception(ERR_PASSWORD_EMPTY);
             }
             byte[] pwdBytes = Base64.decode(password);
             String pwdStr = new String(pwdBytes);
@@ -185,14 +200,16 @@ public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
         return id;
     }
 
-    public static String getPasswordFromEncryptedPassword(IUFSSecurityMgr securityMgr,
+    @SuppressWarnings("unused")
+    private static String getPasswordFromEncryptedPassword(IUFSSecurityMgr securityMgr,
             String encryptedPassword) throws UFSSecurityMgrException {
         String passcode = null;
         if (StringUtils.isEmpty(encryptedPassword.trim())) {
             passcode = DUMMY_PASS;
         } else {
             passcode = securityMgr.decryptPassword(encryptedPassword);
-            if ((passcode.length() < 8) || (passcode.length() > 16)) {
+            if ((passcode.length() < MIN_PASSWORD_LENGTH)
+                    || (passcode.length() > MAX_PASSWORD_LENGTH)) {
                 passcode = DUMMY_PASS;
             }
         }
@@ -212,13 +229,14 @@ public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
             try {
                 outputStream.close();
             } catch (IOException e) {
-
+                log.warn(e.getMessage());
             }
         }
         if (urlConnection != null) {
             try {
                 ((HttpsURLConnection) urlConnection).disconnect();
             } catch (Exception e) {
+                log.warn(e.getMessage());
             }
         }
     }

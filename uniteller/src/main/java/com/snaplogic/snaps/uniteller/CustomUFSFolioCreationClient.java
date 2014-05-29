@@ -42,8 +42,8 @@ import static com.snaplogic.snaps.uniteller.Messages.NULLREQUEST;
 import static com.snaplogic.snaps.uniteller.util.Utilities.*;
 
 /**
- * Customized UFS folio creation client
- * 
+ * Customised UFS folio creation client
+ *
  * @author svatada
  */
 public class CustomUFSFolioCreationClient {
@@ -55,21 +55,24 @@ public class CustomUFSFolioCreationClient {
     private static String companyIdS;
     private static String machineIdS;
     private static String fclAPIURLSuffix;
-    private IUFSConfigMgr configMgr;
-    private IUFSSecurityMgr securityMgr;
+    private final IUFSConfigMgr configMgr;
+    private final IUFSSecurityMgr securityMgr;
 
+    /**
+     * @param confMgr
+     * @param securityMgr
+     * @throws UFSFolioCreationClientException
+     */
     public CustomUFSFolioCreationClient(IUFSConfigMgr confMgr, IUFSSecurityMgr securityMgr)
             throws UFSFolioCreationClientException {
         if (confMgr == null) {
             throw new UFSFolioCreationClientException(GENERAL_SYSTEM_ERROR, String.format(
                     NULLREQUEST, IUFSConfigMgr.class.getName()));
         }
-
         if (securityMgr == null) {
             throw new UFSFolioCreationClientException(GENERAL_SYSTEM_ERROR, String.format(
                     NULLREQUEST, IUFSSecurityMgr.class.getName()));
         }
-
         this.configMgr = confMgr;
         this.securityMgr = securityMgr;
         try {
@@ -81,31 +84,33 @@ public class CustomUFSFolioCreationClient {
         }
     }
 
+    /**
+     * @param request
+     * @return ufsCreateSCTxResp
+     * @throws UFSFolioCreationClientException
+     */
     public UFSCreateSCTxResp createSCTx(UFSCreateSCTxReq request)
             throws UFSFolioCreationClientException {
         if (request == null) {
             throw new UFSFolioCreationClientException(GENERAL_SYSTEM_ERROR, String.format(
                     NULLREQUEST, UFSCreateSCTxReq.class.getName()));
         }
-        String txContext = GlobalFunctions.generateId(true, TXCONTEXTPREFIX, null, null);
+        String txContext = GlobalFunctions.generateId(true, TX_CONTEXT_PREFIX, null, null);
         UFSClientLogger.pushContext(txContext);
         try {
             if ((request.getTxIdentifier() != null)
-                    && (request.getTxIdentifier().equals(PROXYTXIDENTIFIER))) {
+                    && (request.getTxIdentifier().equals(PROXY_TX_IDENTIFIER))) {
                 return createSCTxProxy(request);
             }
-
             String companyId = null;
             CreateSCTxResponse createSCTxResponse = null;
             UFSCreateSCTxResp ufsCreateSCTxResp = null;
             String responseCode = null;
-
             if (request.getCorrespondentCode() == null) {
                 companyId = companyIdS;
             } else {
                 companyId = request.getCorrespondentCode();
             }
-
             logUFSCreateSCTxReq(request);
             CreateSCTxRequest createSCTxReq = convertToCreateSCTxRequestObject(request, companyId,
                     organizationIdS);
@@ -113,19 +118,16 @@ public class CustomUFSFolioCreationClient {
             synchronized (this.securityMgr) {
                 encryptedPassword = this.securityMgr.getPassword(machineIdS);
             }
-
             if (encryptedPassword == null) {
                 throw new UFSUnknownMachineIdException(String.format(NO_PASSWORD_FOR_MACHINE_ID,
                         machineIdS));
             }
-
             String oldPassword = getPasswordFromEncryptedPassword(encryptedPassword);
             createSCTxReq.setMachineId(machineIdS);
             createSCTxReq.setMachinePassword(oldPassword);
             createSCTxResponse = sendCreateSCTxRequest(createSCTxReq);
             responseCode = createSCTxResponse.getResponseCode();
-
-            if (CHANGEPASSWORDERRORCODE.equals(responseCode)) {
+            if (CHANGE_PASSWORD_ERROR_CODE.equals(responseCode)) {
                 responseCode = sendChangePassword(oldPassword, companyId, companyId);
                 if (!isSuccessOrWarning(responseCode)) {
                     ufsCreateSCTxResp = new UFSCreateSCTxResp();
@@ -137,13 +139,11 @@ public class CustomUFSFolioCreationClient {
                 synchronized (this.securityMgr) {
                     encryptedPassword = this.securityMgr.getPassword(machineIdS);
                 }
-
                 String newPassword = this.securityMgr.decryptPassword(encryptedPassword);
                 createSCTxReq.setMachinePassword(newPassword);
                 createSCTxResponse = sendCreateSCTxRequest(createSCTxReq);
                 responseCode = createSCTxResponse.getResponseCode();
             }
-
             if (!isSuccessOrWarning(responseCode)) {
                 ufsCreateSCTxResp = new UFSCreateSCTxResp();
                 ufsCreateSCTxResp.setResponseCode(responseCode);
@@ -151,7 +151,6 @@ public class CustomUFSFolioCreationClient {
                 logUFSCreateSCTxResp(ufsCreateSCTxResp);
                 return ufsCreateSCTxResp;
             }
-
             ufsCreateSCTxResp = convertToUFSCreateSCTxRespObject(createSCTxResponse);
             logUFSCreateSCTxResp(ufsCreateSCTxResp);
             return ufsCreateSCTxResp;
@@ -165,31 +164,33 @@ public class CustomUFSFolioCreationClient {
         }
     }
 
+    /**
+     * @param request
+     * @return ufsConfirmSCTxResp
+     * @throws UFSFolioCreationClientException
+     */
     public UFSConfirmSCTxResp confirmSCTx(UFSConfirmSCTxReq request)
             throws UFSFolioCreationClientException {
         if (request == null) {
             throw new UFSFolioCreationClientException(GENERAL_SYSTEM_ERROR, String.format(
                     NULLREQUEST, UFSConfirmSCTxReq.class.getName()));
         }
-        String txContext = GlobalFunctions.generateId(true, TXCONTEXTPREFIX, null, null);
+        String txContext = GlobalFunctions.generateId(true, TX_CONTEXT_PREFIX, null, null);
         UFSClientLogger.pushContext(txContext);
         try {
             if ((request.getTxIdentifier() != null)
-                    && (request.getTxIdentifier().equals(PROXYTXIDENTIFIER))) {
+                    && (request.getTxIdentifier().equals(PROXY_TX_IDENTIFIER))) {
                 return confirmSCTxProxy(request);
             }
-
             String companyId = null;
             ConfirmSCTxResponse confirmSCTxResponse = null;
             UFSConfirmSCTxResp ufsConfirmSCTxResp = null;
             String responseCode = null;
-
             if (request.getCorrespondentCode() == null) {
                 companyId = companyIdS;
             } else {
                 companyId = request.getCorrespondentCode();
             }
-
             logUFSConfirmSCTxReq(request);
             ConfirmSCTxRequest confirmSCTxReq = convertToConfirmSCTxRequestObject(request,
                     companyId, organizationIdS);
@@ -197,7 +198,6 @@ public class CustomUFSFolioCreationClient {
             synchronized (this.securityMgr) {
                 encryptedPassword = this.securityMgr.getPassword(machineIdS);
             }
-
             if (encryptedPassword == null) {
                 throw new UFSUnknownMachineIdException(String.format(NO_PASSWORD_FOR_MACHINE_ID,
                         machineIdS));
@@ -207,8 +207,7 @@ public class CustomUFSFolioCreationClient {
             confirmSCTxReq.setMachinePassword(oldPassword);
             confirmSCTxResponse = sendConfirmSCTxRequest(confirmSCTxReq);
             responseCode = confirmSCTxResponse.getResponseCode();
-
-            if (CHANGEPASSWORDERRORCODE.equals(responseCode)) {
+            if (CHANGE_PASSWORD_ERROR_CODE.equals(responseCode)) {
                 responseCode = sendChangePassword(oldPassword, companyId, companyId);
                 if (!isSuccessOrWarning(responseCode)) {
                     ufsConfirmSCTxResp = new UFSConfirmSCTxResp();
@@ -220,13 +219,11 @@ public class CustomUFSFolioCreationClient {
                 synchronized (this.securityMgr) {
                     encryptedPassword = this.securityMgr.getPassword(machineIdS);
                 }
-
                 String newPassword = this.securityMgr.decryptPassword(encryptedPassword);
                 confirmSCTxReq.setMachinePassword(newPassword);
                 confirmSCTxResponse = sendConfirmSCTxRequest(confirmSCTxReq);
                 responseCode = confirmSCTxResponse.getResponseCode();
             }
-
             if (!isSuccessOrWarning(responseCode)) {
                 ufsConfirmSCTxResp = new UFSConfirmSCTxResp();
                 ufsConfirmSCTxResp.setResponseCode(responseCode);
@@ -234,7 +231,6 @@ public class CustomUFSFolioCreationClient {
                 logUFSConfirmSCTxResp(ufsConfirmSCTxResp);
                 return ufsConfirmSCTxResp;
             }
-
             ufsConfirmSCTxResp = convertToUFSConfirmSCTxRespObject(confirmSCTxResponse);
             logUFSConfirmSCTxResp(ufsConfirmSCTxResp);
             return ufsConfirmSCTxResp;
@@ -248,19 +244,23 @@ public class CustomUFSFolioCreationClient {
         }
     }
 
+    /**
+     * @param request
+     * @return ufsCreateTxResp
+     * @throws UFSFolioCreationClientException
+     */
     public UFSCreateTxResp createTx(UFSCreateTxReq request) throws UFSFolioCreationClientException {
         if (request == null) {
             throw new UFSFolioCreationClientException(GENERAL_SYSTEM_ERROR, String.format(
                     NULLREQUEST, UFSCreateTxReq.class.getName()));
         }
-        String txContext = GlobalFunctions.generateId(true, TXCONTEXTPREFIX, null, null);
+        String txContext = GlobalFunctions.generateId(true, TX_CONTEXT_PREFIX, null, null);
         UFSClientLogger.pushContext(txContext);
         try {
             if ((request.getTxIdentifier() != null)
-                    && (request.getTxIdentifier().equals(PROXYTXIDENTIFIER))) {
+                    && (request.getTxIdentifier().equals(PROXY_TX_IDENTIFIER))) {
                 return createTxProxy(request);
             }
-
             String companyId = null;
             CreateTxResponse createTxResponse = null;
             UFSCreateTxResp ufsCreateTxResp = null;
@@ -271,7 +271,6 @@ public class CustomUFSFolioCreationClient {
             } else {
                 companyId = request.getCorrespondentCode();
             }
-
             logUFSCreateTxReq(request);
             CreateTxRequest createTxReq = convertToCreateTxRequestObject(request, companyId,
                     organizationIdS);
@@ -279,18 +278,16 @@ public class CustomUFSFolioCreationClient {
             synchronized (this.securityMgr) {
                 encryptedPassword = this.securityMgr.getPassword(machineIdS);
             }
-
             if (encryptedPassword == null) {
                 throw new UFSUnknownMachineIdException(String.format(NO_PASSWORD_FOR_MACHINE_ID,
                         machineIdS));
             }
-
             String oldPassword = getPasswordFromEncryptedPassword(encryptedPassword);
             createTxReq.setMachineId(machineIdS);
             createTxReq.setMachinePassword(oldPassword);
             createTxResponse = sendCreateTxRequest(createTxReq);
             responseCode = createTxResponse.getResponseCode();
-            if (CHANGEPASSWORDERRORCODE.equals(responseCode)) {
+            if (CHANGE_PASSWORD_ERROR_CODE.equals(responseCode)) {
                 responseCode = sendChangePassword(oldPassword, companyId, companyId);
                 if (!isSuccessOrWarning(responseCode)) {
                     ufsCreateTxResp = new UFSCreateTxResp();
@@ -302,13 +299,11 @@ public class CustomUFSFolioCreationClient {
                 synchronized (this.securityMgr) {
                     encryptedPassword = this.securityMgr.getPassword(machineIdS);
                 }
-
                 String newPassword = this.securityMgr.decryptPassword(encryptedPassword);
                 createTxReq.setMachinePassword(newPassword);
                 createTxResponse = sendCreateTxRequest(createTxReq);
                 responseCode = createTxResponse.getResponseCode();
             }
-
             if (!isSuccessOrWarning(responseCode)) {
                 ufsCreateTxResp = new UFSCreateTxResp();
                 ufsCreateTxResp.setResponseCode(responseCode);
@@ -316,7 +311,6 @@ public class CustomUFSFolioCreationClient {
                 logUFSCreateTxResp(ufsCreateTxResp);
                 return ufsCreateTxResp;
             }
-
             ufsCreateTxResp = convertToUFSCreateTxRespObject(createTxResponse);
             logUFSCreateTxResp(ufsCreateTxResp);
             return ufsCreateTxResp;
@@ -330,19 +324,23 @@ public class CustomUFSFolioCreationClient {
         }
     }
 
+    /**
+     * @param request
+     * @return ufsCancelTxResp
+     * @throws UFSFolioCreationClientException
+     */
     public UFSCancelTxResp cancelTx(UFSCancelTxReq request) throws UFSFolioCreationClientException {
         if (request == null) {
             throw new UFSFolioCreationClientException(GENERAL_SYSTEM_ERROR, String.format(
                     NULLREQUEST, UFSCancelTxReq.class.getName()));
         }
-        String txContext = GlobalFunctions.generateId(true, TXCONTEXTPREFIX, null, null);
+        String txContext = GlobalFunctions.generateId(true, TX_CONTEXT_PREFIX, null, null);
         UFSClientLogger.pushContext(txContext);
         try {
             if ((request.getTxIdentifier() != null)
-                    && (request.getTxIdentifier().equals(PROXYTXIDENTIFIER))) {
+                    && (request.getTxIdentifier().equals(PROXY_TX_IDENTIFIER))) {
                 return cancelTxProxy(request);
             }
-
             String companyId = null;
             TxCancelResponse cancelTxResponse = null;
             UFSCancelTxResp ufsCancelTxResp = null;
@@ -353,7 +351,6 @@ public class CustomUFSFolioCreationClient {
             } else {
                 companyId = request.getCorrespondentCode();
             }
-
             logUFSCancelTxReq(request);
             TxCancelRequest cancelTxReq = convertToTxCancelRequestObject(request, companyId,
                     organizationIdS);
@@ -361,19 +358,16 @@ public class CustomUFSFolioCreationClient {
             synchronized (this.securityMgr) {
                 encryptedPassword = this.securityMgr.getPassword(machineIdS);
             }
-
             if (encryptedPassword == null) {
                 throw new UFSUnknownMachineIdException(String.format(NO_PASSWORD_FOR_MACHINE_ID,
                         machineIdS));
             }
-
             String oldPassword = getPasswordFromEncryptedPassword(encryptedPassword);
             cancelTxReq.setMachineId(machineIdS);
             cancelTxReq.setMachinePassword(oldPassword);
             cancelTxResponse = sendCancelTxRequest(cancelTxReq);
             responseCode = cancelTxResponse.getResponseCode();
-
-            if (CHANGEPASSWORDERRORCODE.equals(responseCode)) {
+            if (CHANGE_PASSWORD_ERROR_CODE.equals(responseCode)) {
                 responseCode = sendChangePassword(oldPassword, companyId, companyId);
                 if (!isSuccessOrWarning(responseCode)) {
                     ufsCancelTxResp = new UFSCancelTxResp();
@@ -390,7 +384,6 @@ public class CustomUFSFolioCreationClient {
                 cancelTxResponse = sendCancelTxRequest(cancelTxReq);
                 responseCode = cancelTxResponse.getResponseCode();
             }
-
             if (!isSuccessOrWarning(responseCode)) {
                 ufsCancelTxResp = new UFSCancelTxResp();
                 ufsCancelTxResp.setResponseCode(responseCode);
@@ -398,7 +391,6 @@ public class CustomUFSFolioCreationClient {
                 logUFSCancelTxResp(ufsCancelTxResp);
                 return ufsCancelTxResp;
             }
-
             ufsCancelTxResp = convertToUFSCancelTxRespObject(cancelTxResponse);
             logUFSCancelTxResp(ufsCancelTxResp);
             return ufsCancelTxResp;
@@ -412,17 +404,22 @@ public class CustomUFSFolioCreationClient {
         }
     }
 
+    /**
+     * @param request
+     * @return ufsInfoModifyResp
+     * @throws UFSFolioCreationClientException
+     */
     public UFSInfoModifyResp infoModifyTx(UFSInfoModifyReq request)
             throws UFSFolioCreationClientException {
         if (request == null) {
             throw new UFSFolioCreationClientException(GENERAL_SYSTEM_ERROR, String.format(
                     NULLREQUEST, UFSInfoModifyReq.class.getName()));
         }
-        String txContext = GlobalFunctions.generateId(true, TXCONTEXTPREFIX, null, null);
+        String txContext = GlobalFunctions.generateId(true, TX_CONTEXT_PREFIX, null, null);
         UFSClientLogger.pushContext(txContext);
         try {
             if ((request.getTxIdentifier() != null)
-                    && (request.getTxIdentifier().equals(PROXYTXIDENTIFIER))) {
+                    && (request.getTxIdentifier().equals(PROXY_TX_IDENTIFIER))) {
                 return infoModifyTxProxy(request);
             }
             String companyId = null;
@@ -434,7 +431,6 @@ public class CustomUFSFolioCreationClient {
             } else {
                 companyId = request.getCorrespondentCode();
             }
-
             logUFSInfoModifyReq(request);
             InfoModifyRequest infoModifyReq = convertToInfoModifyRequestObject(request, companyId,
                     organizationIdS);
@@ -442,19 +438,16 @@ public class CustomUFSFolioCreationClient {
             synchronized (this.securityMgr) {
                 encryptedPassword = this.securityMgr.getPassword(machineIdS);
             }
-
             if (encryptedPassword == null) {
                 throw new UFSUnknownMachineIdException(String.format(NO_PASSWORD_FOR_MACHINE_ID,
                         machineIdS));
             }
-
             String oldPassword = getPasswordFromEncryptedPassword(encryptedPassword);
             infoModifyReq.setMachineId(machineIdS);
             infoModifyReq.setMachinePassword(oldPassword);
             infoModifyResponse = sendInfoModifyRequest(infoModifyReq);
             responseCode = infoModifyResponse.getResponseCode();
-
-            if (CHANGEPASSWORDERRORCODE.equals(responseCode)) {
+            if (CHANGE_PASSWORD_ERROR_CODE.equals(responseCode)) {
                 responseCode = sendChangePassword(oldPassword, companyId, companyId);
                 if (!isSuccessOrWarning(responseCode)) {
                     ufsInfoModifyResp = new UFSInfoModifyResp();
@@ -466,13 +459,11 @@ public class CustomUFSFolioCreationClient {
                 synchronized (this.securityMgr) {
                     encryptedPassword = this.securityMgr.getPassword(machineIdS);
                 }
-
                 String newPassword = this.securityMgr.decryptPassword(encryptedPassword);
                 infoModifyReq.setMachinePassword(newPassword);
                 infoModifyResponse = sendInfoModifyRequest(infoModifyReq);
                 responseCode = infoModifyResponse.getResponseCode();
             }
-
             if (!isSuccessOrWarning(responseCode)) {
                 ufsInfoModifyResp = new UFSInfoModifyResp();
                 ufsInfoModifyResp.setResponseCode(responseCode);
@@ -480,7 +471,6 @@ public class CustomUFSFolioCreationClient {
                 logUFSInfoModifyResp(ufsInfoModifyResp);
                 return ufsInfoModifyResp;
             }
-
             ufsInfoModifyResp = convertToUFSInfoModifyRespObject(infoModifyResponse);
             logUFSInfoModifyResp(ufsInfoModifyResp);
             return ufsInfoModifyResp;
@@ -494,16 +484,21 @@ public class CustomUFSFolioCreationClient {
         }
     }
 
+    /**
+     * @param request
+     * @return UFSNotificationResp
+     * @throws UFSFolioCreationClientException
+     */
     public UFSNotificationResp notification(UFSNotificationReq request)
             throws UFSFolioCreationClientException {
         if (request == null) {
             throw new UFSFolioCreationClientException(GENERAL_SYSTEM_ERROR, String.format(
                     NULLREQUEST, UFSNotificationReq.class.getName()));
         }
-        String txContext = GlobalFunctions.generateId(true, TXCONTEXTPREFIX, null, null);
+        String txContext = GlobalFunctions.generateId(true, TX_CONTEXT_PREFIX, null, null);
         UFSClientLogger.pushContext(txContext);
         try {
-            if (request.getNotificationCount() == PROXYCOUNT) {
+            if (request.getNotificationCount() == PROXY_COUNT) {
                 return getNotificationsProxy(request);
             }
             String companyId = null;
@@ -515,7 +510,6 @@ public class CustomUFSFolioCreationClient {
             } else {
                 companyId = request.getCorrespondentCode();
             }
-
             logUFSNotificationReq(request);
             NotificationRequest notificationReq = convertToNotificationRequestObject(request,
                     companyId, organizationIdS);
@@ -523,7 +517,6 @@ public class CustomUFSFolioCreationClient {
             synchronized (this.securityMgr) {
                 encryptedPassword = this.securityMgr.getPassword(machineIdS);
             }
-
             if (encryptedPassword == null) {
                 throw new UFSUnknownMachineIdException(String.format(NO_PASSWORD_FOR_MACHINE_ID,
                         machineIdS));
@@ -533,8 +526,7 @@ public class CustomUFSFolioCreationClient {
             notificationReq.setMachinePassword(oldPassword);
             notificationResponse = sendNotificationRequest(notificationReq);
             responseCode = notificationResponse.getResponseCode();
-
-            if (CHANGEPASSWORDERRORCODE.equals(responseCode)) {
+            if (CHANGE_PASSWORD_ERROR_CODE.equals(responseCode)) {
                 responseCode = sendChangePassword(oldPassword, companyId, companyId);
                 if (!isSuccessOrWarning(responseCode)) {
                     ufsNotificationResp = new UFSNotificationResp();
@@ -543,7 +535,6 @@ public class CustomUFSFolioCreationClient {
                     logUFSNotificationResp(ufsNotificationResp);
                     return ufsNotificationResp;
                 }
-
                 synchronized (this.securityMgr) {
                     encryptedPassword = this.securityMgr.getPassword(machineIdS);
                 }
@@ -552,7 +543,6 @@ public class CustomUFSFolioCreationClient {
                 notificationResponse = sendNotificationRequest(notificationReq);
                 responseCode = notificationResponse.getResponseCode();
             }
-
             if (!isSuccessOrWarning(responseCode)) {
                 ufsNotificationResp = new UFSNotificationResp();
                 ufsNotificationResp.setResponseCode(responseCode);
@@ -560,7 +550,6 @@ public class CustomUFSFolioCreationClient {
                 logUFSNotificationResp(ufsNotificationResp);
                 return ufsNotificationResp;
             }
-
             ufsNotificationResp = convertToUFSNotificationRespObject(notificationResponse);
             logUFSNotificationResp(ufsNotificationResp);
             return ufsNotificationResp;
@@ -574,17 +563,22 @@ public class CustomUFSFolioCreationClient {
         }
     }
 
+    /**
+     * @param request
+     * @return UFSNotificationConfirmResp
+     * @throws UFSFolioCreationClientException
+     */
     public UFSNotificationConfirmResp notificationConfirm(UFSNotificationConfirmReq request)
             throws UFSFolioCreationClientException {
         if (request == null) {
             throw new UFSFolioCreationClientException(GENERAL_SYSTEM_ERROR, String.format(
                     NULLREQUEST, UFSNotificationConfirmReq.class.getName()));
         }
-        String txContext = GlobalFunctions.generateId(true, TXCONTEXTPREFIX, null, null);
+        String txContext = GlobalFunctions.generateId(true, TX_CONTEXT_PREFIX, null, null);
         UFSClientLogger.pushContext(txContext);
         try {
             if ((request.getTxIdentifier() != null)
-                    && (request.getTxIdentifier().equals(PROXYTXIDENTIFIER))) {
+                    && (request.getTxIdentifier().equals(PROXY_TX_IDENTIFIER))) {
                 return notificationConfirmProxy(request);
             }
             String companyId = null;
@@ -603,19 +597,16 @@ public class CustomUFSFolioCreationClient {
             synchronized (this.securityMgr) {
                 encryptedPassword = this.securityMgr.getPassword(machineIdS);
             }
-
             if (encryptedPassword == null) {
                 throw new UFSUnknownMachineIdException(String.format(NO_PASSWORD_FOR_MACHINE_ID,
                         machineIdS));
             }
-
             String oldPassword = getPasswordFromEncryptedPassword(encryptedPassword);
             notifConfirmReq.setMachineId(machineIdS);
             notifConfirmReq.setMachinePassword(oldPassword);
             notifConfirmResponse = sendNotificationConfirmRequest(notifConfirmReq);
             responseCode = notifConfirmResponse.getResponseCode();
-
-            if (CHANGEPASSWORDERRORCODE.equals(responseCode)) {
+            if (CHANGE_PASSWORD_ERROR_CODE.equals(responseCode)) {
                 responseCode = sendChangePassword(oldPassword, companyId, companyId);
                 if (!isSuccessOrWarning(responseCode)) {
                     ufsNotificationConfirmResp = new UFSNotificationConfirmResp();
@@ -626,20 +617,17 @@ public class CustomUFSFolioCreationClient {
                 synchronized (this.securityMgr) {
                     encryptedPassword = this.securityMgr.getPassword(machineIdS);
                 }
-
                 String newPassword = this.securityMgr.decryptPassword(encryptedPassword);
                 notifConfirmReq.setMachinePassword(newPassword);
                 notifConfirmResponse = sendNotificationConfirmRequest(notifConfirmReq);
                 responseCode = notifConfirmResponse.getResponseCode();
             }
-
             if (!isSuccessOrWarning(responseCode)) {
                 ufsNotificationConfirmResp = new UFSNotificationConfirmResp();
                 ufsNotificationConfirmResp.setResponseCode(responseCode);
                 logUFSNotificationConfirmResp(ufsNotificationConfirmResp);
                 return ufsNotificationConfirmResp;
             }
-
             ufsNotificationConfirmResp = convertToUFSNotificationConfirmRespObject(notifConfirmResponse);
             logUFSNotificationConfirmResp(ufsNotificationConfirmResp);
             return ufsNotificationConfirmResp;
@@ -653,18 +641,22 @@ public class CustomUFSFolioCreationClient {
         }
     }
 
+    /**
+     * @param request
+     * @return UFSGetTxDetailsResp
+     * @throws UFSFolioCreationClientException
+     */
     public UFSGetTxDetailsResp getTxDetails(UFSGetTxDetailsReq request)
             throws UFSFolioCreationClientException {
         if (request == null) {
             throw new UFSFolioCreationClientException(GENERAL_SYSTEM_ERROR, String.format(
                     NULLREQUEST, UFSGetTxDetailsReq.class.getName()));
         }
-
-        String txContext = GlobalFunctions.generateId(true, TXCONTEXTPREFIX, null, null);
+        String txContext = GlobalFunctions.generateId(true, TX_CONTEXT_PREFIX, null, null);
         UFSClientLogger.pushContext(txContext);
         try {
             if ((request.getTxIdentifier() != null)
-                    && (request.getTxIdentifier().equals(PROXYTXIDENTIFIER))) {
+                    && (request.getTxIdentifier().equals(PROXY_TX_IDENTIFIER))) {
                 return getTxDetailsProxy(request);
             }
             String companyId = null;
@@ -676,7 +668,6 @@ public class CustomUFSFolioCreationClient {
             } else {
                 companyId = request.getCorrespondentCode();
             }
-
             logUFSGetTxDetailsReq(request);
             GetTxDetailsRequest getTxDetailsReq = convertToGetTxDetailsRequestObject(request,
                     companyId, organizationIdS);
@@ -684,7 +675,6 @@ public class CustomUFSFolioCreationClient {
             synchronized (this.securityMgr) {
                 encryptedPassword = this.securityMgr.getPassword(machineIdS);
             }
-
             if (encryptedPassword == null) {
                 throw new UFSUnknownMachineIdException(String.format(NO_PASSWORD_FOR_MACHINE_ID,
                         machineIdS));
@@ -694,8 +684,7 @@ public class CustomUFSFolioCreationClient {
             getTxDetailsReq.setMachinePassword(oldPassword);
             getTxDetailsResponse = sendGetTxDetailsRequest(getTxDetailsReq);
             responseCode = getTxDetailsResponse.getResponseCode();
-
-            if (CHANGEPASSWORDERRORCODE.equals(responseCode)) {
+            if (CHANGE_PASSWORD_ERROR_CODE.equals(responseCode)) {
                 responseCode = sendChangePassword(oldPassword, companyId, companyId);
                 if (!isSuccessOrWarning(responseCode)) {
                     ufsGetTxDetailsResp = new UFSGetTxDetailsResp();
@@ -707,13 +696,11 @@ public class CustomUFSFolioCreationClient {
                 synchronized (this.securityMgr) {
                     encryptedPassword = this.securityMgr.getPassword(machineIdS);
                 }
-
                 String newPassword = this.securityMgr.decryptPassword(encryptedPassword);
                 getTxDetailsReq.setMachinePassword(newPassword);
                 getTxDetailsResponse = sendGetTxDetailsRequest(getTxDetailsReq);
                 responseCode = getTxDetailsResponse.getResponseCode();
             }
-
             if (!isSuccessOrWarning(responseCode)) {
                 ufsGetTxDetailsResp = new UFSGetTxDetailsResp();
                 ufsGetTxDetailsResp.setResponseCode(responseCode);
@@ -721,7 +708,6 @@ public class CustomUFSFolioCreationClient {
                 logUFSGetTxDetailsResp(ufsGetTxDetailsResp);
                 return ufsGetTxDetailsResp;
             }
-
             ufsGetTxDetailsResp = convertToUFSGetTxDetailsRespObject(getTxDetailsResponse);
             logUFSGetTxDetailsResp(ufsGetTxDetailsResp);
             return ufsGetTxDetailsResp;
@@ -735,17 +721,22 @@ public class CustomUFSFolioCreationClient {
         }
     }
 
+    /**
+     * @param request
+     * @return UFSQuickQuoteResp
+     * @throws UFSFolioCreationClientException
+     */
     public UFSQuickQuoteResp quickQuote(UFSQuickQuoteReq request)
             throws UFSFolioCreationClientException {
         if (request == null) {
             throw new UFSFolioCreationClientException(GENERAL_SYSTEM_ERROR, String.format(
                     NULLREQUEST, UFSQuickQuoteReq.class.getName()));
         }
-        String txContext = GlobalFunctions.generateId(true, TXCONTEXTPREFIX, null, null);
+        String txContext = GlobalFunctions.generateId(true, TX_CONTEXT_PREFIX, null, null);
         UFSClientLogger.pushContext(txContext);
         try {
             if ((request.getPaymentLocation() != null)
-                    && (request.getPaymentLocation().equals(PROXYPAYMENTLOCATION))) {
+                    && (request.getPaymentLocation().equals(PROXY_PAYMENT_LOCATION))) {
                 return quickQuoteProxy(request);
             }
             String companyId = null;
@@ -773,7 +764,7 @@ public class CustomUFSFolioCreationClient {
             quickQuoteReq.setMachinePassword(oldPassword);
             quickQuoteResponse = sendQuickQuoteRequest(quickQuoteReq);
             responseCode = quickQuoteResponse.getResponseCode();
-            if (CHANGEPASSWORDERRORCODE.equals(responseCode)) {
+            if (CHANGE_PASSWORD_ERROR_CODE.equals(responseCode)) {
                 responseCode = sendChangePassword(oldPassword, companyId, companyId);
                 if (!isSuccessOrWarning(responseCode)) {
                     ufsQuickQuoteResp = new UFSQuickQuoteResp();
@@ -810,8 +801,11 @@ public class CustomUFSFolioCreationClient {
         }
     }
 
+    /**
+     * @return version
+     */
     public static String getVersion() {
-        return LIBVERSION;
+        return UFSFolioCreationClient.getVersion();
     }
 
     private static synchronized void init(IUFSConfigMgr confMgr, IUFSSecurityMgr securityMgr)
@@ -823,11 +817,11 @@ public class CustomUFSFolioCreationClient {
                         confMgr.getProperty(UFSClientLogger.requiredPropsArr[i]));
             }
             UFSClientLogger.init(errorProps);
-            organizationIdS = CommonFunctions.getProperty(confMgr, DEFAULTORGANIZATIONID,
+            organizationIdS = CommonFunctions.getProperty(confMgr, DEFAULT_ORGANIZATION_ID,
                     ufsLogger);
-            companyIdS = CommonFunctions.getProperty(confMgr, DEFAULTCOMPANYID, ufsLogger);
-            machineIdS = CommonFunctions.getProperty(confMgr, DEFAULTMACHINEID, ufsLogger);
-            fclAPIURLSuffix = CommonFunctions.getProperty(confMgr, FOLIOCREATIONAPIURLSUFFIX,
+            companyIdS = CommonFunctions.getProperty(confMgr, DEFAULT_COMPANY_ID, ufsLogger);
+            machineIdS = CommonFunctions.getProperty(confMgr, DEFAULT_MACHINE_ID, ufsLogger);
+            fclAPIURLSuffix = CommonFunctions.getProperty(confMgr, FOLIO_CREATION_API_URL_SUFFIX,
                     ufsLogger);
             initialized = true;
         }
@@ -1087,8 +1081,8 @@ public class CustomUFSFolioCreationClient {
 
     private boolean isSuccessOrWarning(String errorCode) {
         return (errorCode != null)
-                && ((errorCode.equals(SUCCESSRESPONSE)) || (WARNINGINDICATOR.equals(errorCode
-                        .substring(3, 5))));
+                && ((errorCode.equals(PROXY_SUCCESS_RESPONSE)) || (WARNING_INDICATOR
+                        .equals(errorCode.substring(3, 5))));
     }
 
     private String getPasswordFromEncryptedPassword(String encryptedPassword)
@@ -1102,9 +1096,8 @@ public class CustomUFSFolioCreationClient {
                 ret = DUMMY_PASS;
             }
         }
-
         if (DUMMY_PASS.equals(ret)) {
-            ufsLogger.info(String.format(NO_PASSWORD_ERROR, machineIdS));
+            log.info(String.format(NO_PASSWORD_ERROR, machineIdS));
         }
         return ret;
     }
@@ -1129,12 +1122,12 @@ public class CustomUFSFolioCreationClient {
             UFSCreateTxResp ufsCreateTxResp = null;
             logUFSCreateTxReq(request);
             ufsCreateTxResp = new UFSCreateTxResp();
-            ufsCreateTxResp.setResponseCode(SUCCESSRESPONSE);
-            ufsCreateTxResp.setResponseString(SUCCESS_DEMO_STATUS);
-            ufsCreateTxResp.setTxIdentifier(PROXYTXIDENTIFIER);
+            ufsCreateTxResp.setResponseCode(PROXY_SUCCESS_RESPONSE);
+            ufsCreateTxResp.setResponseString(PROXY_SUCCESS_STATUS);
+            ufsCreateTxResp.setTxIdentifier(PROXY_TX_IDENTIFIER);
             ufsCreateTxResp.setCorrespondentRefNumber(request.getCorrespondentRefNumber());
             ufsCreateTxResp.setProcessingDateEST(new GregorianCalendar());
-            ufsCreateTxResp.setReserved1(MODE);
+            ufsCreateTxResp.setReserved1(PROXY_MODE);
             logUFSCreateTxResp(ufsCreateTxResp);
             return ufsCreateTxResp;
         } catch (Exception e) {
@@ -1148,23 +1141,23 @@ public class CustomUFSFolioCreationClient {
             UFSCreateSCTxResp ufsCreateSCTxResp = null;
             logUFSCreateSCTxReq(request);
             ufsCreateSCTxResp = new UFSCreateSCTxResp();
-            ufsCreateSCTxResp.setResponseCode(SUCCESSRESPONSE);
-            ufsCreateSCTxResp.setResponseString(SUCCESS_DEMO_STATUS);
-            ufsCreateSCTxResp.setTxIdentifier(PROXYTXIDENTIFIER);
+            ufsCreateSCTxResp.setResponseCode(PROXY_SUCCESS_RESPONSE);
+            ufsCreateSCTxResp.setResponseString(PROXY_SUCCESS_STATUS);
+            ufsCreateSCTxResp.setTxIdentifier(PROXY_TX_IDENTIFIER);
             ufsCreateSCTxResp.setCorrespondentRefNumber(request.getCorrespondentRefNumber());
             ufsCreateSCTxResp.setProcessingDateEST(new GregorianCalendar());
             ufsCreateSCTxResp.setCreationDateEST(new GregorianCalendar());
-            ufsCreateSCTxResp.setDisclaimer(DISCLAIMER);
-            ufsCreateSCTxResp.setOriginCurrency(CURRENTCY);
+            ufsCreateSCTxResp.setDisclaimer(PROXY_DISCLAIMER);
+            ufsCreateSCTxResp.setOriginCurrency(PROXY_CURRENTCY);
             ufsCreateSCTxResp.setPaymentAmount(100.0D);
-            ufsCreateSCTxResp.setPaymentCurrency(PRIMARY_CURRECNCY);
+            ufsCreateSCTxResp.setPaymentCurrency(PROXY_PRIMARY_CURRECNCY);
             ufsCreateSCTxResp.setTxAmount(10.0D);
             ufsCreateSCTxResp.setTxCorrespondentFee(2.0D);
             ufsCreateSCTxResp.setTxExchangeRate(10.0D);
             ufsCreateSCTxResp.setTxFeeTotal(3.0D);
             ufsCreateSCTxResp.setTxUTLRFee(1.0D);
-            ufsCreateSCTxResp.setReserved1(MODE);
-            ufsCreateSCTxResp.setTxStatus(TX_STATUS);
+            ufsCreateSCTxResp.setReserved1(PROXY_MODE);
+            ufsCreateSCTxResp.setTxStatus(PROXY_TX_STATUS);
             logUFSCreateSCTxResp(ufsCreateSCTxResp);
             return ufsCreateSCTxResp;
         } catch (Exception e) {
@@ -1178,9 +1171,9 @@ public class CustomUFSFolioCreationClient {
             UFSConfirmSCTxResp ufsConfirmSCTxResp = null;
             logUFSConfirmSCTxReq(request);
             ufsConfirmSCTxResp = new UFSConfirmSCTxResp();
-            ufsConfirmSCTxResp.setResponseCode(SUCCESSRESPONSE);
-            ufsConfirmSCTxResp.setResponseString(SUCCESS_DEMO_STATUS);
-            ufsConfirmSCTxResp.setReserved1(MODE);
+            ufsConfirmSCTxResp.setResponseCode(PROXY_SUCCESS_RESPONSE);
+            ufsConfirmSCTxResp.setResponseString(PROXY_SUCCESS_STATUS);
+            ufsConfirmSCTxResp.setReserved1(PROXY_MODE);
             logUFSConfirmSCTxResp(ufsConfirmSCTxResp);
             return ufsConfirmSCTxResp;
         } catch (Exception e) {
@@ -1194,12 +1187,12 @@ public class CustomUFSFolioCreationClient {
             UFSCancelTxResp ufsCancelTxResp = null;
             logUFSCancelTxReq(request);
             ufsCancelTxResp = new UFSCancelTxResp();
-            ufsCancelTxResp.setResponseCode(SUCCESSRESPONSE);
-            ufsCancelTxResp.setResponseString(SUCCESS_DEMO_STATUS);
-            ufsCancelTxResp.setTxIdentifier(PROXYTXIDENTIFIER);
+            ufsCancelTxResp.setResponseCode(PROXY_SUCCESS_RESPONSE);
+            ufsCancelTxResp.setResponseString(PROXY_SUCCESS_STATUS);
+            ufsCancelTxResp.setTxIdentifier(PROXY_TX_IDENTIFIER);
             ufsCancelTxResp.setCorrespondentRefNumber(request.getCorrespondentRefNumber());
             ufsCancelTxResp.setProcessingDateEST(new GregorianCalendar());
-            ufsCancelTxResp.setReserved1(MODE);
+            ufsCancelTxResp.setReserved1(PROXY_MODE);
             logUFSCancelTxResp(ufsCancelTxResp);
             return ufsCancelTxResp;
         } catch (Exception e) {
@@ -1213,12 +1206,12 @@ public class CustomUFSFolioCreationClient {
             UFSInfoModifyResp ufsInfoModifyResp = null;
             logUFSInfoModifyReq(request);
             ufsInfoModifyResp = new UFSInfoModifyResp();
-            ufsInfoModifyResp.setResponseCode(SUCCESSRESPONSE);
-            ufsInfoModifyResp.setResponseString(SUCCESS_DEMO_STATUS);
-            ufsInfoModifyResp.setTxIdentifier(PROXYTXIDENTIFIER);
+            ufsInfoModifyResp.setResponseCode(PROXY_SUCCESS_RESPONSE);
+            ufsInfoModifyResp.setResponseString(PROXY_SUCCESS_STATUS);
+            ufsInfoModifyResp.setTxIdentifier(PROXY_TX_IDENTIFIER);
             ufsInfoModifyResp.setCorrespondentRefNumber(request.getCorrespondentRefNumber());
             ufsInfoModifyResp.setProcessingDateEST(new GregorianCalendar());
-            ufsInfoModifyResp.setReserved1(MODE);
+            ufsInfoModifyResp.setReserved1(PROXY_MODE);
             logUFSInfoModifyResp(ufsInfoModifyResp);
             return ufsInfoModifyResp;
         } catch (Exception e) {
@@ -1232,41 +1225,39 @@ public class CustomUFSFolioCreationClient {
             UFSNotificationResp ufsNotifiationResp = null;
             logUFSNotificationReq(request);
             ufsNotifiationResp = new UFSNotificationResp();
-            ufsNotifiationResp.setResponseCode(SUCCESSRESPONSE);
-            ufsNotifiationResp.setResponseString(SUCCESS_DEMO_STATUS);
-            ufsNotifiationResp.setReserved1(MODE);
+            ufsNotifiationResp.setResponseCode(PROXY_SUCCESS_RESPONSE);
+            ufsNotifiationResp.setResponseString(PROXY_SUCCESS_STATUS);
+            ufsNotifiationResp.setReserved1(PROXY_MODE);
             UFSNotificationItem ufsNotificationItem1 = new UFSNotificationItem();
-            ufsNotificationItem1.setNotificationRefNumber("1");
-            ufsNotificationItem1.setDescription("DEMO NOTIFICATION ITEM #1");
-            ufsNotificationItem1.setTxIdentifier(PROXYTXIDENTIFIER);
-            ufsNotificationItem1.setCorrespondentRefNumber(PROXYTXIDENTIFIER);
-            ufsNotificationItem1.setNotificationType("008");
-            ufsNotificationItem1
-                    .setMessageText("DEMO NOTIFICATION ITEM #1 - Transaction OFAC hold");
-            ufsNotificationItem1.setReserved1(MODE);
+            ufsNotificationItem1.setNotificationRefNumber(PROXY_NOTIFICATION_NUM);
+            ufsNotificationItem1.setDescription(PROXY_DESC);
+            ufsNotificationItem1.setTxIdentifier(PROXY_TX_IDENTIFIER);
+            ufsNotificationItem1.setCorrespondentRefNumber(PROXY_TX_IDENTIFIER);
+            ufsNotificationItem1.setNotificationType(PROXY_NOTIF_REF_NUM);
+            ufsNotificationItem1.setMessageText(PROXY_MSG_TEXT);
+            ufsNotificationItem1.setReserved1(PROXY_MODE);
             UFSNotificationItem ufsNotificationItem2 = new UFSNotificationItem();
-            ufsNotificationItem2.setNotificationRefNumber("4");
-            ufsNotificationItem2.setDescription("DEMO NOTIFICATION ITEM #2");
-            ufsNotificationItem2.setTxIdentifier(PROXYTXIDENTIFIER);
-            ufsNotificationItem2.setCorrespondentRefNumber(PROXYTXIDENTIFIER);
-            ufsNotificationItem2.setNotificationType("010");
-            ufsNotificationItem2
-                    .setMessageText("DEMO NOTIFICATION ITEM #2 - Transaction OFAC unhold");
-            ufsNotificationItem2.setReserved1(MODE);
+            ufsNotificationItem2.setNotificationRefNumber(PROXY_NOTIF_REF_NUM1);
+            ufsNotificationItem2.setDescription(PROXY_DESC);
+            ufsNotificationItem2.setTxIdentifier(PROXY_TX_IDENTIFIER);
+            ufsNotificationItem2.setCorrespondentRefNumber(PROXY_TX_IDENTIFIER);
+            ufsNotificationItem2.setNotificationType(PROXY_NOTIF_TYPE1);
+            ufsNotificationItem2.setMessageText(PROXY_MSG_TEXT_OFAC_UNHOLD);
+            ufsNotificationItem2.setReserved1(PROXY_MODE);
             UFSNotificationItem ufsNotificationItem3 = new UFSNotificationItem();
-            ufsNotificationItem3.setNotificationRefNumber("7");
-            ufsNotificationItem3.setDescription("DEMO NOTIFICATION ITEM #3");
-            ufsNotificationItem3.setTxIdentifier(PROXYTXIDENTIFIER);
-            ufsNotificationItem3.setCorrespondentRefNumber(PROXYTXIDENTIFIER);
-            ufsNotificationItem3.setNotificationType("002");
-            ufsNotificationItem3.setPayingAgent("BANORTE");
-            ufsNotificationItem3.setPayingAgentBranchCode("BANORTE-00001");
-            ufsNotificationItem3.setPayingAgentOperator("OP1001");
-            ufsNotificationItem3.setBeneIdentificationType("003");
-            ufsNotificationItem3.setBeneIdentificationNumber("1111111");
+            ufsNotificationItem3.setNotificationRefNumber(PROXY_NOTIF_REF_NUM2);
+            ufsNotificationItem3.setDescription(PROXY_DESC);
+            ufsNotificationItem3.setTxIdentifier(PROXY_TX_IDENTIFIER);
+            ufsNotificationItem3.setCorrespondentRefNumber(PROXY_TX_IDENTIFIER);
+            ufsNotificationItem3.setNotificationType(PROXY_NOTIF_TYPE2);
+            ufsNotificationItem3.setPayingAgent(PROXY_PAYING_AGENT);
+            ufsNotificationItem3.setPayingAgentBranchCode(PROXY_PAYING_AGENT_BR_CODE);
+            ufsNotificationItem3.setPayingAgentOperator(PROXY_PAYING_AGENT_OPT);
+            ufsNotificationItem3.setBeneIdentificationType(PROXY_BENE_ID_TYPE);
+            ufsNotificationItem3.setBeneIdentificationNumber(PROXY_BENE_ID_NUM);
             ufsNotificationItem3.setPaymentLocalTime(new GregorianCalendar());
-            ufsNotificationItem3.setMessageText("DEMO NOTIFICATION ITEM #3 - Transaction paid");
-            ufsNotificationItem3.setReserved1(MODE);
+            ufsNotificationItem3.setMessageText(PROXY_MSG_TEXT_PAID);
+            ufsNotificationItem3.setReserved1(PROXY_MODE);
             UFSNotificationItem[] notificationItems = new UFSNotificationItem[3];
             notificationItems[0] = ufsNotificationItem1;
             notificationItems[1] = ufsNotificationItem2;
@@ -1285,8 +1276,8 @@ public class CustomUFSFolioCreationClient {
             UFSNotificationConfirmResp ufsNotifiationConfirmResp = null;
             logUFSNotificationConfirmReq(request);
             ufsNotifiationConfirmResp = new UFSNotificationConfirmResp();
-            ufsNotifiationConfirmResp.setResponseCode(SUCCESSRESPONSE);
-            ufsNotifiationConfirmResp.setReserved1(MODE);
+            ufsNotifiationConfirmResp.setResponseCode(PROXY_SUCCESS_RESPONSE);
+            ufsNotifiationConfirmResp.setReserved1(PROXY_MODE);
             logUFSNotificationConfirmResp(ufsNotifiationConfirmResp);
             return ufsNotifiationConfirmResp;
         } catch (Exception e) {
@@ -1300,45 +1291,45 @@ public class CustomUFSFolioCreationClient {
             UFSGetTxDetailsResp ufsGetTxDetailsResp = null;
             logUFSGetTxDetailsReq(request);
             ufsGetTxDetailsResp = new UFSGetTxDetailsResp();
-            ufsGetTxDetailsResp.setResponseCode(SUCCESSRESPONSE);
-            ufsGetTxDetailsResp.setResponseString(SUCCESS_DEMO_STATUS);
-            ufsGetTxDetailsResp.setTxIdentifier(PROXYTXIDENTIFIER);
+            ufsGetTxDetailsResp.setResponseCode(PROXY_SUCCESS_RESPONSE);
+            ufsGetTxDetailsResp.setResponseString(PROXY_SUCCESS_STATUS);
+            ufsGetTxDetailsResp.setTxIdentifier(PROXY_TX_IDENTIFIER);
             ufsGetTxDetailsResp.setCorrespondentRefNumber(request.getCorrespondentRefNumber());
-            ufsGetTxDetailsResp.setBeneAddress1("123 MAIN STREET");
+            ufsGetTxDetailsResp.setBeneAddress1(PROXY_BENE_ADDR1);
             ufsGetTxDetailsResp.setBeneBirthDate(new GregorianCalendar());
-            ufsGetTxDetailsResp.setBeneCity("MONTERREY");
-            ufsGetTxDetailsResp.setBeneCountry("MX");
-            ufsGetTxDetailsResp.setBeneEmail("jane.doe@email.com");
-            ufsGetTxDetailsResp.setBeneFirstName("JANE");
-            ufsGetTxDetailsResp.setBeneLastName("DOE");
-            ufsGetTxDetailsResp.setBenePhone("1234567890");
-            ufsGetTxDetailsResp.setBenePostalCode("00000");
-            ufsGetTxDetailsResp.setBeneRefNumber("11111");
-            ufsGetTxDetailsResp.setBeneState("NLE");
+            ufsGetTxDetailsResp.setBeneCity(PROXY_BENE_CITY);
+            ufsGetTxDetailsResp.setBeneCountry(PROXY_BENE_COUNTRY);
+            ufsGetTxDetailsResp.setBeneEmail(PROXY_BENE_EMAIL);
+            ufsGetTxDetailsResp.setBeneFirstName(PROXY_BENE_FNAME);
+            ufsGetTxDetailsResp.setBeneLastName(PROXY_BENE_LNAME);
+            ufsGetTxDetailsResp.setBenePhone(PROXY_PHONE);
+            ufsGetTxDetailsResp.setBenePostalCode(PROXY_POSTAL_CODE);
+            ufsGetTxDetailsResp.setBeneRefNumber(PROXY_BENE_REF_NUM);
+            ufsGetTxDetailsResp.setBeneState(PROXY_BENE_STATE);
             ufsGetTxDetailsResp.setLastStatusChangeTimeStamp(new GregorianCalendar());
             ufsGetTxDetailsResp.setPaymentAmount(100.0D);
-            ufsGetTxDetailsResp.setPaymentCountry("MX");
-            ufsGetTxDetailsResp.setPaymentCurrency(PRIMARY_CURRECNCY);
-            ufsGetTxDetailsResp.setPaymentLocation("LOCATION X");
-            ufsGetTxDetailsResp.setPaymentType("001");
-            ufsGetTxDetailsResp.setSenderAddress1("321 BROADWAY");
+            ufsGetTxDetailsResp.setPaymentCountry(PROXY_BENE_COUNTRY);
+            ufsGetTxDetailsResp.setPaymentCurrency(PROXY_PRIMARY_CURRECNCY);
+            ufsGetTxDetailsResp.setPaymentLocation(PROXY_LOCATION);
+            ufsGetTxDetailsResp.setPaymentType(PROXY_PAYMENT_TYPE);
+            ufsGetTxDetailsResp.setSenderAddress1(PROXY_SENDER_ADDR);
             ufsGetTxDetailsResp.setSenderBirthDate(new GregorianCalendar());
-            ufsGetTxDetailsResp.setSenderCity("ROCHELLE PARK");
-            ufsGetTxDetailsResp.setSenderEmail("john.doe@email.com");
-            ufsGetTxDetailsResp.setSenderFirstName("JOHN");
-            ufsGetTxDetailsResp.setSenderLastName("DOE");
-            ufsGetTxDetailsResp.setSenderPhone("9876543210");
-            ufsGetTxDetailsResp.setSenderPostalCode("12345");
-            ufsGetTxDetailsResp.setSenderRefNumber("22222");
-            ufsGetTxDetailsResp.setSenderState("NJ");
+            ufsGetTxDetailsResp.setSenderCity(PROXY_SENDER_CITY);
+            ufsGetTxDetailsResp.setSenderEmail(PROXY_SENDER_EMAIL);
+            ufsGetTxDetailsResp.setSenderFirstName(PROXY_SENDER_FNAME);
+            ufsGetTxDetailsResp.setSenderLastName(PROXY_BENE_LNAME);
+            ufsGetTxDetailsResp.setSenderPhone(PROXY_SENDER_PHONE);
+            ufsGetTxDetailsResp.setSenderPostalCode(PROXY_SENDER_POSTAL_CODE);
+            ufsGetTxDetailsResp.setSenderRefNumber(PROSY_SENDER_REF_NUM);
+            ufsGetTxDetailsResp.setSenderState(PROXY_SENDER_STATE);
             ufsGetTxDetailsResp.setTxAmount(10.0D);
             ufsGetTxDetailsResp.setTxCreationDate(new GregorianCalendar());
             ufsGetTxDetailsResp.setTxExchangeRate(10.0D);
             ufsGetTxDetailsResp.setTxFee(3.0D);
-            ufsGetTxDetailsResp.setTxOriginCountry("US");
-            ufsGetTxDetailsResp.setTxOriginCurrency(CURRENTCY);
-            ufsGetTxDetailsResp.setTxStatus("PAYABLE");
-            ufsGetTxDetailsResp.setReserved1(MODE);
+            ufsGetTxDetailsResp.setTxOriginCountry(PROXY_CURRECTRY_CODE);
+            ufsGetTxDetailsResp.setTxOriginCurrency(PROXY_CURRENTCY);
+            ufsGetTxDetailsResp.setTxStatus(PROXY_TX_STATIS_PAYABLE);
+            ufsGetTxDetailsResp.setReserved1(PROXY_MODE);
             logUFSGetTxDetailsResp(ufsGetTxDetailsResp);
             return ufsGetTxDetailsResp;
         } catch (Exception e) {
@@ -1352,14 +1343,14 @@ public class CustomUFSFolioCreationClient {
             UFSQuickQuoteResp ufsQuickQuoteResp = null;
             logUFSQuickQuoteReq(request);
             ufsQuickQuoteResp = new UFSQuickQuoteResp();
-            ufsQuickQuoteResp.setResponseCode(SUCCESSRESPONSE);
-            ufsQuickQuoteResp.setResponseString(SUCCESS_DEMO_STATUS);
+            ufsQuickQuoteResp.setResponseCode(PROXY_SUCCESS_RESPONSE);
+            ufsQuickQuoteResp.setResponseString(PROXY_SUCCESS_STATUS);
             ufsQuickQuoteResp.setPaymentAmount(100.0D);
             ufsQuickQuoteResp.setTxCorrespondentFee(2.0D);
             ufsQuickQuoteResp.setTxUTLRFee(1.0D);
             ufsQuickQuoteResp.setTxFeeTotal(3.0D);
             ufsQuickQuoteResp.setTxExchangeRate(10.0D);
-            ufsQuickQuoteResp.setReserved1(MODE);
+            ufsQuickQuoteResp.setReserved1(PROXY_MODE);
             logUFSQuickQuoteResp(ufsQuickQuoteResp);
             return ufsQuickQuoteResp;
         } catch (Exception e) {

@@ -11,7 +11,6 @@
 package com.snaplogic.snaps.uniteller.util;
 
 import com.snaplogic.common.SnapType;
-import com.snaplogic.snap.api.SnapCategory;
 import com.uniteller.support.communication.foliocreation.*;
 import com.uniteller.support.foliocreationclient.*;
 import com.uniteller.support.util.GlobalFunctions;
@@ -19,18 +18,27 @@ import com.uniteller.support.util.GlobalFunctions;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Method;
+import java.util.Calendar;
 
 /**
  * Contains all utility methods which are useful to convert the UFS request objects to TX objects.
- * 
+ *
  * @author svatada
  */
 public class Utilities {
+    private static final String INT = "int";
+
+    /**
+     * @param request
+     * @param companyId
+     * @param orgId
+     * @return TxCancelRequest
+     */
     public static TxCancelRequest convertToTxCancelRequestObject(UFSCancelTxReq request,
-            String _companyId, String _orgId) {
+            String companyId, String orgId) {
         TxCancelRequest req = new TxCancelRequest();
         if (request.getCorrespondentCode() == null)
-            req.setCorrespondentCode(_companyId);
+            req.setCorrespondentCode(companyId);
         else {
             req.setCorrespondentCode(request.getCorrespondentCode());
         }
@@ -49,11 +57,17 @@ public class Utilities {
         return req;
     }
 
+    /**
+     * @param request
+     * @param companyId
+     * @param orgId
+     * @return ConfirmSCTxRequest
+     */
     public static ConfirmSCTxRequest convertToConfirmSCTxRequestObject(UFSConfirmSCTxReq request,
-            String _companyId, String _orgId) {
+            String companyId, String orgId) {
         ConfirmSCTxRequest req = new ConfirmSCTxRequest();
         if (request.getCorrespondentCode() == null)
-            req.setCorrespondentCode(_companyId);
+            req.setCorrespondentCode(companyId);
         else {
             req.setCorrespondentCode(request.getCorrespondentCode());
         }
@@ -67,11 +81,17 @@ public class Utilities {
         return req;
     }
 
+    /**
+     * @param request
+     * @param companyId
+     * @param orgId
+     * @return CreateSCTxRequest
+     */
     public static CreateSCTxRequest convertToCreateSCTxRequestObject(UFSCreateSCTxReq request,
-            String _companyId, String _orgId) {
+            String companyId, String orgId) {
         CreateSCTxRequest req = new CreateSCTxRequest();
         if (request.getCorrespondentCode() == null) {
-            req.setCorrespondentCode(_companyId);
+            req.setCorrespondentCode(companyId);
         } else {
             req.setCorrespondentCode(request.getCorrespondentCode());
         }
@@ -140,11 +160,17 @@ public class Utilities {
         return req;
     }
 
+    /**
+     * @param request
+     * @param companyId
+     * @param orgId
+     * @return CreateTxRequest
+     */
     public static CreateTxRequest convertToCreateTxRequestObject(UFSCreateTxReq request,
-            String _companyId, String _orgId) {
+            String companyId, String orgId) {
         CreateTxRequest req = new CreateTxRequest();
         if (request.getCorrespondentCode() == null)
-            req.setCorrespondentCode(_companyId);
+            req.setCorrespondentCode(companyId);
         else {
             req.setCorrespondentCode(request.getCorrespondentCode());
         }
@@ -213,11 +239,17 @@ public class Utilities {
         return req;
     }
 
+    /**
+     * @param request
+     * @param companyId
+     * @param orgId
+     * @return GetTxDetailsRequest
+     */
     public static GetTxDetailsRequest convertToGetTxDetailsRequestObject(
-            UFSGetTxDetailsReq request, String _companyId, String _orgId) {
+            UFSGetTxDetailsReq request, String companyId, String orgId) {
         GetTxDetailsRequest req = new GetTxDetailsRequest();
         if (request.getCorrespondentCode() == null) {
-            req.setCorrespondentCode(_companyId);
+            req.setCorrespondentCode(companyId);
         } else {
             req.setCorrespondentCode(request.getCorrespondentCode());
         }
@@ -229,11 +261,17 @@ public class Utilities {
         return req;
     }
 
+    /**
+     * @param request
+     * @param companyId
+     * @param orgId
+     * @return InfoModifyRequest
+     */
     public static InfoModifyRequest convertToInfoModifyRequestObject(UFSInfoModifyReq request,
-            String _companyId, String _orgId) {
+            String companyId, String orgId) {
         InfoModifyRequest req = new InfoModifyRequest();
         if (request.getCorrespondentCode() == null)
-            req.setCorrespondentCode(_companyId);
+            req.setCorrespondentCode(companyId);
         else {
             req.setCorrespondentCode(request.getCorrespondentCode());
         }
@@ -272,11 +310,17 @@ public class Utilities {
         return req;
     }
 
+    /**
+     * @param request
+     * @param companyId
+     * @param orgId
+     * @return NotificationConfirmRequest
+     */
     public static NotificationConfirmRequest convertToNotificationConfirmRequestObject(
-            UFSNotificationConfirmReq request, String _companyId, String _orgId) {
+            UFSNotificationConfirmReq request, String companyId, String orgId) {
         NotificationConfirmRequest req = new NotificationConfirmRequest();
         if (request.getCorrespondentCode() == null)
-            req.setCorrespondentCode(_companyId);
+            req.setCorrespondentCode(companyId);
         else {
             req.setCorrespondentCode(request.getCorrespondentCode());
         }
@@ -289,11 +333,17 @@ public class Utilities {
         return req;
     }
 
+    /**
+     * @param request
+     * @param companyId
+     * @param orgId
+     * @return NotificationRequest
+     */
     public static NotificationRequest convertToNotificationRequestObject(
-            UFSNotificationReq request, String _companyId, String _orgId) {
+            UFSNotificationReq request, String companyId, String orgId) {
         NotificationRequest req = new NotificationRequest();
         if (request.getCorrespondentCode() == null)
-            req.setCorrespondentCode(_companyId);
+            req.setCorrespondentCode(companyId);
         else {
             req.setCorrespondentCode(request.getCorrespondentCode());
         }
@@ -304,11 +354,17 @@ public class Utilities {
         return req;
     }
 
+    /**
+     * @param request
+     * @param companyId
+     * @param orgId
+     * @return QuickQuoteRequest
+     */
     public static QuickQuoteRequest convertToQuickQuoteRequestObject(UFSQuickQuoteReq request,
-            String _companyId, String _orgId) {
+            String companyId, String orgId) {
         QuickQuoteRequest req = new QuickQuoteRequest();
         if (request.getCorrespondentCode() == null)
-            req.setCorrespondentCode(_companyId);
+            req.setCorrespondentCode(companyId);
         else {
             req.setCorrespondentCode(request.getCorrespondentCode());
         }
@@ -325,6 +381,10 @@ public class Utilities {
         return req;
     }
 
+    /**
+     * @param cancelTxResponse
+     * @return UFSCancelTxResp
+     */
     public static UFSCancelTxResp convertToUFSCancelTxRespObject(TxCancelResponse cancelTxResponse) {
         UFSCancelTxResp ufsCancelTxResp = new UFSCancelTxResp();
         ufsCancelTxResp.setResponseCode(cancelTxResponse.getResponseCode());
@@ -339,6 +399,10 @@ public class Utilities {
         return ufsCancelTxResp;
     }
 
+    /**
+     * @param confirmSCTxResponse
+     * @return UFSConfirmSCTxResp
+     */
     public static UFSConfirmSCTxResp convertToUFSConfirmSCTxRespObject(
             ConfirmSCTxResponse confirmSCTxResponse) {
         UFSConfirmSCTxResp ufsConfirmSCTxResp = new UFSConfirmSCTxResp();
@@ -350,6 +414,10 @@ public class Utilities {
         return ufsConfirmSCTxResp;
     }
 
+    /**
+     * @param createSCTxResponse
+     * @return UFSCreateSCTxResp
+     */
     public static UFSCreateSCTxResp convertToUFSCreateSCTxRespObject(
             CreateSCTxResponse createSCTxResponse) {
         UFSCreateSCTxResp ufsCreateSCTxResp = new UFSCreateSCTxResp();
@@ -384,6 +452,10 @@ public class Utilities {
         return ufsCreateSCTxResp;
     }
 
+    /**
+     * @param createTxResponse
+     * @return UFSCreateTxResp
+     */
     public static UFSCreateTxResp convertToUFSCreateTxRespObject(CreateTxResponse createTxResponse) {
         UFSCreateTxResp ufsCreateTxResp = new UFSCreateTxResp();
         ufsCreateTxResp.setResponseCode(createTxResponse.getResponseCode());
@@ -398,6 +470,10 @@ public class Utilities {
         return ufsCreateTxResp;
     }
 
+    /**
+     * @param getTxDetailsResponse
+     * @return UFSGetTxDetailsResp
+     */
     public static UFSGetTxDetailsResp convertToUFSGetTxDetailsRespObject(
             GetTxDetailsResponse getTxDetailsResponse) {
         UFSGetTxDetailsResp ufsGetTxDetailsResp = new UFSGetTxDetailsResp();
@@ -482,6 +558,10 @@ public class Utilities {
         return ufsGetTxDetailsResp;
     }
 
+    /**
+     * @param infoModifyResponse
+     * @return UFSInfoModifyResp
+     */
     public static UFSInfoModifyResp convertToUFSInfoModifyRespObject(
             InfoModifyResponse infoModifyResponse) {
         UFSInfoModifyResp ufsInfoModifyResp = new UFSInfoModifyResp();
@@ -497,6 +577,10 @@ public class Utilities {
         return ufsInfoModifyResp;
     }
 
+    /**
+     * @param notificationConfirmResponse
+     * @return UFSNotificationConfirmResp
+     */
     public static UFSNotificationConfirmResp convertToUFSNotificationConfirmRespObject(
             NotificationConfirmResponse notificationConfirmResponse) {
         UFSNotificationConfirmResp ufsNotificationResp = new UFSNotificationConfirmResp();
@@ -533,6 +617,10 @@ public class Utilities {
         return ufsNotificationItem;
     }
 
+    /**
+     * @param notificationResponse
+     * @return UFSNotificationResp
+     */
     public static UFSNotificationResp convertToUFSNotificationRespObject(
             NotificationResponse notificationResponse) {
         UFSNotificationResp ufsNotificationResp = new UFSNotificationResp();
@@ -554,6 +642,10 @@ public class Utilities {
         return ufsNotificationResp;
     }
 
+    /**
+     * @param quickQuoteResponse
+     * @return UFSQuickQuoteResp
+     */
     public static UFSQuickQuoteResp convertToUFSQuickQuoteRespObject(
             QuickQuoteResponse quickQuoteResponse) {
         UFSQuickQuoteResp ufsQuickQuoteResp = new UFSQuickQuoteResp();
@@ -575,21 +667,23 @@ public class Utilities {
         return ufsQuickQuoteResp;
     }
 
+    /**
+     * @param method
+     * @return SnapType
+     */
     public static SnapType getDataTypes(Method method) {
         String type = method.getGenericParameterTypes()[0].toString();
-        if (StringUtils.contains(type, "String")) {
+        if (StringUtils.contains(type, String.class.getName())) {
             return SnapType.STRING;
-        } else if (StringUtils.contains(type, "int")) {
+        } else if (StringUtils.contains(type, INT)) {
             return SnapType.INTEGER;
-        } else if (StringUtils.contains(type, "long")|| StringUtils.contains(type, "double")) {
+        } else if (StringUtils.contains(type, Float.class.getName())
+                || StringUtils.contains(type, Long.class.getName())
+                || StringUtils.contains(type, Double.class.getName())) {
             return SnapType.NUMBER;
-        } else if (StringUtils.contains(type, "Calendar")) {
+        } else if (StringUtils.contains(type, Calendar.class.getName())) {
             return SnapType.DATETIME;
         }
         return SnapType.ANY;
-    }
-
-    public static Object getData() {
-        return null;
     }
 }

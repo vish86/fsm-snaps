@@ -60,7 +60,7 @@ import static com.snaplogic.snaps.uniteller.util.Utilities.getDataTypes;
 /**
  * Abstract base class for UniTeller snap pack which contains common snap properties,
  * authentication.
- * 
+ *
  * @author svatada
  */
 @Inputs(min = 1, max = 1, accepts = { ViewType.DOCUMENT })
@@ -103,7 +103,6 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
                 schemaBuilder.withChildSchema(provider.createSchema(getDataTypes(method), method
                         .getName().substring(3)));
             }
-
             schemaBuilder.build();
         }
     }
@@ -129,8 +128,9 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
                     bean.getSecurityPermFilePath(), PATTERN, null).toString();
             /* instantiating USFCreationClient */
             Class<?> CustomUSFCreationClient = Class.forName(UFS_FOLIO_CREATION_CLIENT_PKG_URI);
-            Constructor<?> constructor = CustomUSFCreationClient.getDeclaredConstructor(new Class[] {
-                    IUFSConfigMgr.class, IUFSSecurityMgr.class });
+            Constructor<?> constructor = CustomUSFCreationClient
+                    .getDeclaredConstructor(new Class[] { IUFSConfigMgr.class,
+                            IUFSSecurityMgr.class });
             Object USFCreationClientObj = constructor.newInstance(
                     CustomUFSConfigMgr.getInstance(UFSConfigFilePath),
                     CustomUFSSecurityMgr.getInstance(UFSSecurityFilePath));
@@ -146,10 +146,6 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
                         if (isSetter(method)
                                 && (inputFieldValue = map.get(method.getName().substring(3))) != null) {
                             try {
-                                log.debug(method.getName() + " "
-                                        + method.getGenericParameterTypes().length + " "
-                                        + method.getGenericParameterTypes()[0] + " "
-                                        + inputFieldValue);
                                 if (inputFieldValue instanceof String) {
                                     method.invoke(UFSRequest.cast(UFSRequestObj),
                                             String.valueOf(inputFieldValue));
@@ -209,6 +205,15 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
     public void cleanup() throws ExecutionException {
     }
 
+    /**
+     * Process all the nested UFS response objects
+     *
+     * @param UFSResponseObj
+     * @return Map
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     * @throws InvocationTargetException
+     */
     public Map<String, Object> processResponseObj(Object UFSResponseObj)
             throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         Map<String, Object> map = new HashMap<String, Object>();
@@ -223,7 +228,6 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
                 map.put(method.getName().substring(3),
                         processResponseObj(method.invoke(UFSResponseObj, null)));
             }
-
         }
         return map;
     }
@@ -242,6 +246,7 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
     /*
      * Returns absolute class type for UFS response object
      */
+    @SuppressWarnings("unused")
     private String getUFSRespClassType() {
         return new StringBuilder().append(UNITELLER_PKG_PREFIX).append(resourceType)
                 .append(UNITELLER_RESP_TAG).toString();
@@ -288,9 +293,11 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
     static ArrayList<Method> findSetters(Class<?> classType) {
         ArrayList<Method> list = new ArrayList<Method>();
         Method[] methods = classType.getDeclaredMethods();
-        for (Method method : methods)
-            if (isSetter(method))
+        for (Method method : methods) {
+            if (isSetter(method)) {
                 list.add(method);
+            }
+        }
         return list;
     }
 

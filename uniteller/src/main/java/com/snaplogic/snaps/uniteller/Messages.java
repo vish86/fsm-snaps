@@ -12,7 +12,7 @@ package com.snaplogic.snaps.uniteller;
 
 /**
  * Messages is the container for all the externalized messages.
- * 
+ *
  * @author svatada
  */
 class Messages {
@@ -40,6 +40,7 @@ class Messages {
     static final String RESOURCE_PROP = "Resource";
     static final String RESOURCE_DESC = "Available UniTeller resources";
     // Error messages
+    static final String ERR_PASSWORD_EMPTY = "Password is null or empty";
     static final String NO_DATA_WARNING = "Empty input document";
     static final String NO_DATA_REASON = "No data coming form the connected snap.";
     static final String NO_DATA_RESOLUTION = "Verify the connected snap and validate the data.";
