@@ -41,8 +41,11 @@ public class CreateTest extends ApiTest {
         TestResult testResult = setup.test();
         // check for no exception
         assertNull(testResult.getException());
+<<<<<<< HEAD
         OutputRecorder outputRecorder = testResult.getOutputViewByName("out1");
         assertEquals(0, outputRecorder.getDocumentCount());
+=======
+>>>>>>> 84f3989399e926d18a457a9135dfcc3c848ac39a
         OutputRecorder errRecorder = testResult.getErrorViewByName("err1");
         assertEquals(1, errRecorder.getDocumentCount());
     }
@@ -81,10 +84,15 @@ public class CreateTest extends ApiTest {
         Snap snap = testResult.getSnap();
         assertEquals(Create.class, snap.getClass());
         // only 1 document to the output view
+<<<<<<< HEAD
         OutputRecorder outputRecorder = testResult.getOutputViewByName("out1");
         assertEquals(0, outputRecorder.getDocumentCount());
         OutputRecorder errRecorder = testResult.getErrorViewByName("err1");
         assertEquals(1, errRecorder.getDocumentCount());
+=======
+        OutputRecorder errRecorder = testResult.getErrorViewByName("err1");
+        assertEquals(1,  errRecorder.getDocumentCount());
+>>>>>>> 84f3989399e926d18a457a9135dfcc3c848ac39a
     }
 
     @TestFixture(snap = Create.class, outputs = "out1", errors = "err1",

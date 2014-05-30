@@ -58,7 +58,12 @@ import static com.snaplogic.snaps.uniteller.Constants.*;
 import static com.snaplogic.snaps.uniteller.Messages.*;
 
 /**
+<<<<<<< HEAD
  * Abstract base class for UniTeller snap pack which contains common snap properties, core logic.
+=======
+ * Abstract base class for UniTeller snap pack which contains common snap properties,
+ * authentication.
+>>>>>>> 84f3989399e926d18a457a9135dfcc3c848ac39a
  *
  * @author svatada
  */
