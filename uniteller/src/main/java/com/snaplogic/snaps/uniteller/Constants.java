@@ -46,11 +46,7 @@ public class Constants {
     static final String PROXY_MSG_TEXT_OFAC_UNHOLD = "DEMO NOTIFICATION ITEM - Transaction OFAC unhold";
     static final String PROXY_MSG_TEXT = "DEMO NOTIFICATION ITEM - Transaction OFAC hold";
     static final String PROXY_NOTIF_REF_NUM = "008";
-<<<<<<< HEAD
     static final String PROXY_SENDER_REF_NUM = "22222";
-=======
-    static final String PROSY_SENDER_REF_NUM = "22222";
->>>>>>> 84f3989399e926d18a457a9135dfcc3c848ac39a
     static final String PROXY_SENDER_POSTAL_CODE = "12345";
     static final String PROXY_SENDER_PHONE = "9876543210";
     static final String PROXY_SENDER_FNAME = "JOHN";
@@ -85,11 +81,7 @@ public class Constants {
     static final String PROXY_PAYMENT_LOCATION = "DEMO";
     static final String DS_ALG = "MD5";
     static final String ENC_ALG = "SHA1PRNG";
-<<<<<<< HEAD
     static final String NONCE = "ItSihNsYzB495QQ6J5MXr0/O1rI=";
-=======
-    static String nonce = "ItSihNsYzB495QQ6J5MXr0/O1rI=";
->>>>>>> 84f3989399e926d18a457a9135dfcc3c848ac39a
     static final String FOLIO_CREATION_API_URL_SUFFIX = "FOLIO_CREATION_API_URL_SUFFIX";
     static final String TX_CONTEXT_PREFIX = "UFC";
     static final String DEFAULT_ORGANIZATION_ID = "DEFAULT_ORGANIZATION_ID";

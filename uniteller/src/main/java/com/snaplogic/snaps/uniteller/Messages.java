@@ -42,10 +42,7 @@ class Messages {
     static final String RESOURCE_DESC = "Available UniTeller resources";
     // Error messages
     static final String ERR_PASSWORD_EMPTY = "Password is null or empty";
-<<<<<<< HEAD
     static final String NO_DATA_ERRMSG = "Unable to process the input document";
-=======
->>>>>>> 84f3989399e926d18a457a9135dfcc3c848ac39a
     static final String NO_DATA_WARNING = "Empty input document";
     static final String NO_DATA_REASON = "No data coming form the connected snap.";
     static final String NO_DATA_RESOLUTION = "Verify the connected snap and validate the data.";

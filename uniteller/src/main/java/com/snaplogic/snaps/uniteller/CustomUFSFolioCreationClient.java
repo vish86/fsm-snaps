@@ -85,15 +85,10 @@ public class CustomUFSFolioCreationClient {
     }
 
     /**
-<<<<<<< HEAD
      * createSCTx 30-May-2014 4:41:38 PM
      *
      * @param request
      * @return UFSCreateSCTxResp
-=======
-     * @param request
-     * @return ufsCreateSCTxResp
->>>>>>> 84f3989399e926d18a457a9135dfcc3c848ac39a
      * @throws UFSFolioCreationClientException
      */
     public UFSCreateSCTxResp createSCTx(UFSCreateSCTxReq request)
@@ -158,12 +153,8 @@ public class CustomUFSFolioCreationClient {
                 logUFSCreateSCTxResp(ufsCreateSCTxResp);
                 return ufsCreateSCTxResp;
             }
-<<<<<<< HEAD
             ufsCreateSCTxResp = Utilities.getInstance().convertToUFSCreateSCTxRespObject(
                     createSCTxResponse);
-=======
-            ufsCreateSCTxResp = convertToUFSCreateSCTxRespObject(createSCTxResponse);
->>>>>>> 84f3989399e926d18a457a9135dfcc3c848ac39a
             logUFSCreateSCTxResp(ufsCreateSCTxResp);
             return ufsCreateSCTxResp;
         } catch (UFSFolioCreationClientException ex) {
@@ -243,12 +234,8 @@ public class CustomUFSFolioCreationClient {
                 logUFSConfirmSCTxResp(ufsConfirmSCTxResp);
                 return ufsConfirmSCTxResp;
             }
-<<<<<<< HEAD
             ufsConfirmSCTxResp = Utilities.getInstance().convertToUFSConfirmSCTxRespObject(
                     confirmSCTxResponse);
-=======
-            ufsConfirmSCTxResp = convertToUFSConfirmSCTxRespObject(confirmSCTxResponse);
->>>>>>> 84f3989399e926d18a457a9135dfcc3c848ac39a
             logUFSConfirmSCTxResp(ufsConfirmSCTxResp);
             return ufsConfirmSCTxResp;
         } catch (UFSFolioCreationClientException ex) {
@@ -328,12 +315,8 @@ public class CustomUFSFolioCreationClient {
                 logUFSCreateTxResp(ufsCreateTxResp);
                 return ufsCreateTxResp;
             }
-<<<<<<< HEAD
             ufsCreateTxResp = Utilities.getInstance().convertToUFSCreateTxRespObject(
                     createTxResponse);
-=======
-            ufsCreateTxResp = convertToUFSCreateTxRespObject(createTxResponse);
->>>>>>> 84f3989399e926d18a457a9135dfcc3c848ac39a
             logUFSCreateTxResp(ufsCreateTxResp);
             return ufsCreateTxResp;
         } catch (UFSFolioCreationClientException ex) {
@@ -413,12 +396,8 @@ public class CustomUFSFolioCreationClient {
                 logUFSCancelTxResp(ufsCancelTxResp);
                 return ufsCancelTxResp;
             }
-<<<<<<< HEAD
             ufsCancelTxResp = Utilities.getInstance().convertToUFSCancelTxRespObject(
                     cancelTxResponse);
-=======
-            ufsCancelTxResp = convertToUFSCancelTxRespObject(cancelTxResponse);
->>>>>>> 84f3989399e926d18a457a9135dfcc3c848ac39a
             logUFSCancelTxResp(ufsCancelTxResp);
             return ufsCancelTxResp;
         } catch (UFSFolioCreationClientException ex) {
@@ -498,12 +477,8 @@ public class CustomUFSFolioCreationClient {
                 logUFSInfoModifyResp(ufsInfoModifyResp);
                 return ufsInfoModifyResp;
             }
-<<<<<<< HEAD
             ufsInfoModifyResp = Utilities.getInstance().convertToUFSInfoModifyRespObject(
                     infoModifyResponse);
-=======
-            ufsInfoModifyResp = convertToUFSInfoModifyRespObject(infoModifyResponse);
->>>>>>> 84f3989399e926d18a457a9135dfcc3c848ac39a
             logUFSInfoModifyResp(ufsInfoModifyResp);
             return ufsInfoModifyResp;
         } catch (UFSFolioCreationClientException ex) {
@@ -582,12 +557,8 @@ public class CustomUFSFolioCreationClient {
                 logUFSNotificationResp(ufsNotificationResp);
                 return ufsNotificationResp;
             }
-<<<<<<< HEAD
             ufsNotificationResp = Utilities.getInstance().convertToUFSNotificationRespObject(
                     notificationResponse);
-=======
-            ufsNotificationResp = convertToUFSNotificationRespObject(notificationResponse);
->>>>>>> 84f3989399e926d18a457a9135dfcc3c848ac39a
             logUFSNotificationResp(ufsNotificationResp);
             return ufsNotificationResp;
         } catch (UFSFolioCreationClientException ex) {
@@ -665,12 +636,8 @@ public class CustomUFSFolioCreationClient {
                 logUFSNotificationConfirmResp(ufsNotificationConfirmResp);
                 return ufsNotificationConfirmResp;
             }
-<<<<<<< HEAD
             ufsNotificationConfirmResp = Utilities.getInstance()
                     .convertToUFSNotificationConfirmRespObject(notifConfirmResponse);
-=======
-            ufsNotificationConfirmResp = convertToUFSNotificationConfirmRespObject(notifConfirmResponse);
->>>>>>> 84f3989399e926d18a457a9135dfcc3c848ac39a
             logUFSNotificationConfirmResp(ufsNotificationConfirmResp);
             return ufsNotificationConfirmResp;
         } catch (UFSFolioCreationClientException ex) {
@@ -750,12 +717,8 @@ public class CustomUFSFolioCreationClient {
                 logUFSGetTxDetailsResp(ufsGetTxDetailsResp);
                 return ufsGetTxDetailsResp;
             }
-<<<<<<< HEAD
             ufsGetTxDetailsResp = Utilities.getInstance().convertToUFSGetTxDetailsRespObject(
                     getTxDetailsResponse);
-=======
-            ufsGetTxDetailsResp = convertToUFSGetTxDetailsRespObject(getTxDetailsResponse);
->>>>>>> 84f3989399e926d18a457a9135dfcc3c848ac39a
             logUFSGetTxDetailsResp(ufsGetTxDetailsResp);
             return ufsGetTxDetailsResp;
         } catch (UFSFolioCreationClientException ex) {
@@ -1368,11 +1331,7 @@ public class CustomUFSFolioCreationClient {
             ufsGetTxDetailsResp.setSenderLastName(PROXY_BENE_LNAME);
             ufsGetTxDetailsResp.setSenderPhone(PROXY_SENDER_PHONE);
             ufsGetTxDetailsResp.setSenderPostalCode(PROXY_SENDER_POSTAL_CODE);
-<<<<<<< HEAD
             ufsGetTxDetailsResp.setSenderRefNumber(PROXY_SENDER_REF_NUM);
-=======
-            ufsGetTxDetailsResp.setSenderRefNumber(PROSY_SENDER_REF_NUM);
->>>>>>> 84f3989399e926d18a457a9135dfcc3c848ac39a
             ufsGetTxDetailsResp.setSenderState(PROXY_SENDER_STATE);
             ufsGetTxDetailsResp.setTxAmount(10.0D);
             ufsGetTxDetailsResp.setTxCreationDate(new GregorianCalendar());

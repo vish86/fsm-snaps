@@ -33,21 +33,12 @@ import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Properties;
 
-<<<<<<< HEAD
-=======
-import javax.net.ssl.HttpsURLConnection;
-
->>>>>>> 84f3989399e926d18a457a9135dfcc3c848ac39a
 import static com.snaplogic.snaps.uniteller.Constants.DS_ALG;
 import static com.snaplogic.snaps.uniteller.Constants.DUMMY_PASS;
 import static com.snaplogic.snaps.uniteller.Constants.ENC_ALG;
 import static com.snaplogic.snaps.uniteller.Constants.MAX_PASSWORD_LENGTH;
 import static com.snaplogic.snaps.uniteller.Constants.MIN_PASSWORD_LENGTH;
-<<<<<<< HEAD
 import static com.snaplogic.snaps.uniteller.Constants.NONCE;
-=======
-import static com.snaplogic.snaps.uniteller.Constants.nonce;
->>>>>>> 84f3989399e926d18a457a9135dfcc3c848ac39a
 import static com.snaplogic.snaps.uniteller.Messages.ERR_PASSWORD_EMPTY;
 import static com.snaplogic.snaps.uniteller.Messages.ERR_URL_CONNECT;
 
@@ -57,11 +48,7 @@ import static com.snaplogic.snaps.uniteller.Messages.ERR_URL_CONNECT;
  * @author svatada
  */
 public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
-<<<<<<< HEAD
     private static HashMap<String, Object> instanceMap = new HashMap<String, Object>();
-=======
-    private static HashMap<String, Object> instanceMap = null;
->>>>>>> 84f3989399e926d18a457a9135dfcc3c848ac39a
     private String fileLocation = null;
     private URLConnection urlConnection = null;
     private Properties securityProps = null;
@@ -69,19 +56,6 @@ public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
 
     private CustomUFSSecurityMgr(String fileLocation) throws UFSSecurityMgrException {
         this.fileLocation = fileLocation;
-<<<<<<< HEAD
-=======
-        try {
-            URL fileUrl = new URI(fileLocation).toURL();
-            this.securityInputStream = getInputStream(fileUrl);
-        } catch (FileNotFoundException e) {
-            log.error(e.getMessage(), e);
-            throw new UFSSecurityMgrException(e.getMessage());
-        } catch (Exception ex) {
-            log.error(ex.getMessage(), ex);
-            throw new UFSSecurityMgrException(ex.getMessage());
-        }
->>>>>>> 84f3989399e926d18a457a9135dfcc3c848ac39a
         this.securityProps = new Properties();
     }
 
@@ -183,11 +157,7 @@ public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
     public String encryptPassword(String password) throws UFSSecurityMgrException {
         String id = null;
         try {
-<<<<<<< HEAD
             if (StringUtils.isEmpty(password)) {
-=======
-            if ((password == null) || (password.trim().length() == 0)) {
->>>>>>> 84f3989399e926d18a457a9135dfcc3c848ac39a
                 throw new Exception(ERR_PASSWORD_EMPTY);
             }
             id = password + NONCE;
@@ -203,11 +173,7 @@ public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
     public String decryptPassword(String password) throws UFSSecurityMgrException {
         String id = null;
         try {
-<<<<<<< HEAD
             if (StringUtils.isEmpty(password)) {
-=======
-            if ((password == null) || (password.trim().length() == 0)) {
->>>>>>> 84f3989399e926d18a457a9135dfcc3c848ac39a
                 throw new Exception(ERR_PASSWORD_EMPTY);
             }
             byte[] pwdBytes = Base64.decode(password);
@@ -241,24 +207,7 @@ public class CustomUFSSecurityMgr implements IUFSSecurityMgr {
     }
 
     private void cleanup(OutputStream outputStream, URLConnection urlConnection) {
-<<<<<<< HEAD
         IOUtils.closeQuietly(outputStream);
         IOUtils.close(urlConnection);
-=======
-        if (outputStream != null) {
-            try {
-                outputStream.close();
-            } catch (IOException e) {
-                log.warn(e.getMessage());
-            }
-        }
-        if (urlConnection != null) {
-            try {
-                ((HttpsURLConnection) urlConnection).disconnect();
-            } catch (Exception e) {
-                log.warn(e.getMessage());
-            }
-        }
->>>>>>> 84f3989399e926d18a457a9135dfcc3c848ac39a
     }
 }
