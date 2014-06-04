@@ -32,7 +32,7 @@ import com.snaplogic.snap.api.capabilities.Version;
 import com.snaplogic.snap.api.capabilities.ViewType;
 import com.snaplogic.snap.schema.api.SchemaBuilder;
 import com.snaplogic.snap.schema.api.SchemaProvider;
-import com.snaplogic.snaps.uniteller.Constants.SnapCatogery;
+import com.snaplogic.snaps.uniteller.Constants.SnapsModel;
 import com.snaplogic.snaps.uniteller.bean.AccountBean;
 import com.snaplogic.snaps.uniteller.util.Utilities;
 import com.uniteller.support.common.IUFSConfigMgr;
@@ -69,18 +69,18 @@ import static com.snaplogic.snaps.uniteller.Messages.*;
 @Accounts(provides = { UniTellerBasicAuthAccount.class }, optional = false)
 public abstract class BaseService extends SimpleSnap implements MetricsProvider,
         InputSchemaProvider {
-    private SnapCatogery snapsType;
+    private SnapsModel snapsType;
     private Counter counter;
     private String resourceType;
     @Inject
-    Utilities util;
+    private Utilities util;
     @Inject
     private UniTellerBasicAuthAccount account;
     @Inject
     private URLEncoder urlEncoder;
     private static final Logger log = LoggerFactory.getLogger(BaseService.class);
 
-    protected SnapCatogery getSnapType() {
+    protected SnapsModel getSnapType() {
         return snapsType;
     }
 
@@ -101,8 +101,8 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
         for (String viewName : provider.getRegisteredViewNames()) {
             SchemaBuilder schemaBuilder = provider.getSchemaBuilder(viewName);
             for (Method method : findSetters(classType)) {
-                schemaBuilder.withChildSchema(provider.createSchema(util.getDataTypes(method), method
-                        .getName().substring(3)));
+                schemaBuilder.withChildSchema(provider.createSchema(util.getDataTypes(method),
+                        method.getName().substring(3)));
             }
             schemaBuilder.build();
         }
@@ -216,18 +216,46 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
             throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         Map<String, Object> map = new HashMap<String, Object>();
         /* Preparing the map to write the values to output */
-        Class<? extends Object> UFSResponse = UFSResponseObj.getClass();
-        for (Method method : findGetters(UFSResponse)) {
-            if (method.getReturnType().isPrimitive()
-                    || method.getReturnType().isAssignableFrom(String.class)
-                    || method.getReturnType().isAssignableFrom(Calendar.class)) {
-                map.put(method.getName().substring(3), method.invoke(UFSResponseObj, null));
-            } else {
-                map.put(method.getName().substring(3),
-                        processResponseObj(method.invoke(UFSResponseObj, null)));
+        if (UFSResponseObj != null) {
+            Class<? extends Object> UFSResponse = UFSResponseObj.getClass();
+            for (Method method : findGetters(UFSResponse)) {
+                if (method.getReturnType().isPrimitive()
+                        || method.getReturnType().isAssignableFrom(String.class)
+                        || method.getReturnType().isAssignableFrom(Calendar.class)) {
+                    map.put(method.getName().substring(3), method.invoke(UFSResponseObj));
+                } else {
+                    log.debug(method.toGenericString());
+                    map.put(method.getName().substring(3),
+                            processNestedResponseObj(method.invoke(UFSResponseObj)));
+                }
             }
         }
         return map;
+    }
+
+    /**
+     * processNestedResponseObj
+     *
+     * @param UFSResponseObj
+     * @return Object
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     * @throws InvocationTargetException Object
+     */
+    public Object processNestedResponseObj(Object UFSResponseObj) throws IllegalAccessException,
+            IllegalArgumentException, InvocationTargetException {
+        if (UFSResponseObj == null) {
+            return StringUtils.EMPTY;
+        } else if (UFSResponseObj instanceof Object[]) {
+            ArrayList<Object> list = new ArrayList<Object>();
+            Object[] objArray = (Object[]) UFSResponseObj;
+            for (Object obj : objArray) {
+                list.add(processResponseObj(obj));
+            }
+            return list;
+        } else {
+            return processResponseObj(UFSResponseObj);
+        }
     }
 
     /*

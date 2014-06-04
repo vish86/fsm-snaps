@@ -11,7 +11,7 @@
 package com.snaplogic.snaps.uniteller;
 
 import com.snaplogic.snap.api.capabilities.General;
-import com.snaplogic.snaps.uniteller.Constants.SnapCatogery;
+import com.snaplogic.snaps.uniteller.Constants.SnapsModel;
 
 import static com.snaplogic.snaps.uniteller.Messages.DELETE_LABEL;
 import static com.snaplogic.snaps.uniteller.Messages.SNAP_DESC;
@@ -24,7 +24,7 @@ import static com.snaplogic.snaps.uniteller.Messages.SNAP_DESC;
 @General(title = DELETE_LABEL, purpose = SNAP_DESC)
 public class Delete extends BaseService {
     @Override
-    protected SnapCatogery getSnapType() {
-        return SnapCatogery.Delete;
+    protected SnapsModel getSnapType() {
+        return SnapsModel.Delete;
     }
 }

@@ -119,11 +119,11 @@ public class Constants {
     static final String UNITELLER_REQ_TAG = "Req";
     static final String UNITELLER_RESP_TAG = "Resp";
 
-    static enum SnapCatogery {
+    static enum SnapsModel {
         Create("Create"), Update("Update"), Read("Read"), Delete("Delete");
         private final String resource;
 
-        private SnapCatogery(String resource) {
+        private SnapsModel(String resource) {
             this.resource = resource;
         }
 
@@ -161,9 +161,9 @@ public class Constants {
     };
 
     static final ImmutableMap<String, ImmutableSet<String>> RESOUCE_LIST = ImmutableMap.of(
-            SnapCatogery.Create.toString(), ImmutableSet.of("CreateTx", "CreateSCTx",
-                    "ConfirmSCTx", "NotificationConfirm", "QuickQuote"), SnapCatogery.Read
+            SnapsModel.Create.toString(), ImmutableSet.of("CreateTx", "CreateSCTx",
+                    "ConfirmSCTx", "NotificationConfirm", "QuickQuote"), SnapsModel.Read
                     .toString(), ImmutableSet.of("Notification", "GetTxDetails"),
-            SnapCatogery.Update.toString(), ImmutableSet.of("InfoModify", CHANGE_PASSWORD),
-            SnapCatogery.Delete.toString(), ImmutableSet.of("CancelTx"));
+            SnapsModel.Update.toString(), ImmutableSet.of("InfoModify", CHANGE_PASSWORD),
+            SnapsModel.Delete.toString(), ImmutableSet.of("CancelTx"));
 }

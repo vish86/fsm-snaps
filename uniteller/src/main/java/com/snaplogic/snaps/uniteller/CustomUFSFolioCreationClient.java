@@ -27,6 +27,7 @@ import com.uniteller.support.util.UFSClientLogger;
 import com.uniteller.support.util.UFSGeneralException;
 import com.uniteller.support.util.UFSSystemError;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,8 +86,6 @@ public class CustomUFSFolioCreationClient {
     }
 
     /**
-     * createSCTx 30-May-2014 4:41:38 PM
-     *
      * @param request
      * @return UFSCreateSCTxResp
      * @throws UFSFolioCreationClientException
@@ -120,7 +119,7 @@ public class CustomUFSFolioCreationClient {
             synchronized (this.securityMgr) {
                 encryptedPassword = this.securityMgr.getPassword(machineIdS);
             }
-            if (encryptedPassword == null) {
+            if (StringUtils.isEmpty(encryptedPassword)) {
                 throw new UFSUnknownMachineIdException(String.format(NO_PASSWORD_FOR_MACHINE_ID,
                         machineIdS));
             }
@@ -201,7 +200,7 @@ public class CustomUFSFolioCreationClient {
             synchronized (this.securityMgr) {
                 encryptedPassword = this.securityMgr.getPassword(machineIdS);
             }
-            if (encryptedPassword == null) {
+            if (StringUtils.isEmpty(encryptedPassword)) {
                 throw new UFSUnknownMachineIdException(String.format(NO_PASSWORD_FOR_MACHINE_ID,
                         machineIdS));
             }
@@ -282,7 +281,7 @@ public class CustomUFSFolioCreationClient {
             synchronized (this.securityMgr) {
                 encryptedPassword = this.securityMgr.getPassword(machineIdS);
             }
-            if (encryptedPassword == null) {
+            if (StringUtils.isEmpty(encryptedPassword)) {
                 throw new UFSUnknownMachineIdException(String.format(NO_PASSWORD_FOR_MACHINE_ID,
                         machineIdS));
             }
@@ -363,7 +362,7 @@ public class CustomUFSFolioCreationClient {
             synchronized (this.securityMgr) {
                 encryptedPassword = this.securityMgr.getPassword(machineIdS);
             }
-            if (encryptedPassword == null) {
+            if (StringUtils.isEmpty(encryptedPassword)) {
                 throw new UFSUnknownMachineIdException(String.format(NO_PASSWORD_FOR_MACHINE_ID,
                         machineIdS));
             }
@@ -444,7 +443,7 @@ public class CustomUFSFolioCreationClient {
             synchronized (this.securityMgr) {
                 encryptedPassword = this.securityMgr.getPassword(machineIdS);
             }
-            if (encryptedPassword == null) {
+            if (StringUtils.isEmpty(encryptedPassword)) {
                 throw new UFSUnknownMachineIdException(String.format(NO_PASSWORD_FOR_MACHINE_ID,
                         machineIdS));
             }
@@ -524,7 +523,7 @@ public class CustomUFSFolioCreationClient {
             synchronized (this.securityMgr) {
                 encryptedPassword = this.securityMgr.getPassword(machineIdS);
             }
-            if (encryptedPassword == null) {
+            if (StringUtils.isEmpty(encryptedPassword)) {
                 throw new UFSUnknownMachineIdException(String.format(NO_PASSWORD_FOR_MACHINE_ID,
                         machineIdS));
             }
@@ -605,7 +604,7 @@ public class CustomUFSFolioCreationClient {
             synchronized (this.securityMgr) {
                 encryptedPassword = this.securityMgr.getPassword(machineIdS);
             }
-            if (encryptedPassword == null) {
+            if (StringUtils.isEmpty(encryptedPassword)) {
                 throw new UFSUnknownMachineIdException(String.format(NO_PASSWORD_FOR_MACHINE_ID,
                         machineIdS));
             }
@@ -684,7 +683,7 @@ public class CustomUFSFolioCreationClient {
             synchronized (this.securityMgr) {
                 encryptedPassword = this.securityMgr.getPassword(machineIdS);
             }
-            if (encryptedPassword == null) {
+            if (StringUtils.isEmpty(encryptedPassword)) {
                 throw new UFSUnknownMachineIdException(String.format(NO_PASSWORD_FOR_MACHINE_ID,
                         machineIdS));
             }
@@ -765,7 +764,7 @@ public class CustomUFSFolioCreationClient {
             synchronized (this.securityMgr) {
                 encryptedPassword = this.securityMgr.getPassword(machineIdS);
             }
-            if (encryptedPassword == null) {
+            if (StringUtils.isEmpty(encryptedPassword)) {
                 throw new UFSUnknownMachineIdException(String.format(NO_PASSWORD_FOR_MACHINE_ID,
                         machineIdS));
             }

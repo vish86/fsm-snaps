@@ -18,7 +18,7 @@ package com.snaplogic.snaps.uniteller;
 class Messages {
     // Metric
     static final String COUNTER_DESCRIPTION = "A metric that indicates the number of "
-            + "successfully written records into NetSuite";
+            + "successfully written records.";
     static final String COUNTER_UNIT = "Documents";
     static final String DOCUMENT_COUNTER = "Document Counter";
     // Snap label for Account

@@ -41,8 +41,7 @@ public class CustomUFSConfigMgr implements IUFSConfigMgr {
 
     private CustomUFSConfigMgr(String fileLocation) throws UFSConfigMgrException {
         try {
-            URI fileUri = new URI(fileLocation);
-            URL fileUrl = fileUri.toURL();
+            URL fileUrl = new URI(fileLocation).toURL();
             this.configProperties = new Properties();
             try (InputStream inputStream = getInputStream(fileUrl)) {
                 this.configProperties.load(inputStream);

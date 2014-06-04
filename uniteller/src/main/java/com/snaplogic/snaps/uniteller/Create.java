@@ -11,7 +11,7 @@
 package com.snaplogic.snaps.uniteller;
 
 import com.snaplogic.snap.api.capabilities.General;
-import com.snaplogic.snaps.uniteller.Constants.SnapCatogery;
+import com.snaplogic.snaps.uniteller.Constants.SnapsModel;
 
 import static com.snaplogic.snaps.uniteller.Messages.CREATE_LABEL;
 import static com.snaplogic.snaps.uniteller.Messages.SNAP_DESC;
@@ -24,7 +24,7 @@ import static com.snaplogic.snaps.uniteller.Messages.SNAP_DESC;
 @General(title = CREATE_LABEL, purpose = SNAP_DESC)
 public class Create extends BaseService {
     @Override
-    protected SnapCatogery getSnapType() {
-        return SnapCatogery.Create;
+    protected SnapsModel getSnapType() {
+        return SnapsModel.Create;
     }
 }

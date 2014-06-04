@@ -1,9 +1,12 @@
 com.snaplogic.snaps.uniteller.Create {
     allow java.security.AllPermission;
-}com.snaplogic.snaps.uniteller.Read {
+}
+com.snaplogic.snaps.uniteller.Read {
     allow java.security.AllPermission;
-}com.snaplogic.snaps.uniteller.Update {
+}
+com.snaplogic.snaps.uniteller.Update {
     allow java.security.AllPermission;
-}com.snaplogic.snaps.uniteller.Delete {
+}
+com.snaplogic.snaps.uniteller.Delete {
     allow java.security.AllPermission;
 }
