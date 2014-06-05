@@ -46,11 +46,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.math.BigDecimal;
-import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,7 +57,7 @@ import static com.snaplogic.snaps.uniteller.Messages.*;
 
 /**
  * Abstract base class for UniTeller snap pack which contains common snap properties, core logic.
- *
+ * 
  * @author svatada
  */
 @Inputs(min = 1, max = 1, accepts = { ViewType.DOCUMENT })
@@ -144,26 +142,28 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
                     Object UFSRequestObj = UFSRequest.newInstance();
                     Object inputFieldValue = null;
                     Calendar cal = Calendar.getInstance();
+                    SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
                     for (Method method : UFSRequest.getDeclaredMethods()) {
                         if (isSetter(method)
                                 && (inputFieldValue = map.get(method.getName().substring(3))) != null) {
                             try {
-                                if (inputFieldValue instanceof String) {
+                                String paramType = method.getGenericParameterTypes()[0].toString();
+                                if (paramType.equalsIgnoreCase(String.class.getName())) {
                                     method.invoke(UFSRequest.cast(UFSRequestObj),
                                             String.valueOf(inputFieldValue));
-                                } else if (inputFieldValue instanceof BigDecimal) {
+                                } else if (paramType.equalsIgnoreCase(Double.class.getSimpleName())) {
+                                    method.invoke(UFSRequest.cast(UFSRequestObj), Double
+                                            .parseDouble(String.valueOf(inputFieldValue)));
+                                } else if (paramType.equalsIgnoreCase(INT)) {
                                     method.invoke(UFSRequest.cast(UFSRequestObj),
-                                            ((BigDecimal) inputFieldValue).intValue());
-                                } else if (inputFieldValue instanceof BigInteger) {
-                                    method.invoke(UFSRequest.cast(UFSRequestObj),
-                                            ((BigInteger) inputFieldValue).intValue());
-                                } else if (inputFieldValue instanceof Date) {
-                                    cal.setTime(((Date) inputFieldValue));
+                                            Integer.parseInt(String.valueOf(inputFieldValue)));
+                                } else if (paramType.equalsIgnoreCase(Calendar.class.getName())) {
+                                    cal.setTime(sdf.parse(String.valueOf(inputFieldValue)));
                                     method.invoke(UFSRequest.cast(UFSRequestObj), cal);
                                 }
                             } catch (IllegalArgumentException iae) {
-                                writeToErrorView(ILLEGAL_ARGS_EXE, iae.getMessage(),
-                                        ERROR_RESOLUTION, iae);
+                                writeToErrorView(String.format(ILLEGAL_ARGS_EXE, method.getName()),
+                                        iae.getMessage(), ERROR_RESOLUTION, iae);
                             } catch (InvocationTargetException ite) {
                                 writeToErrorView(ite.getTargetException().getMessage(),
                                         ite.getMessage(), ERROR_RESOLUTION, ite);
@@ -172,13 +172,15 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
                     }
                     /* Invoking the request over USFCreationClient */
                     Object UFSResponseObj = null;
+                    Method creationClientMethod = CustomUSFCreationClient.getMethod(
+                            getCamelCaseForMethod(resourceType), UFSRequest);
                     try {
-                        Method creationClientMethod = CustomUSFCreationClient.getMethod(
-                                getCamelCaseForMethod(resourceType), UFSRequest);
                         UFSResponseObj = creationClientMethod.invoke(USFCreationClientObj,
                                 UFSRequest.cast(UFSRequestObj));
                     } catch (IllegalArgumentException iae) {
-                        writeToErrorView(ILLEGAL_ARGS_EXE, iae.getMessage(), ERROR_RESOLUTION, iae);
+                        writeToErrorView(
+                                String.format(ILLEGAL_ARGS_EXE, creationClientMethod.getName()),
+                                iae.getMessage(), ERROR_RESOLUTION, iae);
                     } catch (InvocationTargetException ite) {
                         writeToErrorView(ite.getTargetException().getMessage(), ite.getMessage(),
                                 ERROR_RESOLUTION, ite);
@@ -204,8 +206,6 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
     }
 
     /**
-     * Process all the nested UFS response objects
-     *
      * @param UFSResponseObj
      * @return Map
      * @throws IllegalAccessException
@@ -234,8 +234,6 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
     }
 
     /**
-     * processNestedResponseObj
-     *
      * @param UFSResponseObj
      * @return Object
      * @throws IllegalAccessException
@@ -291,6 +289,7 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
             final String errResoulution, Exception ex) {
         log.error(ex.getMessage(), ex);
         Map<String, Object> map = new HashMap<String, Object>();
+        map.put(DOCNUM_TAG, counter.getStats());
         map.put(ERROR_TAG, errMsg);
         map.put(MESSAGE_TAG, ex.getLocalizedMessage());
         map.put(REASON_TAG, errReason);
@@ -304,6 +303,7 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
     private void writeToErrorView(final String errMsg, final String errReason,
             final String errResoulution, final String errResponse) {
         Map<String, Object> map = new HashMap<String, Object>();
+        map.put(DOCNUM_TAG, counter.getStats());
         map.put(ERROR_TAG, errMsg);
         map.put(MESSAGE_TAG, errResponse);
         map.put(REASON_TAG, errReason);
@@ -330,7 +330,7 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
     /*
      * finds the declared getter methods in the given classtype
      */
-    static ArrayList<Method> findGetters(Class<?> c) {
+    public static ArrayList<Method> findGetters(Class<?> c) {
         ArrayList<Method> list = new ArrayList<Method>();
         Method[] methods = c.getDeclaredMethods();
         for (Method method : methods) {

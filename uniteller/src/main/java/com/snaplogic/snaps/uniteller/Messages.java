@@ -41,6 +41,8 @@ class Messages {
     static final String RESOURCE_PROP = "Resource";
     static final String RESOURCE_DESC = "Available UniTeller resources";
     // Error messages
+    static final String NO_UFS_OBJECT = "No UFS object was found to log.";
+    static final String LOG_ERROR = "Unble to log the UFS object ";
     static final String ERR_PASSWORD_EMPTY = "Password is null or empty";
     static final String NO_DATA_ERRMSG = "Unable to process the input document";
     static final String NO_DATA_WARNING = "Empty input document";
@@ -61,7 +63,7 @@ class Messages {
     static final String ERROR_REASON = "Check the values passed.";
     static final String ERRORMSG = "Technical error has occured while processing the input.";
     static final String ILLEGAL_ARGS_EXE = "Indicates that, the input has been passed an illegal "
-            + "or inappropriate value.";
+            + "or inappropriate value to the method %s.";
     static final String INVOCATION_TARGET_EXE = "Trying to execute the unknow function call or "
             + "method parameter types were wrong.";
 }

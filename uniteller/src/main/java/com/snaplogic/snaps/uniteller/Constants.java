@@ -32,6 +32,8 @@ import java.util.regex.Pattern;
  * @author svatada
  */
 public class Constants {
+    static final String DATE_FORMAT = "yyyy-MM-ddTHH:mm:ss";
+    static final String INT = "int";
     static final String PROXY_BENE_ID_NUM = "1111111";
     static final String PROXY_BENE_ID_TYPE = "003";
     static final String PROXY_NOTIF_REF_NUM2 = "7";
@@ -108,6 +110,7 @@ public class Constants {
     static final String GET_REGEX = "^get[A-Z].*";
     static final String FILE_PROTOCOL = "file:///%s";
     static final String REGEX_SET = "^set[A-Z].*";
+    static final String DOCNUM_TAG = "DocInfo";
     static final String ERROR_TAG = "Error";
     static final String STATUS_CODE_TAG = "statusCode";
     static final String RESOLUTION_TAG = "Resolution";

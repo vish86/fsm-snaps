@@ -688,15 +688,15 @@ public class Utilities {
      */
     public SnapType getDataTypes(Method method) {
         String type = method.getGenericParameterTypes()[0].toString();
-        if (StringUtils.contains(type, String.class.getName())) {
+        if (StringUtils.containsIgnoreCase(type, String.class.getName())) {
             return SnapType.STRING;
         } else if (StringUtils.contains(type, INT)) {
             return SnapType.INTEGER;
-        } else if (StringUtils.contains(type, Float.class.getName())
-                || StringUtils.contains(type, Long.class.getName())
-                || StringUtils.contains(type, Double.class.getName())) {
+        } else if (StringUtils.containsIgnoreCase(type, Float.class.getSimpleName())
+                || StringUtils.containsIgnoreCase(type, Long.class.getSimpleName())
+                || StringUtils.containsIgnoreCase(type, Double.class.getSimpleName())) {
             return SnapType.NUMBER;
-        } else if (StringUtils.contains(type, Calendar.class.getName())) {
+        } else if (StringUtils.containsIgnoreCase(type, Calendar.class.getName())) {
             return SnapType.DATETIME;
         }
         return SnapType.ANY;
