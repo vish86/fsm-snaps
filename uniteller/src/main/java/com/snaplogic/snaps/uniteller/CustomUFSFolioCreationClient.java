@@ -532,7 +532,7 @@ public class CustomUFSFolioCreationClient {
             synchronized (this.securityMgr) {
                 encryptedPassword = this.securityMgr.getPassword(machineIdS);
             }
-            if (StringUtils.isEmpty(encryptedPassword)) {
+            if (null == encryptedPassword) {
                 throw new UFSUnknownMachineIdException(String.format(NO_PASSWORD_FOR_MACHINE_ID,
                         machineIdS));
             }

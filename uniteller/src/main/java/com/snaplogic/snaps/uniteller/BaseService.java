@@ -147,7 +147,8 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
                         if (isSetter(method)
                                 && (inputFieldValue = map.get(method.getName().substring(3))) != null) {
                             try {
-                                String paramType = method.getGenericParameterTypes()[0].toString();
+                                //String paramType = method.getGenericParameterTypes()[0].toString();
+                                String paramType = method.getParameterTypes()[0].getName();
                                 if (paramType.equalsIgnoreCase(String.class.getName())) {
                                     method.invoke(UFSRequest.cast(UFSRequestObj),
                                             String.valueOf(inputFieldValue));
