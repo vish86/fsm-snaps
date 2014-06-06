@@ -37,10 +37,18 @@ class Messages {
     static final String SNAP_DESC = "Provides the integration machanisum with UniTeller Web "
             + "Services for the correspondent resources.";
     // Common properties labels and descriptions
+    static final String CHNG_PSW_LABEL = "Auto update password";
+    static final String CHNG_PSW_PROP = "Auto_update_password";
+    static final String CHNG_PSW_DESC = "Automatically updates the password "
+            + "when UniTeller requested for change password with internal error code.";
     static final String RESOURCE_LABEL = "Resource type";
     static final String RESOURCE_PROP = "Resource";
     static final String RESOURCE_DESC = "Available UniTeller resources";
     // Error messages
+    static final String AUTO_UPDATE_PASSWORD_LOG = "Auto update password was set to %s";
+    static final String CHANGE_PASSWORD_RESP = "Requested for change password, it is good to enable auto update password.";
+    static final String CHANGE_PASSWORD_LOG_MSG = "UniTeller requested change password with error "
+            + "code %s and preparing the change password request.";
     static final String NO_UFS_OBJECT = "No UFS object was found to log.";
     static final String LOG_ERROR = "Unble to log the UFS object ";
     static final String ERR_PASSWORD_EMPTY = "Password is null or empty";
@@ -66,4 +74,5 @@ class Messages {
             + "or inappropriate value to the method %s.";
     static final String INVOCATION_TARGET_EXE = "Trying to execute the unknow function call or "
             + "method parameter types were wrong.";
+    static final String DATE_PARSER_ERROR="Invalid date format. Date format must be %s";
 }

@@ -16,6 +16,7 @@ import com.snaplogic.api.ConfigurationException;
 import com.snaplogic.api.ExecutionException;
 import com.snaplogic.api.InputSchemaProvider;
 import com.snaplogic.api.MetricsProvider;
+import com.snaplogic.common.SnapType;
 import com.snaplogic.common.metrics.Counter;
 import com.snaplogic.common.properties.builders.PropertyBuilder;
 import com.snaplogic.common.utilities.URLEncoder;
@@ -46,6 +47,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -57,7 +59,7 @@ import static com.snaplogic.snaps.uniteller.Messages.*;
 
 /**
  * Abstract base class for UniTeller snap pack which contains common snap properties, core logic.
- * 
+ *
  * @author svatada
  */
 @Inputs(min = 1, max = 1, accepts = { ViewType.DOCUMENT })
@@ -70,6 +72,7 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
     private SnapsModel snapsType;
     private Counter counter;
     private String resourceType;
+    private boolean autoUpdatePsw;
     @Inject
     private Utilities util;
     @Inject
@@ -86,6 +89,8 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
     public void defineProperties(final PropertyBuilder propertyBuilder) {
         propertyBuilder.describe(RESOURCE_PROP, RESOURCE_LABEL, RESOURCE_DESC)
                 .withAllowedValues(RESOUCE_LIST.get(getSnapType().toString())).required().add();
+        propertyBuilder.describe(CHNG_PSW_PROP, CHNG_PSW_LABEL, CHNG_PSW_DESC)
+                .type(SnapType.BOOLEAN).defaultValue(true).add();
     }
 
     @Override
@@ -115,6 +120,7 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
     @Override
     public void configure(final PropertyValues propertyValues) throws ConfigurationException {
         resourceType = propertyValues.get(RESOURCE_PROP).toString();
+        autoUpdatePsw = propertyValues.get(CHNG_PSW_PROP);
     }
 
     @Override
@@ -133,6 +139,9 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
             Object USFCreationClientObj = constructor.newInstance(
                     CustomUFSConfigMgr.getInstance(UFSConfigFilePath),
                     CustomUFSSecurityMgr.getInstance(UFSSecurityFilePath));
+            Method setAutoUpdatePsw = CustomUSFCreationClient.getDeclaredMethod("setAutoUpdatePsw",
+                    Boolean.TYPE);
+            setAutoUpdatePsw.invoke(USFCreationClientObj, autoUpdatePsw);
             /* Preparing the request for USF */
             Object data;
             if (document != null && (data = document.get()) != null) {
@@ -147,19 +156,26 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
                         if (isSetter(method)
                                 && (inputFieldValue = map.get(method.getName().substring(3))) != null) {
                             try {
-                                //String paramType = method.getGenericParameterTypes()[0].toString();
+                                // String paramType =
+                                // method.getGenericParameterTypes()[0].toString();
                                 String paramType = method.getParameterTypes()[0].getName();
                                 if (paramType.equalsIgnoreCase(String.class.getName())) {
                                     method.invoke(UFSRequest.cast(UFSRequestObj),
                                             String.valueOf(inputFieldValue));
                                 } else if (paramType.equalsIgnoreCase(Double.class.getSimpleName())) {
-                                    method.invoke(UFSRequest.cast(UFSRequestObj), Double
-                                            .parseDouble(String.valueOf(inputFieldValue)));
+                                    method.invoke(UFSRequest.cast(UFSRequestObj),
+                                            Double.parseDouble(String.valueOf(inputFieldValue)));
                                 } else if (paramType.equalsIgnoreCase(INT)) {
                                     method.invoke(UFSRequest.cast(UFSRequestObj),
                                             Integer.parseInt(String.valueOf(inputFieldValue)));
                                 } else if (paramType.equalsIgnoreCase(Calendar.class.getName())) {
-                                    cal.setTime(sdf.parse(String.valueOf(inputFieldValue)));
+                                    try {
+                                        cal.setTime(sdf.parse(String.valueOf(inputFieldValue)));
+                                    } catch (ParseException pe) {
+                                        writeToErrorView(
+                                                String.format(DATE_PARSER_ERROR, DATE_FORMAT),
+                                                pe.getMessage(), ERROR_RESOLUTION, pe);
+                                    }
                                     method.invoke(UFSRequest.cast(UFSRequestObj), cal);
                                 }
                             } catch (IllegalArgumentException iae) {

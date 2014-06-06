@@ -41,14 +41,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import static com.snaplogic.snaps.uniteller.Constants.*;
-import static com.snaplogic.snaps.uniteller.Messages.CHANGE_PASS_ERR;
-import static com.snaplogic.snaps.uniteller.Messages.LOG_ERROR;
-import static com.snaplogic.snaps.uniteller.Messages.NORESPONSEIOOBJECT;
-import static com.snaplogic.snaps.uniteller.Messages.NO_PASSWORD_ERROR;
-import static com.snaplogic.snaps.uniteller.Messages.NO_PASSWORD_FOR_MACHINE_ID;
-import static com.snaplogic.snaps.uniteller.Messages.NO_UFS_OBJECT;
-import static com.snaplogic.snaps.uniteller.Messages.NULLEXCEPTION;
-import static com.snaplogic.snaps.uniteller.Messages.NULLREQUEST;
+import static com.snaplogic.snaps.uniteller.Messages.*;
 
 /**
  * Customised UFS folio creation client
@@ -56,7 +49,6 @@ import static com.snaplogic.snaps.uniteller.Messages.NULLREQUEST;
  * @author svatada
  */
 public class CustomUFSFolioCreationClient {
-    private static final String FORMAT_STRING = "{}:{}";
     private static final UFSClientLogger ufsLogger = UFSClientLogger
             .getLogger(CustomUFSFolioCreationClient.class);
     private static final Logger log = LoggerFactory.getLogger(BaseService.class);
@@ -67,6 +59,22 @@ public class CustomUFSFolioCreationClient {
     private static String fclAPIURLSuffix;
     private final IUFSConfigMgr configMgr;
     private final IUFSSecurityMgr securityMgr;
+    private boolean autoUpdatePsw;
+
+    /**
+     * @return boolean
+     */
+    public boolean isAutoUpdatePsw() {
+        return autoUpdatePsw;
+    }
+
+    /**
+     * @param autoUpdatePsw void
+     */
+    public void setAutoUpdatePsw(boolean autoUpdatePsw) {
+        log.info(String.format(AUTO_UPDATE_PASSWORD_LOG,autoUpdatePsw));
+        this.autoUpdatePsw = autoUpdatePsw;
+    }
 
     /**
      * @param confMgr
@@ -138,6 +146,13 @@ public class CustomUFSFolioCreationClient {
             createSCTxResponse = sendCreateSCTxRequest(createSCTxReq);
             responseCode = createSCTxResponse.getResponseCode();
             if (CHANGE_PASSWORD_ERROR_CODE.equals(responseCode)) {
+                if (!isAutoUpdatePsw()) {
+                    ufsCreateSCTxResp = new UFSCreateSCTxResp();
+                    ufsCreateSCTxResp.setResponseCode(CHANGE_PASSWORD_ERROR_CODE);
+                    ufsCreateSCTxResp.setResponseString(CHANGE_PASSWORD_RESP);
+                    logUFSObj(ufsCreateSCTxResp);
+                    return ufsCreateSCTxResp;
+                }
                 responseCode = sendChangePassword(oldPassword, companyId, companyId);
                 if (!isSuccessOrWarning(responseCode)) {
                     ufsCreateSCTxResp = new UFSCreateSCTxResp();
@@ -219,6 +234,13 @@ public class CustomUFSFolioCreationClient {
             confirmSCTxResponse = sendConfirmSCTxRequest(confirmSCTxReq);
             responseCode = confirmSCTxResponse.getResponseCode();
             if (CHANGE_PASSWORD_ERROR_CODE.equals(responseCode)) {
+                if (!isAutoUpdatePsw()) {
+                    ufsConfirmSCTxResp = new UFSConfirmSCTxResp();
+                    ufsConfirmSCTxResp.setResponseCode(CHANGE_PASSWORD_ERROR_CODE);
+                    ufsConfirmSCTxResp.setResponseString(CHANGE_PASSWORD_RESP);
+                    logUFSObj(ufsConfirmSCTxResp);
+                    return ufsConfirmSCTxResp;
+                }
                 responseCode = sendChangePassword(oldPassword, companyId, companyId);
                 if (!isSuccessOrWarning(responseCode)) {
                     ufsConfirmSCTxResp = new UFSConfirmSCTxResp();
@@ -300,6 +322,13 @@ public class CustomUFSFolioCreationClient {
             createTxResponse = sendCreateTxRequest(createTxReq);
             responseCode = createTxResponse.getResponseCode();
             if (CHANGE_PASSWORD_ERROR_CODE.equals(responseCode)) {
+                if (!isAutoUpdatePsw()) {
+                    ufsCreateTxResp = new UFSCreateTxResp();
+                    ufsCreateTxResp.setResponseCode(CHANGE_PASSWORD_ERROR_CODE);
+                    ufsCreateTxResp.setResponseString(CHANGE_PASSWORD_RESP);
+                    logUFSObj(ufsCreateTxResp);
+                    return ufsCreateTxResp;
+                }
                 responseCode = sendChangePassword(oldPassword, companyId, companyId);
                 if (!isSuccessOrWarning(responseCode)) {
                     ufsCreateTxResp = new UFSCreateTxResp();
@@ -381,6 +410,13 @@ public class CustomUFSFolioCreationClient {
             cancelTxResponse = sendCancelTxRequest(cancelTxReq);
             responseCode = cancelTxResponse.getResponseCode();
             if (CHANGE_PASSWORD_ERROR_CODE.equals(responseCode)) {
+                if (!isAutoUpdatePsw()) {
+                    ufsCancelTxResp = new UFSCancelTxResp();
+                    ufsCancelTxResp.setResponseCode(CHANGE_PASSWORD_ERROR_CODE);
+                    ufsCancelTxResp.setResponseString(CHANGE_PASSWORD_RESP);
+                    logUFSObj(ufsCancelTxResp);
+                    return ufsCancelTxResp;
+                }
                 responseCode = sendChangePassword(oldPassword, companyId, companyId);
                 if (!isSuccessOrWarning(responseCode)) {
                     ufsCancelTxResp = new UFSCancelTxResp();
@@ -462,6 +498,13 @@ public class CustomUFSFolioCreationClient {
             infoModifyResponse = sendInfoModifyRequest(infoModifyReq);
             responseCode = infoModifyResponse.getResponseCode();
             if (CHANGE_PASSWORD_ERROR_CODE.equals(responseCode)) {
+                if (!isAutoUpdatePsw()) {
+                    ufsInfoModifyResp = new UFSInfoModifyResp();
+                    ufsInfoModifyResp.setResponseCode(CHANGE_PASSWORD_ERROR_CODE);
+                    ufsInfoModifyResp.setResponseString(CHANGE_PASSWORD_RESP);
+                    logUFSObj(ufsInfoModifyResp);
+                    return ufsInfoModifyResp;
+                }
                 responseCode = sendChangePassword(oldPassword, companyId, companyId);
                 if (!isSuccessOrWarning(responseCode)) {
                     ufsInfoModifyResp = new UFSInfoModifyResp();
@@ -542,6 +585,13 @@ public class CustomUFSFolioCreationClient {
             notificationResponse = sendNotificationRequest(notificationReq);
             responseCode = notificationResponse.getResponseCode();
             if (CHANGE_PASSWORD_ERROR_CODE.equals(responseCode)) {
+                if (!isAutoUpdatePsw()) {
+                    ufsNotificationResp = new UFSNotificationResp();
+                    ufsNotificationResp.setResponseCode(CHANGE_PASSWORD_ERROR_CODE);
+                    ufsNotificationResp.setResponseString(CHANGE_PASSWORD_RESP);
+                    logUFSObj(ufsNotificationResp);
+                    return ufsNotificationResp;
+                }
                 responseCode = sendChangePassword(oldPassword, companyId, companyId);
                 if (!isSuccessOrWarning(responseCode)) {
                     ufsNotificationResp = new UFSNotificationResp();
@@ -623,6 +673,12 @@ public class CustomUFSFolioCreationClient {
             notifConfirmResponse = sendNotificationConfirmRequest(notifConfirmReq);
             responseCode = notifConfirmResponse.getResponseCode();
             if (CHANGE_PASSWORD_ERROR_CODE.equals(responseCode)) {
+                if (!isAutoUpdatePsw()) {
+                    ufsNotificationConfirmResp = new UFSNotificationConfirmResp();
+                    ufsNotificationConfirmResp.setResponseCode(CHANGE_PASSWORD_ERROR_CODE);
+                    logUFSObj(ufsNotificationConfirmResp);
+                    return ufsNotificationConfirmResp;
+                }
                 responseCode = sendChangePassword(oldPassword, companyId, companyId);
                 if (!isSuccessOrWarning(responseCode)) {
                     ufsNotificationConfirmResp = new UFSNotificationConfirmResp();
@@ -702,6 +758,13 @@ public class CustomUFSFolioCreationClient {
             getTxDetailsResponse = sendGetTxDetailsRequest(getTxDetailsReq);
             responseCode = getTxDetailsResponse.getResponseCode();
             if (CHANGE_PASSWORD_ERROR_CODE.equals(responseCode)) {
+                if (!isAutoUpdatePsw()) {
+                    ufsGetTxDetailsResp = new UFSGetTxDetailsResp();
+                    ufsGetTxDetailsResp.setResponseCode(CHANGE_PASSWORD_ERROR_CODE);
+                    ufsGetTxDetailsResp.setResponseString(CHANGE_PASSWORD_RESP);
+                    logUFSObj(ufsGetTxDetailsResp);
+                    return ufsGetTxDetailsResp;
+                }
                 responseCode = sendChangePassword(oldPassword, companyId, companyId);
                 if (!isSuccessOrWarning(responseCode)) {
                     ufsGetTxDetailsResp = new UFSGetTxDetailsResp();
@@ -783,6 +846,13 @@ public class CustomUFSFolioCreationClient {
             quickQuoteResponse = sendQuickQuoteRequest(quickQuoteReq);
             responseCode = quickQuoteResponse.getResponseCode();
             if (CHANGE_PASSWORD_ERROR_CODE.equals(responseCode)) {
+                if (!isAutoUpdatePsw()) {
+                    ufsQuickQuoteResp = new UFSQuickQuoteResp();
+                    ufsQuickQuoteResp.setResponseCode(CHANGE_PASSWORD_ERROR_CODE);
+                    ufsQuickQuoteResp.setResponseString(CHANGE_PASSWORD_RESP);
+                    logUFSObj(ufsQuickQuoteResp);
+                    return ufsQuickQuoteResp;
+                }
                 responseCode = sendChangePassword(oldPassword, companyId, companyId);
                 if (!isSuccessOrWarning(responseCode)) {
                     ufsQuickQuoteResp = new UFSQuickQuoteResp();
@@ -1052,6 +1122,7 @@ public class CustomUFSFolioCreationClient {
     private String sendChangePassword(String oldPassword, String companyId, String branchId)
             throws UFSSecurityMgrException, UFSConfigMgrException, UFSGeneralException {
         String errorCode = null;
+        log.info(String.format(CHANGE_PASSWORD_LOG_MSG, CHANGE_PASSWORD_ERROR_CODE));
         ChangePassword changePassword = ChangePassword.getInstance(this.securityMgr,
                 this.configMgr, organizationIdS, companyId, machineIdS);
         synchronized (changePassword) {
@@ -1313,7 +1384,8 @@ public class CustomUFSFolioCreationClient {
             if (obj == null) {
                 log.info(NO_UFS_OBJECT);
             } else {
-                log.info(FORMAT_STRING, obj.getClass().getCanonicalName(), processObj(obj).toString());
+                log.info(FORMAT_STRING, obj.getClass().getCanonicalName(), processObj(obj)
+                        .toString());
             }
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
             log.error(LOG_ERROR, e);
@@ -1339,8 +1411,7 @@ public class CustomUFSFolioCreationClient {
                         || method.getReturnType().isAssignableFrom(Calendar.class)) {
                     map.put(method.getName().substring(3), method.invoke(Obj));
                 } else {
-                    map.put(method.getName().substring(3),
-                            processNestedObj(method.invoke(Obj)));
+                    map.put(method.getName().substring(3), processNestedObj(method.invoke(Obj)));
                 }
             }
         }

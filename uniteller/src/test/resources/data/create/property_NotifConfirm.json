@@ -2,6 +2,9 @@
    "settings":{
           "Resource":{
          "value":"NotificationConfirm"
+      },
+      "Auto_update_password":{
+         "value":true
       }
    }
 }

@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
  * @author svatada
  */
 public class Constants {
+    static final String FORMAT_STRING = "{}:{}";
     static final String DATE_FORMAT = "yyyy-MM-dd\'T\'HH:mm:ss";
     static final String INT = "int";
     static final String PROXY_BENE_ID_NUM = "1111111";
