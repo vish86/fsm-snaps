@@ -11,7 +11,7 @@
 	<artifactId>firstdata</artifactId>
 	<version>1-${sl_build}</version>
 	<packaging>jar</packaging>
-	<name>FirstData</name>
+	<name>firstdata</name>
 	<url>http://www.Snaplogic.com</url>
 	<profiles>
 		<profile>
@@ -239,16 +239,16 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<company>Snaplogic</company>
-		<snap>FirstData</snap>
+		<snap>firstdata</snap>
 		<package.build_no>${sl_build}</package.build_no>
-		<snap.account>com.snaplogic.snaps.firstdata.FirstDataCustomAccount
-		</snap.account>
-		<snap.classes>
+		<account.classes>com.snaplogic.snaps.firstdata.FirstDataCustomAccount
+		</account.classes>
+		<snap.classes>com.snaplogic.snaps.firstdata.Create
 		</snap.classes>
-		<key.prefix>cc</key.prefix>
-		<user>svatada@Snaplogic.com</user>
-		<path>Snaplogic/svatada</path>
-		<sl_build>0001</sl_build>
+		<key.prefix>local-snapadmin</key.prefix>
+		<user>satish@snaplogic.com</user>
+		<path>snaplogic/shared</path>
+		<sl_build>001</sl_build>
 		<VERSION>1</VERSION>
 	</properties>
 	<dependencies>

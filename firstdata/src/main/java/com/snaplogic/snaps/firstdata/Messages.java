@@ -34,5 +34,13 @@ class Messages {
 	static final String SERVICE_URL_DESC = "FirstData service url";
 	static final String WSDL_URL = "WSDL_URL";
 	static final String WSDL_URL_LABEL = "WSDL URL";
-	static final String WSDL_URL_DESC = "FirstData WSDL url";
+	static final String WSDL_URL_DESC = "FirstData WSDL url";	
+	 // Snap labels and descriptions
+    static final String CREATE_LABEL = "FirstData - Create";
+    static final String SNAP_DESC = "Create snap";
+    static final String RESOURCE_LABEL = "Payment type";
+    static final String RESOURCE_PROP = "Resource";
+    static final String RESOURCE_DESC = "Available FirstData resources";
+   
+    
 }

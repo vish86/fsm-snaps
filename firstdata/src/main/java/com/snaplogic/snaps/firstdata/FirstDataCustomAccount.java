@@ -14,6 +14,7 @@ import com.snaplogic.account.api.Account;
 import com.snaplogic.account.api.AccountType;
 import com.snaplogic.account.api.capabilities.AccountCategory;
 import com.snaplogic.api.ExecutionException;
+import com.snaplogic.common.SnapType;
 import com.snaplogic.common.properties.builders.PropertyBuilder;
 import com.snaplogic.snap.api.PropertyValues;
 import com.snaplogic.snap.api.capabilities.General;
@@ -24,7 +25,7 @@ import static com.snaplogic.snaps.firstdata.Messages.*;
 
 /**
  * custom account for the FirstData snap.
- *
+ * 
  * @author svatada
  */
 @General(title = CUSTOM_ACCOUNT_TITLE)
@@ -41,7 +42,7 @@ public class FirstDataCustomAccount implements Account<AccountBean> {
 		propertyBuilder.describe(APP_ID, APP_ID_LABEL, APP_ID_DESC).required()
 				.add();
 		propertyBuilder.describe(SERVICE_ID, SERVICE_ID_LABEL, SERVICE_ID_DESC)
-				.required().add();
+				.type(SnapType.INTEGER).required().add();
 		propertyBuilder
 				.describe(SERVICE_URL, SERVICE_URL_LABEL, SERVICE_URL_DESC)
 				.required().add();
@@ -52,7 +53,7 @@ public class FirstDataCustomAccount implements Account<AccountBean> {
 	@Override
 	public void configure(PropertyValues propertyValues) {
 		appID = propertyValues.get(APP_ID);
-		serviceID = propertyValues.get(SERVICE_ID);
+		serviceID = propertyValues.getInt(SERVICE_ID).intValue();
 		serviceURL = propertyValues.get(SERVICE_URL);
 		serviceWSDLURL = propertyValues.get(WSDL_URL);
 	}

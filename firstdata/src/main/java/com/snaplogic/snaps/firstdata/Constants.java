@@ -10,25 +10,25 @@
  */
 package com.snaplogic.snaps.firstdata;
 
+import com.google.common.collect.ImmutableSet;
 
 /**
  * This class holds all the static final variables and enum types.
- *
+ * 
  * @author svatada
  */
 public class Constants {
-
-    static enum SnapsModel {
-        Create("Create"), Update("Update"), Read("Read"), Delete("Delete");
-        private final String resource;
-
-        private SnapsModel(String resource) {
-            this.resource = resource;
-        }
-
-        @Override
-        public String toString() {
-            return resource;
-        }
-    }
+    static final String DOCNUM_TAG = "DocInfo";
+    static final String ERROR_TAG = "Error";
+    static final String STATUS_CODE_TAG = "statusCode";
+    static final String RESOLUTION_TAG = "Resolution";
+    static final String REASON_TAG = "Reason";
+    static final String MESSAGE_TAG = "Message";
+    static final String IS_REGEX = "^is[A-Z].*";
+    static final String GET_REGEX = "^get[A-Z].*";
+    static final String REGEX_SET = "^set[A-Z].*";
+    static final String FD_PROXY_PKG_PREFIX = "com.snaplogic.snaps.firstdata.gmf.toolkit.proxy.";
+    static final String FD_REQ_TAG = "RequestDetails";
+    static final ImmutableSet<String> RESOUCE_LIST = ImmutableSet.of("Check", "Credit", "Debit",
+            "EBT", "PinlessDebit", "Prepaid");
 }

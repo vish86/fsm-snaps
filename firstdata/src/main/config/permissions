@@ -1,25 +1,3 @@
-# This is how you add comments in this file
-com.snaplogic.snaps.firstdata.DocGenerator {
-    allow java.security.AllPermission;
-}
-com.snaplogic.snaps.firstdata.DocConsumer {
-    allow java.security.AllPermission;
-}
-com.snaplogic.snaps.firstdata.PropertyTypes {
-    allow java.security.AllPermission;
-}
-com.snaplogic.snaps.firstdata.SchemaExample {
-    allow java.security.AllPermission;
-}
-com.snaplogic.snaps.firstdata.SingleDocGenerator {
-    allow java.security.AllPermission;
-}
-com.snaplogic.snaps.firstdata.Suggest {
-    allow java.security.AllPermission;
-}
-com.snaplogic.snaps.firstdata.TwoInputs {
-    allow java.security.AllPermission;
-}
-com.snaplogic.snaps.firstdata.TwoInputsTwoOutputs {
+com.snaplogic.snaps.firstdata.Create {
     allow java.security.AllPermission;
 }
