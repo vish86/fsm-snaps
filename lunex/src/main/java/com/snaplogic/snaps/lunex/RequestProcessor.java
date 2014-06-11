@@ -34,7 +34,7 @@ import static com.snaplogic.snaps.lunex.Constants.*;
 /**
  * The Request Processor manage submission and handling of all the request. This class performs the
  * processing of all the requests received by the snap and return back with formatted Json object.
- * 
+ *
  * @author svatada
  */
 public class RequestProcessor {
@@ -106,7 +106,7 @@ public class RequestProcessor {
     }
 
     /* Handles IO close operation */
-    private void close(Object obj) {
+    private void close(Object obj) throws IOException {
         if (null != obj) {
             try {
                 if (obj instanceof DataOutputStream) {
@@ -116,6 +116,7 @@ public class RequestProcessor {
                 }
             } catch (IOException ioe) {
                 log.error(ioe.getLocalizedMessage(), ioe);
+                throw ioe;
             }
         }
     }
