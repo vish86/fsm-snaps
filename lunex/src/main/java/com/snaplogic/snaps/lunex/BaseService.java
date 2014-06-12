@@ -70,6 +70,7 @@ import static com.snaplogic.snaps.lunex.ServiceURIInfo.DR_PARAM_LIST;
 import static com.snaplogic.snaps.lunex.ServiceURIInfo.REQ_BODY_PARAM_INFO;
 import static com.snaplogic.snaps.lunex.ServiceURIInfo.RR_PARAM_LIST;
 import static com.snaplogic.snaps.lunex.ServiceURIInfo.UR_PARAM_LIST;
+import java.util.LinkedHashMap;
 
 /**
  * Abstract base class for Lunex snap pack which contains common snap properties, authentication and
@@ -109,7 +110,7 @@ public abstract class BaseService extends SimpleSnap implements
     private static final Logger log = LoggerFactory.getLogger(BaseService.class);
     private final HttpMethodNames httpMethod;
 
-    /** Constructor to initialise the respective snap */
+    /* Constructor to initialise the respective snap */
     public BaseService(LunexSnaps snaps, HttpMethodNames httpMethod) {
         this.snapsType = snaps;
         this.httpMethod = httpMethod;
@@ -362,13 +363,18 @@ public abstract class BaseService extends SimpleSnap implements
     /* Prepares the sub Json object by evaluating the input document */
     private StringBuilder getJsonSlice(Pair<String, ExpressionProperty> paramPair, Document document) {
         String key = paramPair.getKey();
-        if (REQ_BODY_PARAM_INFO.get(key) == 1) {
-            return new StringBuilder().append(QUOTE).append(key).append(QUOTE).append(COLON)
-                    .append(paramPair.getRight().eval(document)).append(COMMA);
+        StringBuilder jsonSlice = new StringBuilder();
+
+        if (((LinkedHashMap) document.get()).containsKey(paramPair.getLeft())) {
+            if (REQ_BODY_PARAM_INFO.get(key) == 1) {
+                jsonSlice.append(QUOTE).append(key).append(QUOTE).append(COLON)
+                        .append(paramPair.getRight().eval(document)).append(COMMA);
+            } else {
+                jsonSlice.append(QUOTE).append(key).append(QUOTE).append(COLON).append(QUOTE)
+                        .append(paramPair.getRight().eval(document)).append(QUOTE).append(COMMA);
+            }
         }
-        return new StringBuilder().append(QUOTE).append(key).append(QUOTE).append(COLON)
-                .append(QUOTE).append(paramPair.getRight().eval(document)).append(QUOTE)
-                .append(COMMA);
+        return jsonSlice;
     }
 
     /* configure the basic auth header */
