@@ -24,48 +24,56 @@ import com.snaplogic.snaps.firstdata.bean.AccountBean;
 import static com.snaplogic.snaps.firstdata.Messages.*;
 
 /**
+ * <p>
  * custom account for the FirstData snap.
- * 
+ * </p>
+ *
  * @author svatada
  */
 @General(title = CUSTOM_ACCOUNT_TITLE)
 @Version(snap = 1)
 @AccountCategory(type = AccountType.CUSTOM)
 public class FirstDataCustomAccount implements Account<AccountBean> {
-	private String serviceURL;
-	private String serviceWSDLURL;
-	private String appID;
-	private int serviceID;
+    private String serviceURL;
+    private String serviceWSDLURL;
+    private String appID;
+    private int serviceID;
+    private String datawireId;
+    private String groupId;
+    private String terminalId;
 
-	@Override
-	public void defineProperties(PropertyBuilder propertyBuilder) {
-		propertyBuilder.describe(APP_ID, APP_ID_LABEL, APP_ID_DESC).required()
-				.add();
-		propertyBuilder.describe(SERVICE_ID, SERVICE_ID_LABEL, SERVICE_ID_DESC)
-				.type(SnapType.INTEGER).required().add();
-		propertyBuilder
-				.describe(SERVICE_URL, SERVICE_URL_LABEL, SERVICE_URL_DESC)
-				.required().add();
-		propertyBuilder.describe(WSDL_URL, WSDL_URL_LABEL, WSDL_URL_DESC)
-				.required().add();
-	}
+    @Override
+    public void defineProperties(PropertyBuilder propertyBuilder) {
+        propertyBuilder.describe(APP_ID, APP_ID_LABEL, APP_ID_DESC).required().add();
+        propertyBuilder.describe(SERVICE_ID, SERVICE_ID_LABEL, SERVICE_ID_DESC)
+                .type(SnapType.INTEGER).required().add();
+        propertyBuilder.describe(SERVICE_URL, SERVICE_URL_LABEL, SERVICE_URL_DESC).required().add();
+        propertyBuilder.describe(WSDL_URL, WSDL_URL_LABEL, WSDL_URL_DESC).required().add();
+        propertyBuilder.describe(DATAWIRE_ID, DATAWIRE_ID_LABEL, DATAWIRE_ID_DESC).required().add();
+        propertyBuilder.describe(GROUP_ID, GROUP_ID_LABEL, GROUP_ID_DESC).required().add();
+        propertyBuilder.describe(TERMINAL_ID, TERMINAL_ID_LABEL, TERMINAL_ID_DESC).required().add();
+    }
 
-	@Override
-	public void configure(PropertyValues propertyValues) {
-		appID = propertyValues.get(APP_ID);
-		serviceID = propertyValues.getInt(SERVICE_ID).intValue();
-		serviceURL = propertyValues.get(SERVICE_URL);
-		serviceWSDLURL = propertyValues.get(WSDL_URL);
-	}
+    @Override
+    public void configure(PropertyValues propertyValues) {
+        appID = propertyValues.get(APP_ID);
+        serviceID = propertyValues.getInt(SERVICE_ID).intValue();
+        serviceURL = propertyValues.get(SERVICE_URL);
+        serviceWSDLURL = propertyValues.get(WSDL_URL);
+        datawireId = propertyValues.get(DATAWIRE_ID);
+        groupId = propertyValues.get(GROUP_ID);
+        terminalId = propertyValues.get(TERMINAL_ID);
+    }
 
-	@Override
-	public AccountBean connect() throws ExecutionException {
-		return new AccountBean().setAppID(appID).setServiceID(serviceID)
-				.setServiceURL(serviceURL).setServiceWSDLURL(serviceWSDLURL);
-	}
+    @Override
+    public AccountBean connect() throws ExecutionException {
+        return new AccountBean().setAppID(appID).setServiceID(serviceID).setServiceURL(serviceURL)
+                .setServiceWSDLURL(serviceWSDLURL).setDatawireId(datawireId).setGroupId(groupId)
+                .setTerminalId(terminalId);
+    }
 
-	@Override
-	public void disconnect() throws ExecutionException {
-		// NOOP
-	}
+    @Override
+    public void disconnect() throws ExecutionException {
+        // NOOP
+    }
 }

@@ -11,49 +11,81 @@
 package com.snaplogic.snaps.firstdata.bean;
 
 /**
+ * <p>
  * Simple java bean class to hold account information.
- * 
+ * </p>
+ *
  * @author svatada
  */
 public class AccountBean {
-	private String serviceURL;
-	private String serviceWSDLURL;
-	private String appID;
-	private int serviceID;
+    private String serviceURL;
+    private String serviceWSDLURL;
+    private String appID;
+    private int serviceID;
+    private String datawireId;
+    private String groupId;
+    private String terminalId;
 
-	public String getServiceURL() {
-		return serviceURL;
-	}
+    public String getServiceURL() {
+        return serviceURL;
+    }
 
-	public AccountBean setServiceURL(String serviceURL) {
-		this.serviceURL = serviceURL;
-		return this;
-	}
+    public AccountBean setServiceURL(String serviceURL) {
+        this.serviceURL = serviceURL;
+        return this;
+    }
 
-	public String getServiceWSDLURL() {
-		return serviceWSDLURL;
-	}
+    public String getServiceWSDLURL() {
+        return serviceWSDLURL;
+    }
 
-	public AccountBean setServiceWSDLURL(String serviceWSDLURL) {
-		this.serviceWSDLURL = serviceWSDLURL;
-		return this;
-	}
+    public AccountBean setServiceWSDLURL(String serviceWSDLURL) {
+        this.serviceWSDLURL = serviceWSDLURL;
+        return this;
+    }
 
-	public String getAppID() {
-		return appID;
-	}
+    public String getAppID() {
+        return appID;
+    }
 
-	public AccountBean setAppID(String appID) {
-		this.appID = appID;
-		return this;
-	}
+    public AccountBean setAppID(String appID) {
+        this.appID = appID;
+        return this;
+    }
 
-	public int getServiceID() {
-		return serviceID;
-	}
+    public int getServiceID() {
+        return serviceID;
+    }
 
-	public AccountBean setServiceID(int serviceID) {
-		this.serviceID = serviceID;
-		return this;
-	}
+    public AccountBean setServiceID(int serviceID) {
+        this.serviceID = serviceID;
+        return this;
+    }
+
+    public String getDatawireId() {
+        return datawireId;
+    }
+
+    public AccountBean setDatawireId(String datawireId) {
+        this.datawireId = datawireId;
+        return this;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public AccountBean setGroupId(String groupId) {
+        this.groupId = groupId;
+        return this;
+    }
+
+    public String getTerminalId() {
+        return terminalId;
+    }
+
+    public AccountBean setTerminalId(String terminalId) {
+        this.terminalId = terminalId;
+        return this;
+    }
 }

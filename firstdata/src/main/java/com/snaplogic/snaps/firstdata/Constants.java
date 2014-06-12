@@ -27,8 +27,8 @@ public class Constants {
     static final String IS_REGEX = "^is[A-Z].*";
     static final String GET_REGEX = "^get[A-Z].*";
     static final String REGEX_SET = "^set[A-Z].*";
-    static final String FD_PROXY_PKG_PREFIX = "com.snaplogic.snaps.firstdata.gmf.toolkit.proxy.";
-    static final String FD_REQ_TAG = "RequestDetails";
-    static final ImmutableSet<String> RESOUCE_LIST = ImmutableSet.of("Check", "Credit", "Debit",
-            "EBT", "PinlessDebit", "Prepaid");
+    static final String FD_PROXY_PKG_PREFIX = "com.snaplogic.snaps.firstdata.gmf.proxy.";
+    static final String FD_REQ_TAG = "Details";
+    static final ImmutableSet<String> RESOUCE_LIST = ImmutableSet.of("CheckRequest", "CreditRequest", "DebitRequest",
+            "EBTRequest", "PinlessDebitRequest", "PrepaidRequest");
 }
