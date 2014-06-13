@@ -14,7 +14,7 @@ package com.snaplogic.snaps.firstdata.bean;
  * <p>
  * Simple java bean class to hold account information.
  * </p>
- *
+ * 
  * @author svatada
  */
 public class AccountBean {
@@ -25,6 +25,26 @@ public class AccountBean {
     private String datawireId;
     private String groupId;
     private String terminalId;
+    private String authString;
+    private int timeOut;
+
+    public int getTimeOut() {
+        return timeOut;
+    }
+
+    public AccountBean setTimeOut(int timeOut) {
+        this.timeOut = timeOut;
+        return this;
+    }
+
+    public String getAuthString() {
+        return authString;
+    }
+
+    public AccountBean setAuthString(String authString) {
+        this.authString = authString;
+        return this;
+    }
 
     public String getServiceURL() {
         return serviceURL;

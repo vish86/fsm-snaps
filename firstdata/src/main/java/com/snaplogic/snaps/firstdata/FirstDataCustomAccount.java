@@ -27,7 +27,7 @@ import static com.snaplogic.snaps.firstdata.Messages.*;
  * <p>
  * custom account for the FirstData snap.
  * </p>
- *
+ * 
  * @author svatada
  */
 @General(title = CUSTOM_ACCOUNT_TITLE)
@@ -41,6 +41,8 @@ public class FirstDataCustomAccount implements Account<AccountBean> {
     private String datawireId;
     private String groupId;
     private String terminalId;
+    private String authString;
+    private int timeOut;
 
     @Override
     public void defineProperties(PropertyBuilder propertyBuilder) {
@@ -52,6 +54,9 @@ public class FirstDataCustomAccount implements Account<AccountBean> {
         propertyBuilder.describe(DATAWIRE_ID, DATAWIRE_ID_LABEL, DATAWIRE_ID_DESC).required().add();
         propertyBuilder.describe(GROUP_ID, GROUP_ID_LABEL, GROUP_ID_DESC).required().add();
         propertyBuilder.describe(TERMINAL_ID, TERMINAL_ID_LABEL, TERMINAL_ID_DESC).required().add();
+        propertyBuilder.describe(AUTH_STRING, AUTH_STRING_LABEL, AUTH_STRING_DESC).required().add();
+        propertyBuilder.describe(TIMEOUT, TIMEOUT_LABEL, TIMEOUT_DESC).required()
+                .type(SnapType.INTEGER).defaultValue(30).add();
     }
 
     @Override
@@ -63,13 +68,15 @@ public class FirstDataCustomAccount implements Account<AccountBean> {
         datawireId = propertyValues.get(DATAWIRE_ID);
         groupId = propertyValues.get(GROUP_ID);
         terminalId = propertyValues.get(TERMINAL_ID);
+        authString = propertyValues.get(AUTH_STRING);
+        timeOut = propertyValues.getInt(TIMEOUT).intValue();
     }
 
     @Override
     public AccountBean connect() throws ExecutionException {
         return new AccountBean().setAppID(appID).setServiceID(serviceID).setServiceURL(serviceURL)
                 .setServiceWSDLURL(serviceWSDLURL).setDatawireId(datawireId).setGroupId(groupId)
-                .setTerminalId(terminalId);
+                .setTerminalId(terminalId).setAuthString(authString).setTimeOut(timeOut);
     }
 
     @Override

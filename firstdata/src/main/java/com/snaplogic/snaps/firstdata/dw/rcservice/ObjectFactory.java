@@ -24,10 +24,10 @@ import javax.xml.namespace.QName;
  * and classes representing the binding of schema type definitions, element declarations and model
  * groups. Factory methods for each of these are provided in this class.
  * 
+ * @author svatada
  */
 @XmlRegistry
 public class ObjectFactory {
-
     private final static QName _Response_QNAME = new QName(
             "http://securetransport.dw/rcservice/soap", "Response");
     private final static QName _Transaction_QNAME = new QName(
@@ -40,14 +40,12 @@ public class ObjectFactory {
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes
      * for package: dw.securetransport.rcservice.soap
-     * 
      */
     public ObjectFactory() {
     }
 
     /**
      * Create an instance of {@link PayloadType }
-     * 
      */
     public PayloadType createPayloadType() {
         return new PayloadType();
@@ -55,7 +53,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link StatusType }
-     * 
      */
     public StatusType createStatusType() {
         return new StatusType();
@@ -63,7 +60,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link RespClientIDType }
-     * 
      */
     public RespClientIDType createRespClientIDType() {
         return new RespClientIDType();
@@ -71,7 +67,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link RequestType }
-     * 
      */
     public RequestType createRequestType() {
         return new RequestType();
@@ -79,7 +74,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ReqClientIDType }
-     * 
      */
     public ReqClientIDType createReqClientIDType() {
         return new ReqClientIDType();
@@ -87,7 +81,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TransactionResponseType }
-     * 
      */
     public TransactionResponseType createTransactionResponseType() {
         return new TransactionResponseType();
@@ -95,7 +88,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TransactionType }
-     * 
      */
     public TransactionType createTransactionType() {
         return new TransactionType();
@@ -103,7 +95,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ResponseType }
-     * 
      */
     public ResponseType createResponseType() {
         return new ResponseType();
@@ -111,7 +102,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link ResponseType } {@code >}
-     * 
      */
     @XmlElementDecl(namespace = "http://securetransport.dw/rcservice/soap", name = "Response")
     public JAXBElement<ResponseType> createResponse(ResponseType value) {
@@ -120,7 +110,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link TransactionType } {@code >}
-     * 
      */
     @XmlElementDecl(namespace = "http://securetransport.dw/rcservice/soap", name = "Transaction")
     public JAXBElement<TransactionType> createTransaction(TransactionType value) {
@@ -130,7 +119,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <} {@link TransactionResponseType }{@code >}
-     * 
      */
     @XmlElementDecl(namespace = "http://securetransport.dw/rcservice/soap",
             name = "TransactionResponse")
@@ -142,7 +130,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link RequestType } {@code >}
-     * 
      */
     @XmlElementDecl(namespace = "http://securetransport.dw/rcservice/soap", name = "Request")
     public JAXBElement<RequestType> createRequest(RequestType value) {

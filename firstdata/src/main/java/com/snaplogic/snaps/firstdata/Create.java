@@ -10,35 +10,16 @@
  */
 package com.snaplogic.snaps.firstdata;
 
-import static com.snaplogic.snaps.firstdata.Constants.DOCNUM_TAG;
-import static com.snaplogic.snaps.firstdata.Constants.ERROR_TAG;
-import static com.snaplogic.snaps.firstdata.Constants.FD_PROXY_PKG_PREFIX;
-import static com.snaplogic.snaps.firstdata.Constants.FD_REQ_TAG;
-import static com.snaplogic.snaps.firstdata.Constants.GET_REGEX;
-import static com.snaplogic.snaps.firstdata.Constants.IS_REGEX;
-import static com.snaplogic.snaps.firstdata.Constants.MESSAGE_TAG;
-import static com.snaplogic.snaps.firstdata.Constants.REASON_TAG;
-import static com.snaplogic.snaps.firstdata.Constants.REGEX_SET;
-import static com.snaplogic.snaps.firstdata.Constants.RESOLUTION_TAG;
-import static com.snaplogic.snaps.firstdata.Constants.RESOUCE_LIST;
-import static com.snaplogic.snaps.firstdata.Messages.COUNTER_DESCRIPTION;
-import static com.snaplogic.snaps.firstdata.Messages.COUNTER_UNIT;
-import static com.snaplogic.snaps.firstdata.Messages.CREATE_LABEL;
-import static com.snaplogic.snaps.firstdata.Messages.DOCUMENT_COUNTER;
-import static com.snaplogic.snaps.firstdata.Messages.ERRORMSG;
-import static com.snaplogic.snaps.firstdata.Messages.ERROR_RESOLUTION;
-import static com.snaplogic.snaps.firstdata.Messages.RESOURCE_DESC;
-import static com.snaplogic.snaps.firstdata.Messages.RESOURCE_LABEL;
-import static com.snaplogic.snaps.firstdata.Messages.RESOURCE_PROP;
-import static com.snaplogic.snaps.firstdata.Messages.SNAP_DESC;
-
-import com.snaplogic.api.ExecutionException;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.snaplogic.account.api.capabilities.Accounts;
 import com.snaplogic.api.ConfigurationException;
+import com.snaplogic.api.ExecutionException;
 import com.snaplogic.api.InputSchemaProvider;
 import com.snaplogic.api.MetricsProvider;
 import com.snaplogic.common.SnapType;
@@ -69,24 +50,31 @@ import com.snaplogic.snaps.firstdata.dw.rcservice.ResponseType;
 import com.snaplogic.snaps.firstdata.dw.rcservice.StatusType;
 import com.snaplogic.snaps.firstdata.dw.rcservice.TransactionResponseType;
 import com.snaplogic.snaps.firstdata.dw.rcservice.TransactionType;
+import com.snaplogic.snaps.firstdata.gmf.proxy.CommonGrp;
+import com.snaplogic.snaps.firstdata.gmf.proxy.GMFMessageVariants;
+
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.math.BigInteger;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
+
 import net.sf.json.JSON;
 import net.sf.json.xml.XMLSerializer;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import static com.snaplogic.snaps.firstdata.Constants.*;
+import static com.snaplogic.snaps.firstdata.Messages.*;
 
 /**
  * Performs create operation in FirstData making use of FirstData SOAP API.
@@ -100,24 +88,6 @@ import org.slf4j.LoggerFactory;
 @Category(snap = SnapCategory.TRANSFORM)
 @Accounts(provides = FirstDataCustomAccount.class, optional = false)
 public class Create extends SimpleSnap implements MetricsProvider, InputSchemaProvider {
-    private static final String UNSUPPORTED_OPT_RESOLUTION = "Verify your FirstData library version";
-    private static final String UNSUPPORTED_OPT = "Selected Payment type was not found";
-    private static final String INVALID_RESPONSE = "Invalid response";
-    private static final String IMPROPER_INPUT = "improper input";
-    private static final String EMPTY_RESPONSE = "Caught empty response";
-    private static final String VALIDATE_INPUT_DATA = "Validate your input data";
-    private static final String AMP_SYM = "&";
-    private static final String AMP = "&amp;";
-    private static final String LT_SYM = "<";
-    private static final String LT = "&lt;";
-    private static final String GT_SYM = ">";
-    private static final String GT = "&gt;";
-    private static final String XML_ESCAPE = "xml_escape";
-    private static final String STATUS_OK = "OK";
-    private static final String VERSION = "3";
-    private static final String CDATA = "cdata";
-    private static final String TIME_OUT = "30";
-    private static final String TYPE = "Type";
     @Inject
     private FirstDataCustomAccount account;
     private String resourceType = null;
@@ -167,189 +137,139 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
 
     @Override
     protected void process(Document document, String viewname) {
-        String clientRef = null;
-        String gmfrequest = null;
-        log.debug(document.getMetadata().toString());
-        Class<?> classType = null;
-        Object paymentOpt = null;
-        try {
-            classType = Class.forName(getGMFReqClassType());
-            paymentOpt = classType.newInstance();
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-            log.error(ex.getMessage(), ex);
-            writeToErrorView(UNSUPPORTED_OPT, ex.getMessage(), UNSUPPORTED_OPT_RESOLUTION, ex);
-        }
+        Object requestObj;
         Object data;
         if (document != null && (data = document.get()) != null) {
+            /*
+             * Process the input data if and only if it is of Map
+             */
             if (data instanceof Map) {
+                String claszPath = getGMFReqClassType();
+                Object map = Map.class.cast(data).get(getGMFReqClassName());
+                requestObj = getObject(claszPath, Map.class.cast(map));
+                String xmlData;
                 try {
-                    Map<String, Object> map = (Map<String, Object>) data;
-                    for (Method method : findGetters(classType)) {
-                        String paramType = method.getReturnType().getName();
-                        if (paramType.startsWith(FD_PROXY_PKG_PREFIX) && !paramType.endsWith(TYPE)) {
-                            Class<?> subClass = null;
-                            try {
-                                subClass = Class.forName(paramType);
-                            } catch (ClassNotFoundException ex) {
-                                log.error(ex.getMessage(), ex);
-                                writeToErrorView(UNSUPPORTED_OPT, ex.getMessage(),
-                                        UNSUPPORTED_OPT_RESOLUTION, ex);
-                            }
-                            try {
-                                method.invoke(
-                                        paymentOpt,
-                                        getObject(subClass, (Map<String, Object>) map.get(subClass
-                                                .getSimpleName())));
-                            } catch (IllegalAccessException | IllegalArgumentException
-                                    | InvocationTargetException e) {
-                                log.error(e.getMessage(), e);
-                            }
-                        } else if (paramType.endsWith(TYPE)) {
-                            try {
-                                Object typesObj = getTypesInstance(paramType,
-                                        (String) map.get(method.getName().substring(3)));
-                                method.invoke(paymentOpt, typesObj);
-                            } catch (SecurityException e) {
-                                // TODO Auto-generated catch block
-                                log.error(e.getMessage(), e);
-                            } catch (IllegalArgumentException e) {
-                                // TODO Auto-generated catch block
-                                log.error(e.getMessage(), e);
-                            } catch (InvocationTargetException e) {
-                                // TODO Auto-generated catch block
-                                log.error(e.getMessage(), e);
-                            } catch (IllegalAccessException e) {
-                                // TODO Auto-generated catch block
-                                log.error(e.getMessage(), e);
+                    /* Using Reflection and JAXB to prepare SOAP request XML */
+                    Class<?> gmfmv = Class.forName(GMF_MESSAGE_VARIANTS);
+                    Object gmfmvObj = gmfmv.newInstance();
+                    Method gmfMethod = gmfmv.getMethod(String.format(SETTER, resourceType),
+                            getClassType(claszPath));
+                    gmfMethod.invoke(gmfmvObj, requestObj);
+                    /* converting simple java objects into XML format using JAXB */
+                    xmlData = getGMFXMLRequestData((GMFMessageVariants) gmfmvObj);
+                    log.debug(xmlData);
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                    throw new SnapDataException(e, e.getMessage());
+                }
+                AccountBean bean = account.connect();
+                try {
+                    /*
+                     * Create the instance of the RequestType that is a class generated from the
+                     * Rapid connect Transaction Service WSDL file [rc.wsdl]
+                     */
+                    RequestType requestType = new RequestType();
+                    /* Set client timeout value of request object. */
+                    requestType.setClientTimeout(new BigInteger(String.valueOf(bean.getTimeOut())));
+                    /*
+                     * Create the instance of the ReqClientIDType that is a class generated from the
+                     * Rapid connect Transaction Service WSDL file [rc.wsdl]
+                     */
+                    ReqClientIDType reqClientIDType = new ReqClientIDType();
+                    reqClientIDType.setApp(bean.getAppID());
+                    reqClientIDType.setAuth(bean.getAuthString());
+                    String clientRef = getClientRef(requestObj, claszPath);
+                    reqClientIDType.setClientRef(clientRef);
+                    reqClientIDType.setDID(bean.getDatawireId());
+                    /* Assign ReqClientID value to the requesttype object */
+                    requestType.setReqClientID(reqClientIDType);
+                    /*
+                     * Create the instance of the TransactionType that is a class generated from the
+                     * Rapid connect Transaction Service WSDL file [rc.wsdl]
+                     */
+                    TransactionType transactionType = new TransactionType();
+                    /*
+                     * Create the instance of the PayloadType that is a class generated from the
+                     * Rapid connect Transaction Service WSDL file [rc.wsdl]
+                     */
+                    PayloadType payloadType = new PayloadType();
+                    payloadType.setEncoding(CDATA);
+                    payloadType.setValue(xmlData); // Set payload - actual xml request
+                    transactionType.setPayload(payloadType);
+                    transactionType.setServiceID(String.valueOf(bean.getServiceID()));
+                    /* Set transaction type */
+                    requestType.setTransaction(transactionType);
+                    /* Set version number of the request */
+                    requestType.setVersion(VERSION);
+                    /* The response to be returned. */
+                    String gmfResponse = null;
+                    /*
+                     * Create the instance of the RcService that is a class generated from the Rapid
+                     * connect Transaction Service WSDL file [rc.wsdl]
+                     */
+                    URL wsdlUrl = new URL(bean.getServiceWSDLURL());
+                    RcService.setWsdlURL(wsdlUrl);
+                    RcService rcService = new RcService();
+                    /*
+                     * Create the instance of the RcPortType that is a class generated from the
+                     * Rapid connect Transaction Service WSDL file [rc.wsdl]
+                     */
+                    RcPortType port = rcService.getRcServicePort();
+                    /* The URL that will receive the XML request data. */
+                    /* Bind the URL using Binding Provider */
+                    ((BindingProvider) port).getRequestContext().put(
+                            BindingProvider.ENDPOINT_ADDRESS_PROPERTY, bean.getServiceURL());
+                    /* Perform actual send operation for the request. */
+                    ResponseType responseType = port.rcTransaction(requestType);
+                    /* Parse the response received from the URL */
+                    StatusType statusType;
+                    if (responseType != null && (statusType = responseType.getStatus()) != null) {
+                        String statuCode = statusType.getStatusCode();
+                        if (statuCode != null && statuCode.equals(STATUS_OK)) {
+                            TransactionResponseType trType = responseType.getTransactionResponse();
+                            PayloadType pType;
+                            if (trType != null && (pType = trType.getPayload()) != null) {
+                                String encoding = pType.getEncoding();
+                                if (encoding != null && encoding.equals(CDATA)) {
+                                    /*
+                                     * Extract pay load - the response from data wire for cdata
+                                     * encoding.
+                                     */
+                                    gmfResponse = pType.getValue();
+                                } else if (encoding.equalsIgnoreCase(XML_ESCAPE)) {
+                                    /*
+                                     * Extract pay load - the response from data wire for xml_escape
+                                     * encoding.
+                                     */
+                                    gmfResponse = pType.getValue().replaceAll(GT, GT_SYM)
+                                            .replaceAll(LT, LT_SYM).replaceAll(AMP, AMP_SYM);
+                                }
+                                outputViews.write(documentUtility
+                                        .newDocument(getJsonFromXML(gmfResponse)));
+                                counter.inc();
+                            } else {
+                                writeToErrorView(NULL_TRANSACTION_RESPONSE, responseType
+                                        .getStatus().getStatusCode(), VALIDATE_INPUT_DATA,
+                                        responseType.getStatus().getValue());
                             }
                         } else {
-                            method.invoke(paymentOpt, map.get(method.getName().substring(3)));
+                            writeToErrorView(INVALID_RESPONSE, responseType.getStatus()
+                                    .getStatusCode(), VALIDATE_INPUT_DATA, responseType.getStatus()
+                                    .getValue());
                         }
-                    }
-                } catch (IllegalArgumentException e) {
-                    log.error(e.getMessage(), e);
-                } catch (InvocationTargetException e) {
-                    log.error(e.getMessage(), e);
-                } catch (IllegalAccessException e) {
-                    log.error(e.getMessage(), e);
-                }
-            }
-        }
-        try {
-            /* This class is generated from UMF_Schema_V1.1.14.xsd. */
-            Class<?> gmfmv = Class
-                    .forName("com.snaplogic.snaps.firstdata.gmf.proxy.GMFMessageVariants");
-            Object gmfmvObj = gmfmv.newInstance();
-            Method gmfMethod = gmfmv.getMethod("set" + resourceType, classType);
-            gmfMethod.invoke(gmfmvObj, paymentOpt);
-            String xmlData = getGMFXMLRequestData((com.snaplogic.snaps.firstdata.gmf.proxy.GMFMessageVariants) gmfmvObj);
-            log.debug(xmlData);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw new SnapDataException(e.getMessage());
-        }
-        AccountBean bean = account.connect();
-        try {
-            /*
-             * Create the instance of the RequestType that is a class generated from the Rapid
-             * connect Transaction Service WSDL file [rc.wsdl]
-             */
-            RequestType requestType = new RequestType();
-            /* Set client timeout value of request object. */
-            requestType.setClientTimeout(new BigInteger(TIME_OUT));
-            /*
-             * Create the instance of the ReqClientIDType that is a class generated from the Rapid
-             * connect Transaction Service WSDL file [rc.wsdl]
-             */
-            ReqClientIDType reqClientIDType = new ReqClientIDType();
-            /* Set App parameter value. */
-            reqClientIDType.setApp(bean.getAppID());
-            /* Set Auth parameter value. */
-            reqClientIDType.setAuth("XXXXX0000000000|00000000");
-            /* Set clientRef parameter value. */
-            reqClientIDType.setClientRef(clientRef);
-            /* Set DID parameter value. */
-            reqClientIDType.setDID(bean.getDatawireId());
-            /* Assign ReqClientID value to the requesttype object */
-            requestType.setReqClientID(reqClientIDType);
-            /*
-             * Create the instance of the TransactionType that is a class generated from the Rapid
-             * connect Transaction Service WSDL file [rc.wsdl]
-             */
-            TransactionType transactionType = new TransactionType();
-            /*
-             * Create the instance of the PayloadType that is a class generated from the Rapid
-             * connect Transaction Service WSDL file [rc.wsdl]
-             */
-            PayloadType payloadType = new PayloadType();
-            /* Set encoding of the pay load data- the request XML data */
-            payloadType.setEncoding(CDATA);
-            /* Set the XML request value as pay load */
-            payloadType.setValue(gmfrequest); // Set payload - actual xml request
-            /* Set the pay load type */
-            transactionType.setPayload(payloadType);
-            /* Set service ID */
-            transactionType.setServiceID(String.valueOf(bean.getServiceID()));
-            /* Set transaction type */
-            requestType.setTransaction(transactionType);
-            /* Set version number of the request */
-            requestType.setVersion(VERSION);
-
-            /* The response to be returned. */
-            String gmfResponse = null;
-            /*
-             * Create the instance of the RcService that is a class generated from the Rapid connect
-             * Transaction Service WSDL file [rc.wsdl]
-             */
-            RcService rcService = new RcService();
-            /*
-             * Create the instance of the RcPortType that is a class generated from the Rapid
-             * connect Transaction Service WSDL file [rc.wsdl]
-             */
-            RcPortType port = rcService.getRcServicePort();
-            /* The URL that will receive the XML request data. */
-            /* Bind the URL using Binding Provider */
-            ((BindingProvider) port).getRequestContext().put(
-                    BindingProvider.ENDPOINT_ADDRESS_PROPERTY, bean.getServiceURL());
-
-            /* Perform actual send operation for the request. */
-            ResponseType responseType = port.rcTransaction(requestType);
-
-            /* Parse the response received from the URL */
-            StatusType statusType;
-            if (responseType != null && (statusType = responseType.getStatus()) != null) {
-                String statuCode = statusType.getStatusCode();
-                if (statuCode != null && statuCode.equals(STATUS_OK)) {
-                    TransactionResponseType trType = responseType.getTransactionResponse();
-                    PayloadType pType;
-                    if (trType != null && (pType = trType.getPayload()) != null) {
-                        String encoding = pType.getEncoding();
-                        if (encoding != null && encoding.equals(CDATA)) {
-                            /* Extract pay load - the response from data wire for cdata encoding. */
-                            gmfResponse = pType.getValue();
-                        } else if (encoding.equalsIgnoreCase(XML_ESCAPE)) {
-                            /*
-                             * Extract pay load - the response from data wire for xml_escape
-                             * encoding.
-                             */
-                            gmfResponse = pType.getValue().replaceAll(GT, GT_SYM)
-                                    .replaceAll(LT, LT_SYM).replaceAll(AMP, AMP_SYM);
-                        }
-                        outputViews.write(documentUtility.newDocument(getJsonFromXML(gmfResponse)));
                     } else {
-                        writeToErrorView(responseType.getTransactionResponse().getPayload()
-                                .getValue(), responseType.getStatus().getStatusCode(),
-                                VALIDATE_INPUT_DATA, responseType.getStatus().getValue());
+                        writeToErrorView(EMPTY_RESPONSE, IMPROPER_INPUT, VALIDATE_INPUT_DATA,
+                                NULL_OBJECT);
                     }
-                } else {
-                    writeToErrorView(INVALID_RESPONSE, responseType.getStatus().getStatusCode(),
-                            VALIDATE_INPUT_DATA, responseType.getStatus().getValue());
+                } catch (Exception ex) {
+                    writeToErrorView(ERRORMSG, ex.getMessage(), ERROR_RESOLUTION, ex);
                 }
             } else {
-                writeToErrorView(EMPTY_RESPONSE, IMPROPER_INPUT, VALIDATE_INPUT_DATA, "NULL");
+                writeToErrorView(NO_DATA_ERRMSG, NO_DATA_WARNING, NO_DATA_REASON,
+                        NO_DATA_RESOLUTION);
             }
-        } catch (Exception ex) {
-            writeToErrorView(ERRORMSG, ex.getMessage(), ERROR_RESOLUTION, ex);
+        } else {
+            writeToErrorView(NO_DATA_ERRMSG, NO_DATA_WARNING, NO_DATA_REASON, NO_DATA_RESOLUTION);
         }
     }
 
@@ -359,6 +279,7 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
         if (!setterMethods.isEmpty()) {
             schema = provider.createSchema(SnapType.STRING, classType.getSimpleName());
         }
+        String methodName;
         for (Method method : setterMethods) {
             try {
                 String paramType = method.getParameterTypes()[0].getName();
@@ -375,8 +296,8 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
                         schema.addChild(subSchema);
                     }
                 } else {
-                    schema.addChild(provider.createSchema(getDataTypes(paramType), method.getName()
-                            .substring(3)));
+                    methodName = getFieldName(method.getName());
+                    schema.addChild(provider.createSchema(getDataTypes(paramType), methodName));
                 }
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
@@ -395,11 +316,10 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
     }
 
     /*
-     * Returns absolute class type for UFS response object
+     * Returns absolute class name for UFS request object
      */
-    private String getCamelCaseForMethod(String resourceType) {
-        return new StringBuilder().append(StringUtils.substring(resourceType, 0, 1).toLowerCase())
-                .append(StringUtils.substring(resourceType, 1)).toString();
+    private String getGMFReqClassName() {
+        return new StringBuilder().append(resourceType).append(FD_REQ_TAG).toString();
     }
 
     /* Writes the exception records to error view */
@@ -439,23 +359,6 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
         Method[] methods = classType.getDeclaredMethods();
         for (Method method : methods) {
             if (isSetter(method)) {
-                list.add(method);
-            }
-        }
-        return list;
-    }
-
-    /**
-     * finds the declared getter methods in the given classtype
-     * 
-     * @param c
-     * @return ArrayList<Method>
-     */
-    private static ArrayList<Method> findGetters(Class<?> c) {
-        ArrayList<Method> list = new ArrayList<Method>();
-        Method[] methods = c.getDeclaredMethods();
-        for (Method method : methods) {
-            if (isGetter(method)) {
                 list.add(method);
             }
         }
@@ -512,67 +415,83 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
                     });
         } catch (Exception e) {
             log.error(e.getMessage(), e);
+            throw new SnapDataException(e, e.getMessage());
         }
         return json2Map;
     }
 
-    private Object getObject(Class<?> classType, Map<String, Object> map) {
+    private Class<?> getClassType(String path) {
+        Class<?> clasz = null;
+        try {
+            clasz = Class.forName(path);
+            return clasz;
+        } catch (ClassNotFoundException ex) {
+            log.error(ex.getMessage(), ex);
+            throw new SnapDataException(ex, ex.getMessage());
+        }
+    }
+
+    private Object getInstance(Class<?> classType) {
         Object obj;
         try {
             obj = classType.newInstance();
+            return obj;
         } catch (InstantiationException | IllegalAccessException e) {
             log.error(e.getMessage(), e);
-            return null;
+            throw new SnapDataException(e, e.getMessage());
         }
-        for (Method method : findGetters(classType)) {
-            String paramType = method.getReturnType().getName();
-            if (paramType.startsWith(FD_PROXY_PKG_PREFIX) && !paramType.endsWith(TYPE)) {
-                Class<?> subClass = null;
-                try {
-                    subClass = Class.forName(paramType);
-                } catch (ClassNotFoundException ex) {
-                    log.error(ex.getMessage(), ex);
-                    writeToErrorView(UNSUPPORTED_OPT, ex.getMessage(), UNSUPPORTED_OPT_RESOLUTION,
-                            ex);
+    }
+
+    private Object getObject(String path, Map<String, Object> map) {
+        boolean isMethodInvokedAtOnce = false;
+        Class<?> classType = getClassType(path);
+        Object subClazInstance = getInstance(classType);
+        String inputFieldName;
+        String returnClazType;
+        String returnClazName;
+        for (Method method : findSetters(classType)) {
+            inputFieldName = getFieldName(method.getName());
+            if (!map.containsKey(inputFieldName)) {
+                continue;
+            }
+            returnClazType = method.getParameterTypes()[0].getName();
+            try {
+                Object paramObj = null;
+                if (returnClazType.startsWith(FD_PROXY_PKG_PREFIX)
+                        && !returnClazType.endsWith(TYPE)) {
+                    returnClazName = method.getParameterTypes()[0].getSimpleName();
+                    Object subMap = map.get(returnClazName);
+                    paramObj = getObject(returnClazType, Map.class.cast(subMap));
+                } else if (returnClazType.endsWith(TYPE)) {
+                    paramObj = getTypesInstance(returnClazType, (String) map.get(inputFieldName));
+                } else {
+                    paramObj = map.get(inputFieldName);
                 }
-                try {
-                    method.invoke(
-                            obj,
-                            getObject(subClass,
-                                    (Map<String, Object>) map.get(subClass.getSimpleName())));
-                } catch (IllegalAccessException | IllegalArgumentException
-                        | InvocationTargetException e) {
-                    log.error(e.getMessage(), e);
+                if (paramObj != null) {
+                    method.invoke(subClazInstance, paramObj);
+                    isMethodInvokedAtOnce = true;
                 }
-            } else if (paramType.endsWith(TYPE)) {
-                try {
-                    Object typesObj = getTypesInstance(paramType,
-                            (String) map.get(method.getName().substring(3)));
-                    method.invoke(obj, typesObj);
-                } catch (SecurityException e) {
-                    // TODO Auto-generated catch block
-                    log.error(e.getMessage(), e);
-                } catch (IllegalArgumentException e) {
-                    // TODO Auto-generated catch block
-                    log.error(e.getMessage(), e);
-                } catch (InvocationTargetException e) {
-                    // TODO Auto-generated catch block
-                    log.error(e.getMessage(), e);
-                } catch (IllegalAccessException e) {
-                    // TODO Auto-generated catch block
-                    log.error(e.getMessage(), e);
-                }
-            } else {
-                try {
-                    method.invoke(obj, map.get(method.getName().substring(3)));
-                } catch (IllegalAccessException | IllegalArgumentException
-                        | InvocationTargetException e) {
-                    log.error(e.getMessage(), e);
-                }
+            } catch (SecurityException e) {
+                log.error(e.getMessage(), e);
+                writeToErrorView(SECURITY_EXE, e.getMessage(), SECURITY_EXE_RES, e);
+            } catch (IllegalArgumentException e) {
+                log.error(e.getMessage(), e);
+                writeToErrorView(String.format(ILLEGAL_ARGS_EXE, method.getName()), e.getMessage(),
+                        ERROR_RESOLUTION, e);
+            } catch (InvocationTargetException e) {
+                log.error(e.getMessage(), e);
+                writeToErrorView(e.getTargetException().getMessage(), e.getMessage(),
+                        ERROR_RESOLUTION, e);
+            } catch (IllegalAccessException e) {
+                log.error(e.getMessage(), e);
+                writeToErrorView(String.format(ILLIGAL_ACCESS_EXE, method.getName()),
+                        e.getMessage(), ILLIGAL_ACCESS_EXE_RES, e);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+                writeToErrorView(ERRORMSG, e.getMessage(), ERROR_RESOLUTION, e);
             }
         }
-
-        return obj;
+        return (isMethodInvokedAtOnce) ? subClazInstance : null;
     }
 
     /*
@@ -587,45 +506,74 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
         try {
             JAXBContext context = null;
             Marshaller marshaller = null;
-            context = JAXBContext
-                    .newInstance(com.snaplogic.snaps.firstdata.gmf.proxy.GMFMessageVariants.class);
+            context = JAXBContext.newInstance(GMFMessageVariants.class);
             marshaller = context.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
             marshaller.marshal(gmfmv, stringWriter);
             returnValue = stringWriter.toString();
         } catch (JAXBException jaxe) {
             log.error(jaxe.getMessage(), jaxe);
+            throw new SnapDataException(jaxe, jaxe.getMessage());
         } catch (Exception e) {
             log.error(e.getMessage(), e);
+            throw new SnapDataException(e, e.getMessage());
         }
         return returnValue;
     }
 
     private Object getTypesInstance(String classType, String value) {
+        Method method = null;
         try {
-            Class<?> types = Class.forName(classType);
-            Method typesMethod = types.getMethod("fromValue", String.class);
-            Object typesObj = typesMethod.invoke(null, value);
+            Class<?> types = getClassType(classType);
+            method = types.getMethod(TYPES_METHOD, String.class);
+            Object typesObj = method.invoke(null, value);
             return typesObj;
-        } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            log.error(e.getMessage(), e);
         } catch (NoSuchMethodException e) {
-            // TODO Auto-generated catch block
             log.error(e.getMessage(), e);
+            writeToErrorView(NOSUCH_METHOD_EXE, e.getMessage(), ERROR_RESOLUTION, e);
         } catch (SecurityException e) {
-            // TODO Auto-generated catch block
             log.error(e.getMessage(), e);
+            writeToErrorView(SECURITY_EXE, e.getMessage(), SECURITY_EXE_RES, e);
         } catch (IllegalArgumentException e) {
-            // TODO Auto-generated catch block
             log.error(e.getMessage(), e);
+            writeToErrorView(String.format(ILLEGAL_ARGS_EXE, method.getName()), e.getMessage(),
+                    ERROR_RESOLUTION, e);
         } catch (InvocationTargetException e) {
-            // TODO Auto-generated catch block
             log.error(e.getMessage(), e);
+            writeToErrorView(e.getTargetException().getMessage(), e.getMessage(), ERROR_RESOLUTION,
+                    e);
         } catch (IllegalAccessException e) {
-            // TODO Auto-generated catch block
             log.error(e.getMessage(), e);
+            writeToErrorView(String.format(ILLIGAL_ACCESS_EXE, method.getName()), e.getMessage(),
+                    ILLIGAL_ACCESS_EXE_RES, e);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            writeToErrorView(ERRORMSG, e.getMessage(), ERROR_RESOLUTION, e);
         }
         return null;
+    }
+
+    private String getFieldName(String methodName) {
+        return methodName.substring(3);
+    }
+
+    private String getClientRef(Object obj, String Clazpath) {
+        String clientRef = null;
+        try {
+            Class<?> paymentType = getClassType(Clazpath);
+            Method getCommonGrp = paymentType.getMethod(GET_COMMON_GRP);
+            CommonGrp cGrp = (CommonGrp) getCommonGrp.invoke(obj);
+            clientRef = cGrp.getSTAN() + DELIMITER + cGrp.getTPPID();
+            clientRef = CLIENT_REF_PREFIX + clientRef;
+        } catch (NoSuchMethodException | SecurityException e) {
+            log.error(e.getMessage(), e);
+        } catch (IllegalAccessException e) {
+            log.error(e.getMessage(), e);
+        } catch (IllegalArgumentException e) {
+            log.error(e.getMessage(), e);
+        } catch (InvocationTargetException e) {
+            log.error(e.getMessage(), e);
+        }
+        return clientRef;
     }
 }
