@@ -10,10 +10,6 @@
  */
 package com.snaplogic.snaps.firstdata;
 
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
@@ -53,21 +49,26 @@ import com.snaplogic.snaps.firstdata.dw.rcservice.TransactionType;
 import com.snaplogic.snaps.firstdata.gmf.proxy.CommonGrp;
 import com.snaplogic.snaps.firstdata.gmf.proxy.GMFMessageVariants;
 
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
 import java.math.BigInteger;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
 
 import net.sf.json.JSON;
@@ -92,7 +93,6 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
     private FirstDataCustomAccount account;
     private String resourceType = null;
     private Counter counter;
-    private static final String INT = "int";
     private static final Logger log = LoggerFactory.getLogger(Create.class);
 
     @Override
@@ -115,19 +115,16 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
     @Override
     public void defineInputSchema(SchemaProvider provider) {
         Class<?> classType = null;
-        log.debug("define schema");
         try {
             classType = Class.forName(getGMFReqClassType());
         } catch (ClassNotFoundException e) {
             log.error(e.getMessage(), e);
             throw new ExecutionException(e.getMessage());
         }
-        log.debug(classType.getName());
         for (String viewName : provider.getRegisteredViewNames()) {
-            log.debug(viewName);
             try {
                 SchemaBuilder schemaBuilder = provider.getSchemaBuilder(viewName);
-                schemaBuilder.withChildSchema(getSchema(provider, classType));
+                schemaBuilder.withChildSchema(getSchema(provider, classType, SnapType.STRING));
                 schemaBuilder.build();
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
@@ -146,7 +143,37 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
             if (data instanceof Map) {
                 String claszPath = getGMFReqClassType();
                 Object map = Map.class.cast(data).get(getGMFReqClassName());
-                requestObj = getObject(claszPath, Map.class.cast(map));
+                Map<String, Object> inputMap = Map.class.cast(map);
+                requestObj = getObject(claszPath, inputMap);
+
+                if (inputMap.containsKey(ADDTL_AMT_GRP)) {
+                    try {
+                        List<Map<String, Object>> inputList = List.class.cast(inputMap
+                                .get(ADDTL_AMT_GRP));
+                        if (inputList != null) {
+                            requestObj = processListObj(requestObj, claszPath, ADDTL_AMT_GRP,
+                                    inputList);
+                        }
+                    } catch (ClassCastException e) {
+                        log.error(e.getMessage(), e);
+                        requestObj = processListObj(requestObj, claszPath, ADDTL_AMT_GRP, inputMap);
+                    }
+                }
+                if (inputMap.containsKey(PROD_CODE_DET_GRP)) {
+                    try {
+                        List<Map<String, Object>> inputList = List.class.cast(inputMap
+                                .get(PROD_CODE_DET_GRP));
+                        if (inputList != null) {
+                            requestObj = processListObj(requestObj, claszPath, PROD_CODE_DET_GRP,
+                                    inputList);
+                        }
+                    } catch (ClassCastException e) {
+                        log.error(e.getMessage(), e);
+                        requestObj = processListObj(requestObj, claszPath, PROD_CODE_DET_GRP,
+                                inputMap);
+                    }
+                }
+
                 String xmlData;
                 try {
                     /* Using Reflection and JAXB to prepare SOAP request XML */
@@ -157,6 +184,7 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
                     gmfMethod.invoke(gmfmvObj, requestObj);
                     /* converting simple java objects into XML format using JAXB */
                     xmlData = getGMFXMLRequestData((GMFMessageVariants) gmfmvObj);
+                    xmlData = xmlData.replaceAll(GMF_MESSAGE_VARIANTS_TAG, GMF_TAG);
                     log.debug(xmlData);
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
@@ -194,7 +222,7 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
                      */
                     PayloadType payloadType = new PayloadType();
                     payloadType.setEncoding(CDATA);
-                    payloadType.setValue(xmlData); // Set payload - actual xml request
+                    payloadType.setValue(xmlData); // actual xml request
                     transactionType.setPayload(payloadType);
                     transactionType.setServiceID(String.valueOf(bean.getServiceID()));
                     /* Set transaction type */
@@ -273,16 +301,16 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
         }
     }
 
-    private ObjectSchema getSchema(SchemaProvider provider, Class<?> classType) {
-        ArrayList<Method> setterMethods = findSetters(classType);
+    private ObjectSchema getSchema(SchemaProvider provider, Class<?> classType, SnapType snapType) {
+        ArrayList<Method> getterMethods = findGetters(classType);
         ObjectSchema schema = null;
-        if (!setterMethods.isEmpty()) {
-            schema = provider.createSchema(SnapType.STRING, classType.getSimpleName());
+        if (!getterMethods.isEmpty()) {
+            schema = provider.createSchema(snapType, classType.getSimpleName());
         }
-        String methodName;
-        for (Method method : setterMethods) {
+        String name;
+        for (Method methodName : getterMethods) {
             try {
-                String paramType = method.getParameterTypes()[0].getName();
+                String paramType = methodName.getReturnType().getName();
                 if (paramType.startsWith(FD_PROXY_PKG_PREFIX) && !paramType.endsWith(TYPE)) {
                     Class<?> subClass = null;
                     try {
@@ -291,13 +319,23 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
                         log.error(e.getMessage(), e);
                         throw new ExecutionException(e.getMessage());
                     }
-                    ObjectSchema subSchema = getSchema(provider, subClass);
+                    ObjectSchema subSchema = getSchema(provider, subClass, SnapType.STRING);
+                    if (subSchema != null) {
+                        schema.addChild(subSchema);
+                    }
+                } else if (paramType.endsWith(List.class.getSimpleName())) {
+                    ParameterizedType fieldGenericType = (ParameterizedType) methodName
+                            .getGenericReturnType();
+                    Class<?> fieldTypeParameterType = (Class<?>) fieldGenericType
+                            .getActualTypeArguments()[0];
+                    ObjectSchema subSchema = null;
+                    subSchema = getSchema(provider, fieldTypeParameterType, SnapType.COMPOSITE);
                     if (subSchema != null) {
                         schema.addChild(subSchema);
                     }
                 } else {
-                    methodName = getFieldName(method.getName());
-                    schema.addChild(provider.createSchema(getDataTypes(paramType), methodName));
+                    name = getFieldName(methodName.getName());
+                    schema.addChild(provider.createSchema(getDataTypes(paramType), name));
                 }
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
@@ -359,6 +397,23 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
         Method[] methods = classType.getDeclaredMethods();
         for (Method method : methods) {
             if (isSetter(method)) {
+                list.add(method);
+            }
+        }
+        return list;
+    }
+
+    /**
+     * finds the declared getter methods in the given classtype
+     * 
+     * @param c
+     * @return ArrayList<Method>
+     */
+    public static ArrayList<Method> findGetters(Class<?> c) {
+        ArrayList<Method> list = new ArrayList<Method>();
+        Method[] methods = c.getDeclaredMethods();
+        for (Method method : methods) {
+            if (isGetter(method)) {
                 list.add(method);
             }
         }
@@ -461,6 +516,9 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
                         && !returnClazType.endsWith(TYPE)) {
                     returnClazName = method.getParameterTypes()[0].getSimpleName();
                     Object subMap = map.get(returnClazName);
+                    if (subMap == null) {
+                        continue;
+                    }
                     paramObj = getObject(returnClazType, Map.class.cast(subMap));
                 } else if (returnClazType.endsWith(TYPE)) {
                     paramObj = getTypesInstance(returnClazType, (String) map.get(inputFieldName));
@@ -468,6 +526,9 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
                     paramObj = map.get(inputFieldName);
                 }
                 if (paramObj != null) {
+                    if (method.getParameterTypes()[0].isArray()) {
+                        paramObj = paramObj.toString().getBytes();
+                    }
                     method.invoke(subClazInstance, paramObj);
                     isMethodInvokedAtOnce = true;
                 }
@@ -563,6 +624,9 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
             Class<?> paymentType = getClassType(Clazpath);
             Method getCommonGrp = paymentType.getMethod(GET_COMMON_GRP);
             CommonGrp cGrp = (CommonGrp) getCommonGrp.invoke(obj);
+            if (cGrp == null) {
+                return StringUtils.EMPTY;
+            }
             clientRef = cGrp.getSTAN() + DELIMITER + cGrp.getTPPID();
             clientRef = CLIENT_REF_PREFIX + clientRef;
         } catch (NoSuchMethodException | SecurityException e) {
@@ -575,5 +639,41 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
             log.error(e.getMessage(), e);
         }
         return clientRef;
+    }
+
+    private Object processListObj(Object requestObj, String claszPath, String method2Invoke,
+            Object inputData) {
+        if (inputData != null) {
+            Class<?> clasz = getClassType(claszPath);
+            Method method;
+            try {
+                method = clasz.getDeclaredMethod(String.format(GETTER, method2Invoke));
+                ParameterizedType fieldGenericType = (ParameterizedType) method
+                        .getGenericReturnType();
+                Class<?> fieldTypeParameterType = (Class<?>) fieldGenericType
+                        .getActualTypeArguments()[0];
+                List<Object> list = (List<Object>) method.invoke(requestObj);
+                if (inputData instanceof List) {
+                    List<Map<String, Object>> inputList = List.class.cast(inputData);
+                    for (Map<String, Object> mapObj : inputList) {
+                        Object obj = getObject(fieldTypeParameterType.getName(), mapObj);
+                        list.add(obj);
+                    }
+                } else if (inputData instanceof Map) {
+                    Object obj = getObject(fieldTypeParameterType.getName(),
+                            Map.class.cast(inputData));
+                    list.add(obj);
+                }
+            } catch (NoSuchMethodException | SecurityException e) {
+                log.error(e.getMessage(), e);
+            } catch (IllegalAccessException e) {
+                log.error(e.getMessage(), e);
+            } catch (IllegalArgumentException e) {
+                log.error(e.getMessage(), e);
+            } catch (InvocationTargetException e) {
+                log.error(e.getMessage(), e);
+            }
+        }
+        return requestObj;
     }
 }

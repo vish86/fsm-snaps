@@ -46,7 +46,7 @@ class Messages {
     static final String DATAWIRE_ID_DESC = "FirstData Datawire ID";
     static final String AUTH_STRING = "AUTH_STRING";
     static final String AUTH_STRING_LABEL = "Auth string";
-    static final String AUTH_STRING_DESC = "AuthString will be assigned by FirstData";
+    static final String AUTH_STRING_DESC = "AuthString will be assigned by FirstData and it will be concatenated string of Group ID, Merchant ID (MID) | Terminal ID (TID)";
     static final String TIMEOUT = "TIME_OUT";
     static final String TIMEOUT_LABEL = "Timeout";
     static final String TIMEOUT_DESC = "Time out value";

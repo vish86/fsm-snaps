@@ -1,0 +1,37 @@
+{
+   "inp":[
+      {
+         "DebitRequestDetails":{
+            "CommonGrp":{
+               "PymtType":"Debit",
+               "TxnType":"Sale",
+               "LocalDateTime":"20140609054145",
+               "TrnmsnDateTime":"20140609054145",
+               "STAN":"381211",
+               "RefNum":"131113685971",
+               "OrderNum":"522233353926",
+               "MerchCatCode":"5967",
+               "POSEntryMode":"911",
+               "POSCondCode":"00",
+               "TermCatCode":"01",
+               "TermEntryCapablt":"04",
+               "TxnAmt":"100",
+               "TxnCrncy":"840",
+               "TermLocInd":"0",
+               "CardCaptCap":"1",
+               "GroupID":"33054"
+            },
+            "CardGrp":{
+               "Track2Data":"4017779991111115=16041200000000001"
+            },
+            "PINGrp":{
+               "PINData":"90533057C86B5BC7",
+               "KeySerialNumData":"F8765432100015200582"
+            },
+            "AddtlAmtGrp":{
+               "PartAuthrztnApprvlCapablt":"1"
+            }
+         }
+      }
+   ]
+}

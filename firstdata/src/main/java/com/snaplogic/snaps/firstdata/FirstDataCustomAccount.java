@@ -34,15 +34,15 @@ import static com.snaplogic.snaps.firstdata.Messages.*;
 @Version(snap = 1)
 @AccountCategory(type = AccountType.CUSTOM)
 public class FirstDataCustomAccount implements Account<AccountBean> {
-    private String serviceURL;
-    private String serviceWSDLURL;
-    private String appID;
-    private int serviceID;
-    private String datawireId;
-    private String groupId;
-    private String terminalId;
-    private String authString;
-    private int timeOut;
+    protected String serviceURL;
+    protected String serviceWSDLURL;
+    protected String appID;
+    protected int serviceID;
+    protected String datawireId;
+    protected String groupId;
+    protected String terminalId;
+    protected String authString;
+    protected int timeOut;
 
     @Override
     public void defineProperties(PropertyBuilder propertyBuilder) {

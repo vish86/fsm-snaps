@@ -15,6 +15,13 @@ import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.namespace.QName;
 
+import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.HTTP_SECURETRANSPORT_DW_RCSERVICE_SOAP;
+import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.REQUEST;
+import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.RESPONSE;
+import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.TRANSACTION;
+import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.TRANSACTION_RESPONSE;
+
+
 /**
  * This object contains factory methods for each Java content interface and Java element interface
  * generated in the dw.securetransport.rcservice.soap package.
@@ -28,18 +35,18 @@ import javax.xml.namespace.QName;
  */
 @XmlRegistry
 public class ObjectFactory {
-    private final static QName _Response_QNAME = new QName(
-            "http://securetransport.dw/rcservice/soap", "Response");
+    private final static QName _Response_QNAME = new QName(HTTP_SECURETRANSPORT_DW_RCSERVICE_SOAP,
+            RESPONSE);
     private final static QName _Transaction_QNAME = new QName(
-            "http://securetransport.dw/rcservice/soap", "Transaction");
+            HTTP_SECURETRANSPORT_DW_RCSERVICE_SOAP, TRANSACTION);
     private final static QName _TransactionResponse_QNAME = new QName(
-            "http://securetransport.dw/rcservice/soap", "TransactionResponse");
-    private final static QName _Request_QNAME = new QName(
-            "http://securetransport.dw/rcservice/soap", "Request");
+            HTTP_SECURETRANSPORT_DW_RCSERVICE_SOAP, TRANSACTION_RESPONSE);
+    private final static QName _Request_QNAME = new QName(HTTP_SECURETRANSPORT_DW_RCSERVICE_SOAP,
+            REQUEST);
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes
-     * for package: dw.securetransport.rcservice.soap
+     * for soap package
      */
     public ObjectFactory() {
     }
@@ -103,7 +110,7 @@ public class ObjectFactory {
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link ResponseType } {@code >}
      */
-    @XmlElementDecl(namespace = "http://securetransport.dw/rcservice/soap", name = "Response")
+    @XmlElementDecl(namespace = HTTP_SECURETRANSPORT_DW_RCSERVICE_SOAP, name = RESPONSE)
     public JAXBElement<ResponseType> createResponse(ResponseType value) {
         return new JAXBElement<ResponseType>(_Response_QNAME, ResponseType.class, null, value);
     }
@@ -111,7 +118,7 @@ public class ObjectFactory {
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link TransactionType } {@code >}
      */
-    @XmlElementDecl(namespace = "http://securetransport.dw/rcservice/soap", name = "Transaction")
+    @XmlElementDecl(namespace = HTTP_SECURETRANSPORT_DW_RCSERVICE_SOAP, name = TRANSACTION)
     public JAXBElement<TransactionType> createTransaction(TransactionType value) {
         return new JAXBElement<TransactionType>(_Transaction_QNAME, TransactionType.class, null,
                 value);
@@ -120,8 +127,7 @@ public class ObjectFactory {
     /**
      * Create an instance of {@link JAXBElement }{@code <} {@link TransactionResponseType }{@code >}
      */
-    @XmlElementDecl(namespace = "http://securetransport.dw/rcservice/soap",
-            name = "TransactionResponse")
+    @XmlElementDecl(namespace = HTTP_SECURETRANSPORT_DW_RCSERVICE_SOAP, name = TRANSACTION_RESPONSE)
     public JAXBElement<TransactionResponseType> createTransactionResponse(
             TransactionResponseType value) {
         return new JAXBElement<TransactionResponseType>(_TransactionResponse_QNAME,
@@ -131,7 +137,7 @@ public class ObjectFactory {
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link RequestType } {@code >}
      */
-    @XmlElementDecl(namespace = "http://securetransport.dw/rcservice/soap", name = "Request")
+    @XmlElementDecl(namespace = HTTP_SECURETRANSPORT_DW_RCSERVICE_SOAP, name = REQUEST)
     public JAXBElement<RequestType> createRequest(RequestType value) {
         return new JAXBElement<RequestType>(_Request_QNAME, RequestType.class, null, value);
     }

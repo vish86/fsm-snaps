@@ -17,19 +17,31 @@ import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import javax.xml.bind.annotation.XmlSeeAlso;
 
-@WebService(name = "rcPortType", targetNamespace = "http://securetransport.dw/rcservice/soap")
+import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.BODY;
+import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.HTTP_SECURETRANSPORT_DW_RCSERVICE;
+import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.HTTP_SECURETRANSPORT_DW_RCSERVICE_SOAP;
+import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.RC_PORT_TYPE;
+import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.REQUEST;
+import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.RESPONSE;
+
+
+/**
+ * RcPortType
+ * 
+ * @author svatada
+ */
+@WebService(name = RC_PORT_TYPE, targetNamespace = HTTP_SECURETRANSPORT_DW_RCSERVICE_SOAP)
 @SOAPBinding(parameterStyle = SOAPBinding.ParameterStyle.BARE)
 @XmlSeeAlso({ ObjectFactory.class })
 public interface RcPortType {
-
     /**
      * @param body
-     * @return returns dw.securetransport.rcservice.soap.ResponseType
+     * @return ResponseType
      */
-    @WebMethod(action = "http://securetransport.dw/rcservice")
-    @WebResult(name = "Response", targetNamespace = "http://securetransport.dw/rcservice/soap",
-            partName = "body")
+    @WebMethod(action = HTTP_SECURETRANSPORT_DW_RCSERVICE)
+    @WebResult(name = RESPONSE, targetNamespace = HTTP_SECURETRANSPORT_DW_RCSERVICE_SOAP,
+            partName = BODY)
     public ResponseType rcTransaction(
-            @WebParam(name = "Request",
-                    targetNamespace = "http://securetransport.dw/rcservice/soap", partName = "body") RequestType body);
+            @WebParam(name = REQUEST, targetNamespace = HTTP_SECURETRANSPORT_DW_RCSERVICE_SOAP,
+                    partName = BODY) RequestType body);
 }

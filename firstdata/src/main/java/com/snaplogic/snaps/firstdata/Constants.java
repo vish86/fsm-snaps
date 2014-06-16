@@ -18,6 +18,12 @@ import com.google.common.collect.ImmutableSet;
  * @author svatada
  */
 public class Constants {
+    static final String GMF_TAG = "GMF";
+    static final String GMF_MESSAGE_VARIANTS_TAG = "GMFMessageVariants";
+    static final String PROD_CODE_DET_GRP = "ProdCodeDetGrp";
+    static final String ADDTL_AMT_GRP = "AddtlAmtGrp";
+    static final String GETTER = "get%s";
+    static final String INT = "int";
     static final String CLIENT_REF_PREFIX = "00";
     static final String DELIMITER = "|";
     static final String GET_COMMON_GRP = "getCommonGrp";
@@ -48,7 +54,7 @@ public class Constants {
     static final String FD_PROXY_PKG_PREFIX = "com.snaplogic.snaps.firstdata.gmf.proxy.";
     static final String FD_REQ_TAG = "Details";
     static final ImmutableSet<String> RESOUCE_LIST = ImmutableSet.of("AdminRequest",
-            "CheckRequest", "CreditRequest", "DebitRequest", "EBTRequest",
-            "PartialReversalRequest", "PinlessDebitRequest", "PrepaidRequest", "TARequest",
+            "CheckRequest", "CreditRequest", "DebitRequest", "EBTRequest", "GenPrepaidRequest",
+            "PinlessDebitRequest", "PrepaidRequest", "PrivateLabelRequest", "TARequest",
             "VoidTOReversalRequest");
 }
