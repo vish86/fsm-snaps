@@ -18,45 +18,26 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 
+import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.*;
+
+
 /**
  * <p>
  * Java class for PayloadType complex type.
- *
- * <p>
- * The following schema fragment specifies the expected content contained within this class.
- *
- * <pre>
- * &lt;complexType name="PayloadType">
- *   &lt;simpleContent>
- *     &lt;extension base="&lt;http://www.w3.org/2001/XMLSchema>string">
- *       &lt;attribute name="Encoding">
- *         &lt;simpleType>
- *           &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
- *             &lt;enumeration value="xml_escape"/>
- *             &lt;enumeration value="cdata"/>
- *           &lt;/restriction>
- *         &lt;/simpleType>
- *       &lt;/attribute>
- *     &lt;/extension>
- *   &lt;/simpleContent>
- * &lt;/complexType>
- * </pre>
- *
- *@author svatada 
+ * 
+ * @author svatada
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "PayloadType", namespace = "http://securetransport.dw/rcservice/soap",
-        propOrder = { "value" })
+@XmlType(name = PAYLOAD_TYPE, namespace = HTTP_SECURETRANSPORT_DW_RCSERVICE_SOAP,
+        propOrder = { VALUE })
 public class PayloadType implements Serializable {
     @XmlValue
     protected String value;
-    @XmlAttribute(name = "Encoding")
+    @XmlAttribute(name = ENCODING2)
     protected String encoding;
 
     /**
      * Gets the value of the value property.
-     *
-     * @return possible object is {@link String }
      */
     public String getValue() {
         return value;
@@ -64,8 +45,6 @@ public class PayloadType implements Serializable {
 
     /**
      * Sets the value of the value property.
-     *
-     * @param value allowed object is {@link String }
      */
     public void setValue(String value) {
         this.value = value;
@@ -73,8 +52,6 @@ public class PayloadType implements Serializable {
 
     /**
      * Gets the value of the encoding property.
-     *
-     * @return possible object is {@link String }
      */
     public String getEncoding() {
         return encoding;
@@ -82,8 +59,6 @@ public class PayloadType implements Serializable {
 
     /**
      * Sets the value of the encoding property.
-     *
-     * @param value allowed object is {@link String }
      */
     public void setEncoding(String value) {
         this.encoding = value;

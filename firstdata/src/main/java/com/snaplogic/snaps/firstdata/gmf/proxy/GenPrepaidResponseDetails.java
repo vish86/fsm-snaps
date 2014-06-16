@@ -26,25 +26,18 @@ import javax.xml.bind.annotation.XmlType;
  * @author svatada
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "EBTRequestDetails", namespace = "com/firstdata/Merchant/gmfV2.08", propOrder = {
-        "commonGrp", "altMerchNameAndAddrGrp", "cardGrp", "pinGrp", "addtlAmtGrp", "taGrp",
-        "ebtGrp" })
-public class EBTRequestDetails {
+@XmlType(name = "GenPrepaidResponseDetails", namespace = "com/firstdata/Merchant/gmfV2.08",
+        propOrder = { "commonGrp", "addtlAmtGrp", "taGrp", "respGrp" })
+public class GenPrepaidResponseDetails {
 
     @XmlElement(name = "CommonGrp", namespace = "com/firstdata/Merchant/gmfV2.08")
     protected CommonGrp commonGrp;
-    @XmlElement(name = "AltMerchNameAndAddrGrp", namespace = "com/firstdata/Merchant/gmfV2.08")
-    protected AltMerchNameAndAddrGrp altMerchNameAndAddrGrp;
-    @XmlElement(name = "CardGrp", namespace = "com/firstdata/Merchant/gmfV2.08")
-    protected CardGrp cardGrp;
-    @XmlElement(name = "PINGrp", namespace = "com/firstdata/Merchant/gmfV2.08")
-    protected PINGrp pinGrp;
     @XmlElement(name = "AddtlAmtGrp", namespace = "com/firstdata/Merchant/gmfV2.08")
     protected List<AddtlAmtGrp> addtlAmtGrp;
     @XmlElement(name = "TAGrp", namespace = "com/firstdata/Merchant/gmfV2.08")
     protected TAGrp taGrp;
-    @XmlElement(name = "EbtGrp", namespace = "com/firstdata/Merchant/gmfV2.08")
-    protected EbtGrp ebtGrp;
+    @XmlElement(name = "RespGrp", namespace = "com/firstdata/Merchant/gmfV2.08")
+    protected RespGrp respGrp;
 
     public CommonGrp getCommonGrp() {
         return commonGrp;
@@ -52,30 +45,6 @@ public class EBTRequestDetails {
 
     public void setCommonGrp(CommonGrp value) {
         this.commonGrp = value;
-    }
-
-    public AltMerchNameAndAddrGrp getAltMerchNameAndAddrGrp() {
-        return altMerchNameAndAddrGrp;
-    }
-
-    public void setAltMerchNameAndAddrGrp(AltMerchNameAndAddrGrp value) {
-        this.altMerchNameAndAddrGrp = value;
-    }
-
-    public CardGrp getCardGrp() {
-        return cardGrp;
-    }
-
-    public void setCardGrp(CardGrp value) {
-        this.cardGrp = value;
-    }
-
-    public PINGrp getPINGrp() {
-        return pinGrp;
-    }
-
-    public void setPINGrp(PINGrp value) {
-        this.pinGrp = value;
     }
 
     public List<AddtlAmtGrp> getAddtlAmtGrp() {
@@ -93,12 +62,12 @@ public class EBTRequestDetails {
         this.taGrp = value;
     }
 
-    public EbtGrp getEbtGrp() {
-        return ebtGrp;
+    public RespGrp getRespGrp() {
+        return respGrp;
     }
 
-    public void setEbtGrp(EbtGrp value) {
-        this.ebtGrp = value;
+    public void setRespGrp(RespGrp value) {
+        this.respGrp = value;
     }
 
 }

@@ -23,29 +23,29 @@ import javax.xml.bind.annotation.XmlType;
  * @author svatada
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "CustInfoGrp", namespace = "com/firstdata/Merchant/gmfV2.08", propOrder = {
-        "avsBillingAddr", "avsBillingPostalCode" })
-public class CustInfoGrp {
+@XmlType(name = "ProdCodeGrp", namespace = "com/firstdata/Merchant/gmfV2.08", propOrder = {
+        "servLvl", "numOfProds" })
+public class ProdCodeGrp {
 
-    @XmlElement(name = "AVSBillingAddr", namespace = "com/firstdata/Merchant/gmfV2.08")
-    protected String avsBillingAddr;
-    @XmlElement(name = "AVSBillingPostalCode", namespace = "com/firstdata/Merchant/gmfV2.08")
-    protected String avsBillingPostalCode;
+    @XmlElement(name = "ServLvl", namespace = "com/firstdata/Merchant/gmfV2.08")
+    protected String servLvl;
+    @XmlElement(name = "NumOfProds", namespace = "com/firstdata/Merchant/gmfV2.08")
+    protected String numOfProds;
 
-    public String getAVSBillingAddr() {
-        return avsBillingAddr;
+    public String getServLvl() {
+        return servLvl;
     }
 
-    public void setAVSBillingAddr(String value) {
-        this.avsBillingAddr = value;
+    public void setServLvl(String value) {
+        this.servLvl = value;
     }
 
-    public String getAVSBillingPostalCode() {
-        return avsBillingPostalCode;
+    public String getNumOfProds() {
+        return numOfProds;
     }
 
-    public void setAVSBillingPostalCode(String value) {
-        this.avsBillingPostalCode = value;
+    public void setNumOfProds(String value) {
+        this.numOfProds = value;
     }
 
 }

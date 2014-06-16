@@ -21,18 +21,17 @@ import javax.xml.bind.annotation.XmlType;
  * 
  * @author svatada
  */
-@XmlType(name = "BillPymtTxnIndType", namespace = "com/firstdata/Merchant/gmfV2.08")
+@XmlType(name = "ProgramIDType", namespace = "com/firstdata/Merchant/gmfV2.08")
 @XmlEnum
-public enum BillPymtTxnIndType {
+public enum ProgramIDType {
 
-    @XmlEnumValue("Single")
-    SINGLE("Single"), @XmlEnumValue("Recurring")
-    RECURRING("Recurring"), @XmlEnumValue("Installment")
-    INSTALLMENT("Installment"), @XmlEnumValue("Deferred")
-    DEFERRED("Deferred");
+    @XmlEnumValue("PrepaidClosedLoop")
+    PREPAID_CLOSED_LOOP("PrepaidClosedLoop"), @XmlEnumValue("InComm")
+    IN_COMM("InComm"), @XmlEnumValue("StoredValueSystems")
+    STORED_VALUE_SYSTEMS("StoredValueSystems");
     private final String value;
 
-    BillPymtTxnIndType(String v) {
+    ProgramIDType(String v) {
         value = v;
     }
 
@@ -40,8 +39,8 @@ public enum BillPymtTxnIndType {
         return value;
     }
 
-    public static BillPymtTxnIndType fromValue(String v) {
-        for (BillPymtTxnIndType c : BillPymtTxnIndType.values()) {
+    public static ProgramIDType fromValue(String v) {
+        for (ProgramIDType c : ProgramIDType.values()) {
             if (c.value.equals(v)) {
                 return c;
             }

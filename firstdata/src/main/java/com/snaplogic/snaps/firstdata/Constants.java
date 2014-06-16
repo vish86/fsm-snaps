@@ -48,7 +48,7 @@ public class Constants {
     static final String FD_PROXY_PKG_PREFIX = "com.snaplogic.snaps.firstdata.gmf.proxy.";
     static final String FD_REQ_TAG = "Details";
     static final ImmutableSet<String> RESOUCE_LIST = ImmutableSet.of("AdminRequest",
-            "CheckRequest", "CreditRequest", "DebitRequest", "EBTRequest",
-            "PartialReversalRequest", "PinlessDebitRequest", "PrepaidRequest", "TARequest",
+            "CheckRequest", "CreditRequest", "DebitRequest", "EBTRequest", "GenPrepaidRequest",
+            "PinlessDebitRequest", "PrepaidRequest", "PrivateLabelRequest", "TARequest",
             "VoidTOReversalRequest");
 }

@@ -10,10 +10,6 @@
  */
 package com.snaplogic.snaps.firstdata;
 
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
@@ -50,8 +46,13 @@ import com.snaplogic.snaps.firstdata.dw.rcservice.ResponseType;
 import com.snaplogic.snaps.firstdata.dw.rcservice.StatusType;
 import com.snaplogic.snaps.firstdata.dw.rcservice.TransactionResponseType;
 import com.snaplogic.snaps.firstdata.dw.rcservice.TransactionType;
+import com.snaplogic.snaps.firstdata.gmf.proxy.AddtlAmtGrp;
 import com.snaplogic.snaps.firstdata.gmf.proxy.CommonGrp;
 import com.snaplogic.snaps.firstdata.gmf.proxy.GMFMessageVariants;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
@@ -62,12 +63,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
 
 import net.sf.json.JSON;
@@ -88,6 +89,8 @@ import static com.snaplogic.snaps.firstdata.Messages.*;
 @Category(snap = SnapCategory.TRANSFORM)
 @Accounts(provides = FirstDataCustomAccount.class, optional = false)
 public class Create extends SimpleSnap implements MetricsProvider, InputSchemaProvider {
+    private static final String ADDTL_AMT_GRP = "AddtlAmtGrp";
+    private static final String GET_ADDTL_AMT_GRP = "getAddtlAmtGrp";
     @Inject
     private FirstDataCustomAccount account;
     private String resourceType = null;
@@ -115,16 +118,13 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
     @Override
     public void defineInputSchema(SchemaProvider provider) {
         Class<?> classType = null;
-        log.debug("define schema");
         try {
             classType = Class.forName(getGMFReqClassType());
         } catch (ClassNotFoundException e) {
             log.error(e.getMessage(), e);
             throw new ExecutionException(e.getMessage());
         }
-        log.debug(classType.getName());
         for (String viewName : provider.getRegisteredViewNames()) {
-            log.debug(viewName);
             try {
                 SchemaBuilder schemaBuilder = provider.getSchemaBuilder(viewName);
                 schemaBuilder.withChildSchema(getSchema(provider, classType));
@@ -146,7 +146,27 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
             if (data instanceof Map) {
                 String claszPath = getGMFReqClassType();
                 Object map = Map.class.cast(data).get(getGMFReqClassName());
-                requestObj = getObject(claszPath, Map.class.cast(map));
+                Map<String, Object> inputMap = Map.class.cast(map);
+                requestObj = getObject(claszPath, inputMap);
+                if (inputMap.containsKey(ADDTL_AMT_GRP)) {
+                    try {
+                        Class<?> clasz = getClassType(claszPath);
+                        Method getAddtlAmtGrp = clasz.getDeclaredMethod(GET_ADDTL_AMT_GRP);
+                        Object obj = getObject(AddtlAmtGrp.class.getName(),
+                                Map.class.cast(inputMap.get(ADDTL_AMT_GRP)));
+                        List<AddtlAmtGrp> list = (List<AddtlAmtGrp>) getAddtlAmtGrp
+                                .invoke(requestObj);
+                        list.add((AddtlAmtGrp) obj);
+                    } catch (NoSuchMethodException | SecurityException e) {
+                        log.error(e.getMessage(), e);
+                    } catch (IllegalAccessException e) {
+                        log.error(e.getMessage(), e);
+                    } catch (IllegalArgumentException e) {
+                        log.error(e.getMessage(), e);
+                    } catch (InvocationTargetException e) {
+                        log.error(e.getMessage(), e);
+                    }
+                }
                 String xmlData;
                 try {
                     /* Using Reflection and JAXB to prepare SOAP request XML */
@@ -274,15 +294,15 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
     }
 
     private ObjectSchema getSchema(SchemaProvider provider, Class<?> classType) {
-        ArrayList<Method> setterMethods = findSetters(classType);
+        ArrayList<Method> getterMethods = findGetters(classType);
         ObjectSchema schema = null;
-        if (!setterMethods.isEmpty()) {
+        if (!getterMethods.isEmpty()) {
             schema = provider.createSchema(SnapType.STRING, classType.getSimpleName());
         }
-        String methodName;
-        for (Method method : setterMethods) {
+        String name;
+        for (Method methodName : getterMethods) {
             try {
-                String paramType = method.getParameterTypes()[0].getName();
+                String paramType = methodName.getReturnType().getName();
                 if (paramType.startsWith(FD_PROXY_PKG_PREFIX) && !paramType.endsWith(TYPE)) {
                     Class<?> subClass = null;
                     try {
@@ -295,9 +315,14 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
                     if (subSchema != null) {
                         schema.addChild(subSchema);
                     }
+                } else if (paramType.endsWith(List.class.getSimpleName())) {
+                    ObjectSchema subSchema = getSchema(provider, AddtlAmtGrp.class);
+                    if (subSchema != null) {
+                        schema.addChild(subSchema);
+                    }
                 } else {
-                    methodName = getFieldName(method.getName());
-                    schema.addChild(provider.createSchema(getDataTypes(paramType), methodName));
+                    name = getFieldName(methodName.getName());
+                    schema.addChild(provider.createSchema(getDataTypes(paramType), name));
                 }
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
@@ -359,6 +384,23 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
         Method[] methods = classType.getDeclaredMethods();
         for (Method method : methods) {
             if (isSetter(method)) {
+                list.add(method);
+            }
+        }
+        return list;
+    }
+
+    /**
+     * finds the declared getter methods in the given classtype
+     * 
+     * @param c
+     * @return ArrayList<Method>
+     */
+    public static ArrayList<Method> findGetters(Class<?> c) {
+        ArrayList<Method> list = new ArrayList<Method>();
+        Method[] methods = c.getDeclaredMethods();
+        for (Method method : methods) {
+            if (isGetter(method)) {
                 list.add(method);
             }
         }
@@ -468,6 +510,9 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
                     paramObj = map.get(inputFieldName);
                 }
                 if (paramObj != null) {
+                    if (method.getParameterTypes()[0].isArray()) {
+                        paramObj = paramObj.toString().getBytes();
+                    }
                     method.invoke(subClazInstance, paramObj);
                     isMethodInvokedAtOnce = true;
                 }
@@ -563,6 +608,9 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
             Class<?> paymentType = getClassType(Clazpath);
             Method getCommonGrp = paymentType.getMethod(GET_COMMON_GRP);
             CommonGrp cGrp = (CommonGrp) getCommonGrp.invoke(obj);
+            if (cGrp == null) {
+                return StringUtils.EMPTY;
+            }
             clientRef = cGrp.getSTAN() + DELIMITER + cGrp.getTPPID();
             clientRef = CLIENT_REF_PREFIX + clientRef;
         } catch (NoSuchMethodException | SecurityException e) {

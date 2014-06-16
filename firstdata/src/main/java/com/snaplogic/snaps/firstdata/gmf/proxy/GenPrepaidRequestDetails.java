@@ -26,10 +26,10 @@ import javax.xml.bind.annotation.XmlType;
  * @author svatada
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "EBTRequestDetails", namespace = "com/firstdata/Merchant/gmfV2.08", propOrder = {
-        "commonGrp", "altMerchNameAndAddrGrp", "cardGrp", "pinGrp", "addtlAmtGrp", "taGrp",
-        "ebtGrp" })
-public class EBTRequestDetails {
+@XmlType(name = "GenPrepaidRequestDetails", namespace = "com/firstdata/Merchant/gmfV2.08",
+        propOrder = { "commonGrp", "altMerchNameAndAddrGrp", "cardGrp", "addtlAmtGrp", "taGrp",
+                "origAuthGrp", "prodCodeGrp", "prodCodeDetGrp" })
+public class GenPrepaidRequestDetails {
 
     @XmlElement(name = "CommonGrp", namespace = "com/firstdata/Merchant/gmfV2.08")
     protected CommonGrp commonGrp;
@@ -37,14 +37,16 @@ public class EBTRequestDetails {
     protected AltMerchNameAndAddrGrp altMerchNameAndAddrGrp;
     @XmlElement(name = "CardGrp", namespace = "com/firstdata/Merchant/gmfV2.08")
     protected CardGrp cardGrp;
-    @XmlElement(name = "PINGrp", namespace = "com/firstdata/Merchant/gmfV2.08")
-    protected PINGrp pinGrp;
     @XmlElement(name = "AddtlAmtGrp", namespace = "com/firstdata/Merchant/gmfV2.08")
     protected List<AddtlAmtGrp> addtlAmtGrp;
     @XmlElement(name = "TAGrp", namespace = "com/firstdata/Merchant/gmfV2.08")
     protected TAGrp taGrp;
-    @XmlElement(name = "EbtGrp", namespace = "com/firstdata/Merchant/gmfV2.08")
-    protected EbtGrp ebtGrp;
+    @XmlElement(name = "OrigAuthGrp", namespace = "com/firstdata/Merchant/gmfV2.08")
+    protected OrigAuthGrp origAuthGrp;
+    @XmlElement(name = "ProdCodeGrp", namespace = "com/firstdata/Merchant/gmfV2.08")
+    protected ProdCodeGrp prodCodeGrp;
+    @XmlElement(name = "ProdCodeDetGrp", namespace = "com/firstdata/Merchant/gmfV2.08")
+    protected List<ProdCodeDetGrp> prodCodeDetGrp;
 
     public CommonGrp getCommonGrp() {
         return commonGrp;
@@ -70,14 +72,6 @@ public class EBTRequestDetails {
         this.cardGrp = value;
     }
 
-    public PINGrp getPINGrp() {
-        return pinGrp;
-    }
-
-    public void setPINGrp(PINGrp value) {
-        this.pinGrp = value;
-    }
-
     public List<AddtlAmtGrp> getAddtlAmtGrp() {
         if (addtlAmtGrp == null) {
             addtlAmtGrp = new ArrayList<AddtlAmtGrp>();
@@ -93,12 +87,27 @@ public class EBTRequestDetails {
         this.taGrp = value;
     }
 
-    public EbtGrp getEbtGrp() {
-        return ebtGrp;
+    public OrigAuthGrp getOrigAuthGrp() {
+        return origAuthGrp;
     }
 
-    public void setEbtGrp(EbtGrp value) {
-        this.ebtGrp = value;
+    public void setOrigAuthGrp(OrigAuthGrp value) {
+        this.origAuthGrp = value;
+    }
+
+    public ProdCodeGrp getProdCodeGrp() {
+        return prodCodeGrp;
+    }
+
+    public void setProdCodeGrp(ProdCodeGrp value) {
+        this.prodCodeGrp = value;
+    }
+
+    public List<ProdCodeDetGrp> getProdCodeDetGrp() {
+        if (prodCodeDetGrp == null) {
+            prodCodeDetGrp = new ArrayList<ProdCodeDetGrp>();
+        }
+        return this.prodCodeDetGrp;
     }
 
 }

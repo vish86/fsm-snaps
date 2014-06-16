@@ -21,18 +21,15 @@ import javax.xml.bind.annotation.XmlType;
  * 
  * @author svatada
  */
-@XmlType(name = "BillPymtTxnIndType", namespace = "com/firstdata/Merchant/gmfV2.08")
+@XmlType(name = "FileTypeType", namespace = "com/firstdata/Merchant/gmfV2.08")
 @XmlEnum
-public enum BillPymtTxnIndType {
+public enum FileTypeType {
 
-    @XmlEnumValue("Single")
-    SINGLE("Single"), @XmlEnumValue("Recurring")
-    RECURRING("Recurring"), @XmlEnumValue("Installment")
-    INSTALLMENT("Installment"), @XmlEnumValue("Deferred")
-    DEFERRED("Deferred");
+    @XmlEnumValue("EMV2KEY")
+    EMV_2_KEY("EMV2KEY");
     private final String value;
 
-    BillPymtTxnIndType(String v) {
+    FileTypeType(String v) {
         value = v;
     }
 
@@ -40,8 +37,8 @@ public enum BillPymtTxnIndType {
         return value;
     }
 
-    public static BillPymtTxnIndType fromValue(String v) {
-        for (BillPymtTxnIndType c : BillPymtTxnIndType.values()) {
+    public static FileTypeType fromValue(String v) {
+        for (FileTypeType c : FileTypeType.values()) {
             if (c.value.equals(v)) {
                 return c;
             }
