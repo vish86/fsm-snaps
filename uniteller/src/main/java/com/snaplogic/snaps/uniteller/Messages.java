@@ -74,5 +74,5 @@ class Messages {
             + "or inappropriate value to the method %s.";
     static final String INVOCATION_TARGET_EXE = "Trying to execute the unknow function call or "
             + "method parameter types were wrong.";
-    static final String DATE_PARSER_ERROR="Invalid date format. Date format must be %s";
+    static final String DATE_PARSER_ERROR="Invalid date format. Date format must be %s or %s";
 }

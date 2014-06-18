@@ -80,6 +80,8 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
     @Inject
     private URLEncoder urlEncoder;
     private static final Logger log = LoggerFactory.getLogger(BaseService.class);
+    private static SimpleDateFormat sdtf = new SimpleDateFormat(DATETIME_FORMAT);
+    private static SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
 
     protected SnapsModel getSnapType() {
         return snapsType;
@@ -151,13 +153,10 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
                     Object UFSRequestObj = UFSRequest.newInstance();
                     Object inputFieldValue = null;
                     Calendar cal = Calendar.getInstance();
-                    SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
                     for (Method method : UFSRequest.getDeclaredMethods()) {
                         if (isSetter(method)
                                 && (inputFieldValue = map.get(method.getName().substring(3))) != null) {
                             try {
-                                // String paramType =
-                                // method.getGenericParameterTypes()[0].toString();
                                 String paramType = method.getParameterTypes()[0].getName();
                                 if (paramType.equalsIgnoreCase(String.class.getName())) {
                                     method.invoke(UFSRequest.cast(UFSRequestObj),
@@ -170,11 +169,15 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
                                             Integer.parseInt(String.valueOf(inputFieldValue)));
                                 } else if (paramType.equalsIgnoreCase(Calendar.class.getName())) {
                                     try {
-                                        cal.setTime(sdf.parse(String.valueOf(inputFieldValue)));
-                                    } catch (ParseException pe) {
-                                        writeToErrorView(
-                                                String.format(DATE_PARSER_ERROR, DATE_FORMAT),
-                                                pe.getMessage(), ERROR_RESOLUTION, pe);
+                                        cal.setTime(sdtf.parse(String.valueOf(inputFieldValue)));
+                                    } catch (ParseException pe1) {
+                                        try {
+                                            cal.setTime(sdf.parse(String.valueOf(inputFieldValue)));
+                                        } catch (ParseException pe) {
+                                            writeToErrorView(String.format(DATE_PARSER_ERROR,
+                                                    DATETIME_FORMAT, DATE_FORMAT), pe.getMessage(),
+                                                    ERROR_RESOLUTION, pe);
+                                        }
                                     }
                                     method.invoke(UFSRequest.cast(UFSRequestObj), cal);
                                 }
@@ -344,8 +347,11 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
         return list;
     }
 
-    /*
+    /**
      * finds the declared getter methods in the given classtype
+     *
+     * @param c
+     * @return ArrayList<Method>
      */
     public static ArrayList<Method> findGetters(Class<?> c) {
         ArrayList<Method> list = new ArrayList<Method>();
