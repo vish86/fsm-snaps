@@ -25,29 +25,29 @@ import static com.snaplogic.snaps.firstdata.gmf.proxy.Constants.*;
  * @author svatada
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = Constants.CARD_GRP_NAME, namespace = NAMESPACE, propOrder = { ACCT_NUM2,
+@XmlType(name = Constants.CARD_GRP_NAME, namespace = NAMESPACE, propOrder = { ACCT_NUM,
         CARD_ACTIV_DATE, CARD_EXPIRY_DATE, TRACK1_DATA, TRACK2_DATA, CARD_TYPE, AVS_RESULT_CODE,
         CCV_IND, CCV_DATA, CCV_RESULT_CODE })
 public class CardGrp {
-    @XmlElement(name = ACCT_NUM, namespace = NAMESPACE)
+    @XmlElement(name = ACCT_NUM_ELT, namespace = NAMESPACE)
     protected String acctNum;
-    @XmlElement(name = CARD_ACTIV_DATE2, namespace = NAMESPACE)
+    @XmlElement(name = CARD_ACTIV_DATE_ELT, namespace = NAMESPACE)
     protected String cardActivDate;
-    @XmlElement(name = CARD_EXPIRY_DATE2, namespace = NAMESPACE)
+    @XmlElement(name = CARD_EXPIRY_DATE_ELT, namespace = NAMESPACE)
     protected String cardExpiryDate;
-    @XmlElement(name = TRACK1_DATA2, namespace = NAMESPACE)
+    @XmlElement(name = TRACK1_DATA_ELT, namespace = NAMESPACE)
     protected String track1Data;
-    @XmlElement(name = TRACK2_DATA2, namespace = NAMESPACE)
+    @XmlElement(name = TRACK2_DATA_ELT, namespace = NAMESPACE)
     protected String track2Data;
     @XmlElement(name = CARD_TYPE2, namespace = NAMESPACE)
     protected CardTypeType cardType;
-    @XmlElement(name = AVS_RESULT_CODE2, namespace = NAMESPACE)
+    @XmlElement(name = AVS_RESULT_CODE_ELT, namespace = NAMESPACE)
     protected AVSResultCodeType avsResultCode;
-    @XmlElement(name = CCV_IND2, namespace = NAMESPACE)
+    @XmlElement(name = CCV_IND_ELT, namespace = NAMESPACE)
     protected CCVIndType ccvInd;
-    @XmlElement(name = CCV_DATA2, namespace = NAMESPACE)
+    @XmlElement(name = CCV_DATA_ELT, namespace = NAMESPACE)
     protected String ccvData;
-    @XmlElement(name = Constants.CCV_RESULT_CODE2, namespace = NAMESPACE)
+    @XmlElement(name = Constants.CCV_RESULT_CODE_ELT, namespace = NAMESPACE)
     protected CCVResultCodeType ccvResultCode;
 
     public String getAcctNum() {

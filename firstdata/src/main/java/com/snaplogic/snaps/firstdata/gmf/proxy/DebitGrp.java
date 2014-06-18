@@ -28,15 +28,15 @@ import static com.snaplogic.snaps.firstdata.gmf.proxy.Constants.*;
 @XmlType(name = DEBIT_GRP_NAME, namespace = NAMESPACE, propOrder = { PAYEE_PHONE_NUM, PAYEE_ACCT_NUM,
         PAYEE_ID, BILLING_IND, FPI })
 public class DebitGrp {
-    @XmlElement(name = PAYEE_PHONE_NUM2, namespace = NAMESPACE)
+    @XmlElement(name = PAYEE_PHONE_NUM_ELT, namespace = NAMESPACE)
     protected String payeePhoneNum;
-    @XmlElement(name = PAYEE_ACCT_NUM2, namespace = NAMESPACE)
+    @XmlElement(name = PAYEE_ACCT_NUM_ELT, namespace = NAMESPACE)
     protected String payeeAcctNum;
     @XmlElement(name = PAYEE_ID2, namespace = NAMESPACE)
     protected String payeeID;
-    @XmlElement(name = BILLING_IND2, namespace = NAMESPACE)
+    @XmlElement(name = BILLING_IND_ELT, namespace = NAMESPACE)
     protected String billingInd;
-    @XmlElement(name = FPI2, namespace = NAMESPACE)
+    @XmlElement(name = FPI_ELT, namespace = NAMESPACE)
     protected String fpi;
 
     public String getPayeePhoneNum() {

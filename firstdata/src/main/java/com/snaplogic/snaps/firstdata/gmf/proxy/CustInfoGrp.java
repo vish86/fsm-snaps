@@ -16,9 +16,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 import static com.snaplogic.snaps.firstdata.gmf.proxy.Constants.AVS_BILLING_ADDR;
-import static com.snaplogic.snaps.firstdata.gmf.proxy.Constants.AVS_BILLING_ADDR2;
+import static com.snaplogic.snaps.firstdata.gmf.proxy.Constants.AVS_BILLING_ADDR_ELT;
 import static com.snaplogic.snaps.firstdata.gmf.proxy.Constants.AVS_BILLING_POSTAL_CODE;
-import static com.snaplogic.snaps.firstdata.gmf.proxy.Constants.AVS_BILLING_POSTAL_CODE2;
+import static com.snaplogic.snaps.firstdata.gmf.proxy.Constants.AVS_BILLING_POSTAL_CODE_ELT;
 import static com.snaplogic.snaps.firstdata.gmf.proxy.Constants.CUST_INFO_GRP_NAME;
 import static com.snaplogic.snaps.firstdata.gmf.proxy.Constants.NAMESPACE;
 
@@ -33,9 +33,9 @@ import static com.snaplogic.snaps.firstdata.gmf.proxy.Constants.NAMESPACE;
 @XmlType(name = CUST_INFO_GRP_NAME, namespace = NAMESPACE, propOrder = { AVS_BILLING_ADDR,
         AVS_BILLING_POSTAL_CODE })
 public class CustInfoGrp {
-    @XmlElement(name = AVS_BILLING_ADDR2, namespace = NAMESPACE)
+    @XmlElement(name = AVS_BILLING_ADDR_ELT, namespace = NAMESPACE)
     protected String avsBillingAddr;
-    @XmlElement(name = AVS_BILLING_POSTAL_CODE2, namespace = NAMESPACE)
+    @XmlElement(name = AVS_BILLING_POSTAL_CODE_ELT, namespace = NAMESPACE)
     protected String avsBillingPostalCode;
 
     public String getAVSBillingAddr() {

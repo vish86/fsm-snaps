@@ -25,20 +25,20 @@ import static com.snaplogic.snaps.firstdata.gmf.proxy.Constants.*;
  * @author svatada
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = CHECK_GRP_NAME, namespace = NAMESPACE, propOrder = { MICR2, DRV_LIC, STATE_CODE,
+@XmlType(name = CHECK_GRP_NAME, namespace = NAMESPACE, propOrder = { MICR, DRV_LIC, STATE_CODE,
         DL_DATE_OF_BIRTH, CHK_SVC_PVDR, CHK_ENTRY_METHOD })
 public class CheckGrp {
-    @XmlElement(name = MICR3, namespace = NAMESPACE)
+    @XmlElement(name = MICR_ELT, namespace = NAMESPACE)
     protected String micr;
-    @XmlElement(name = DRV_LIC2, namespace = NAMESPACE)
+    @XmlElement(name = DRV_LIC_ELT, namespace = NAMESPACE)
     protected String drvLic;
-    @XmlElement(name = STATE_CODE2, namespace = NAMESPACE)
+    @XmlElement(name = STATE_CODE_ELT, namespace = NAMESPACE)
     protected String stateCode;
-    @XmlElement(name = DL_DATE_OF_BIRTH2, namespace = NAMESPACE)
+    @XmlElement(name = DL_DATE_OF_BIRTH_ELT, namespace = NAMESPACE)
     protected String dlDateOfBirth;
-    @XmlElement(name = CHK_SVC_PVDR2, namespace = NAMESPACE)
+    @XmlElement(name = CHK_SVC_PVDR_ELT, namespace = NAMESPACE)
     protected ChkSvcPvdrType chkSvcPvdr;
-    @XmlElement(name = CHK_ENTRY_METHOD2, namespace = NAMESPACE)
+    @XmlElement(name = CHK_ENTRY_METHOD_ELT, namespace = NAMESPACE)
     protected String chkEntryMethod;
 
     public String getMICR() {

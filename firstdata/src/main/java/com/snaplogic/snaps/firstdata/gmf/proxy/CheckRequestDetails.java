@@ -29,7 +29,7 @@ import static com.snaplogic.snaps.firstdata.gmf.proxy.Constants.*;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = CHECK_REQUEST_DETAILS, namespace = NAMESPACE, propOrder = { COMMON_GRP,
-        ALT_MERCH_NAME_AND_ADDR_GRP, CHECK_GRP_NAME, ADDTL_AMT_GRP })
+        ALT_MERCH_NAME_AND_ADDR_GRP, CHECK_GRP, ADDTL_AMT_GRP })
 public class CheckRequestDetails {
     @XmlElement(name = COMMON_GRP_ELT, namespace = NAMESPACE)
     protected CommonGrp commonGrp;

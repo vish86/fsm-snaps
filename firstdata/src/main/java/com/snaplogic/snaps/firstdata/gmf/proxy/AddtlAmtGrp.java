@@ -25,21 +25,21 @@ import static com.snaplogic.snaps.firstdata.gmf.proxy.Constants.*;
  * @author svatada
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = ADDTL_AMT_GRP_NAME, namespace = NAMESPACE, propOrder = { AAG_ADD_AMT,
-        AAG_ADD_AMT_CRNCY, AAG_ADD_AMT_TYPE, AAG_ADD_AMT_ACCT_TYPE, AAG_HOLD_INFO,
-        AAG_PART_AUTHRZTN_APPRVL_CAPABLT })
+@XmlType(name = ADDTL_AMT_GRP_NAME, namespace = NAMESPACE, propOrder = { ADD_AMT,
+        ADD_AMT_CRNCY, ADD_AMT_TYPE, ADD_AMT_ACCT_TYPE, HOLD_INFO,
+        PART_AUTHRZTN_APPRVL_CAPABLT })
 public class AddtlAmtGrp {
-    @XmlElement(name = AAG_ADD_AMT_ELT, namespace = NAMESPACE)
+    @XmlElement(name = ADD_AMT_ELT, namespace = NAMESPACE)
     protected String addAmt;
-    @XmlElement(name = AAG_ADD_AMT_CRNCY_ELT, namespace = NAMESPACE)
+    @XmlElement(name = ADD_AMT_CRNCY_ELT, namespace = NAMESPACE)
     protected String addAmtCrncy;
-    @XmlElement(name = AAG_ADD_AMT_TYPE_ELT, namespace = NAMESPACE)
+    @XmlElement(name = ADD_AMT_TYPE_ELT, namespace = NAMESPACE)
     protected AddAmtTypeType addAmtType;
-    @XmlElement(name = AAG_ADD_AMT_ACCT_TYPE_ELT, namespace = NAMESPACE)
+    @XmlElement(name = ADD_AMT_ACCT_TYPE_ELT, namespace = NAMESPACE)
     protected String addAmtAcctType;
-    @XmlElement(name = AAG_HOLD_INFO_ELT, namespace = NAMESPACE)
+    @XmlElement(name = HOLD_INFO_ELT, namespace = NAMESPACE)
     protected String holdInfo;
-    @XmlElement(name = AAG_PART_AUTHRZTN_APPRVL_CAPABLT_ELT, namespace = NAMESPACE)
+    @XmlElement(name = PART_AUTHRZTN_APPRVL_CAPABLT_ELT, namespace = NAMESPACE)
     protected String partAuthrztnApprvlCapablt;
 
     public String getAddAmt() {

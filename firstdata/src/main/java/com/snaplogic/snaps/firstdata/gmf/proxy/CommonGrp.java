@@ -26,28 +26,28 @@ import static com.snaplogic.snaps.firstdata.gmf.proxy.Constants.*;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = COMMON_GRP_NAME, namespace = NAMESPACE, propOrder = { PYMT_TYPE, REVERSAL_IND,
-        TXN_TYPE, LOCAL_DATE_TIME, TRNMSN_DATE_TIME, STAN2, REF_NUM, ORDER_NUM, TPPID2, TERM_ID,
+        TXN_TYPE, LOCAL_DATE_TIME, TRNMSN_DATE_TIME, STAN, REF_NUM, ORDER_NUM, TPPID, TERM_ID,
         MERCH_ID, ALT_MERCH_ID, MERCH_CAT_CODE, POS_ENTRY_MODE, POS_COND_CODE, TERM_CAT_CODE,
         TERM_ENTRY_CAPABLT, TXN_AMT, TXN_CRNCY, TERM_LOC_IND, CARD_CAPT_CAP, PROGRAM_ID, GROUP_ID,
-        POSID2, SETTLE_IND })
+        POSID, SETTLE_IND })
 public class CommonGrp {
-    @XmlElement(name = PYMT_TYPE2, namespace = NAMESPACE)
+    @XmlElement(name = PYMT_TYPE_ELT, namespace = NAMESPACE)
     protected PymtTypeType pymtType;
-    @XmlElement(name = REVERSAL_IND2, namespace = NAMESPACE)
+    @XmlElement(name = REVERSAL_IND_ELT, namespace = NAMESPACE)
     protected ReversalIndType reversalInd;
-    @XmlElement(name = TXN_TYPE2, namespace = NAMESPACE)
+    @XmlElement(name = TXN_TYPE_ELT, namespace = NAMESPACE)
     protected TxnTypeType txnType;
     @XmlElement(name = LOCAL_DATE_TIME_ELT, namespace = NAMESPACE)
     protected String localDateTime;
     @XmlElement(name = TRNMSN_DATE_TIME_ELT, namespace = NAMESPACE)
     protected String trnmsnDateTime;
-    @XmlElement(name = STAN3_ELT, namespace = NAMESPACE)
+    @XmlElement(name = STAN_ELT, namespace = NAMESPACE)
     protected String stan;
     @XmlElement(name = REF_NUM_ELT, namespace = NAMESPACE)
     protected String refNum;
     @XmlElement(name = ORDER_NUM_ELT, namespace = NAMESPACE)
     protected String orderNum;
-    @XmlElement(name = TPPID3_ELT, namespace = NAMESPACE)
+    @XmlElement(name = TPPID_ELT, namespace = NAMESPACE)
     protected String tppid;
     @XmlElement(name = TERM_ID_ELT, namespace = NAMESPACE)
     protected String termID;
@@ -77,9 +77,9 @@ public class CommonGrp {
     protected ProgramIDType programID;
     @XmlElement(name = GROUP_ID_ELT, namespace = NAMESPACE)
     protected String groupID;
-    @XmlElement(name = POSID3_ELT, namespace = NAMESPACE)
+    @XmlElement(name = POSID_ELT, namespace = NAMESPACE)
     protected String posid;
-    @XmlElement(name = SETTLE_IND2, namespace = NAMESPACE)
+    @XmlElement(name = SETTLE_IND_ELT, namespace = NAMESPACE)
     protected String settleInd;
 
     public PymtTypeType getPymtType() {

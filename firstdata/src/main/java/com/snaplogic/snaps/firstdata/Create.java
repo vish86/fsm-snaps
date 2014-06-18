@@ -151,12 +151,11 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
                         List<Map<String, Object>> inputList = List.class.cast(inputMap
                                 .get(ADDTL_AMT_GRP));
                         if (inputList != null) {
-                            requestObj = processListObj(requestObj, claszPath, ADDTL_AMT_GRP,
+                            requestObj = prepareListObj(requestObj, claszPath, ADDTL_AMT_GRP,
                                     inputList);
                         }
                     } catch (ClassCastException e) {
-                        log.error(e.getMessage(), e);
-                        requestObj = processListObj(requestObj, claszPath, ADDTL_AMT_GRP, inputMap);
+                        requestObj = prepareListObj(requestObj, claszPath, ADDTL_AMT_GRP, inputMap);
                     }
                 }
                 if (inputMap.containsKey(PROD_CODE_DET_GRP)) {
@@ -164,12 +163,11 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
                         List<Map<String, Object>> inputList = List.class.cast(inputMap
                                 .get(PROD_CODE_DET_GRP));
                         if (inputList != null) {
-                            requestObj = processListObj(requestObj, claszPath, PROD_CODE_DET_GRP,
+                            requestObj = prepareListObj(requestObj, claszPath, PROD_CODE_DET_GRP,
                                     inputList);
                         }
                     } catch (ClassCastException e) {
-                        log.error(e.getMessage(), e);
-                        requestObj = processListObj(requestObj, claszPath, PROD_CODE_DET_GRP,
+                        requestObj = prepareListObj(requestObj, claszPath, PROD_CODE_DET_GRP,
                                 inputMap);
                     }
                 }
@@ -329,7 +327,12 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
                     Class<?> fieldTypeParameterType = (Class<?>) fieldGenericType
                             .getActualTypeArguments()[0];
                     ObjectSchema subSchema = null;
-                    subSchema = getSchema(provider, fieldTypeParameterType, SnapType.COMPOSITE);
+                    if (fieldTypeParameterType == String.class) {
+                        subSchema = provider.createSchema(SnapType.COMPOSITE,
+                                getFieldName(methodName.getName()));
+                    } else {
+                        subSchema = getSchema(provider, fieldTypeParameterType, SnapType.COMPOSITE);
+                    }
                     if (subSchema != null) {
                         schema.addChild(subSchema);
                     }
@@ -520,9 +523,10 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
                         continue;
                     }
                     paramObj = getObject(returnClazType, Map.class.cast(subMap));
+                    paramObj = setArrayObj(paramObj, returnClazType, Map.class.cast(subMap));
                 } else if (returnClazType.endsWith(TYPE)) {
                     paramObj = getTypesInstance(returnClazType, (String) map.get(inputFieldName));
-                } else {
+                } else if (returnClazType.endsWith(String.class.getSimpleName())) {
                     paramObj = map.get(inputFieldName);
                 }
                 if (paramObj != null) {
@@ -641,7 +645,7 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
         return clientRef;
     }
 
-    private Object processListObj(Object requestObj, String claszPath, String method2Invoke,
+    private Object prepareListObj(Object requestObj, String claszPath, String method2Invoke,
             Object inputData) {
         if (inputData != null) {
             Class<?> clasz = getClassType(claszPath);
@@ -665,13 +669,49 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
                     list.add(obj);
                 }
             } catch (NoSuchMethodException | SecurityException e) {
-                log.error(e.getMessage(), e);
+                log.warn(e.getMessage(), e);
             } catch (IllegalAccessException e) {
-                log.error(e.getMessage(), e);
+                log.warn(e.getMessage(), e);
             } catch (IllegalArgumentException e) {
-                log.error(e.getMessage(), e);
+                log.warn(e.getMessage(), e);
             } catch (InvocationTargetException e) {
-                log.error(e.getMessage(), e);
+                log.warn(e.getMessage(), e);
+            }
+        }
+        return requestObj;
+    }
+
+    private Object setArrayObj(Object requestObj, String claszPath, Map<String, Object> inputData) {
+        if (inputData != null) {
+            Class<?> clasz = getClassType(claszPath);
+            Object obj = null;
+            List<Object> list;
+            for (Method method : findGetters(clasz)) {
+                String declareClasz = method.getReturnType().getName();
+                if (declareClasz != List.class.getSimpleName()) {
+                    continue;
+                }
+                try {
+                    list = (List<Object>) method.invoke(requestObj);
+                    if ((obj = inputData.get(getFieldName(method.getName()))) == null) {
+                        continue;
+                    }
+                    if (obj instanceof List) {
+                        for (Object data : List.class.cast(obj)) {
+                            list.add(data);
+                        }
+                    } else if (obj instanceof String) {
+                        list.add(obj);
+                    }
+                } catch (IllegalAccessException e) {
+                    log.warn(e.getMessage(), e);
+                } catch (IllegalArgumentException e) {
+                    log.warn(e.getMessage(), e);
+                } catch (InvocationTargetException e) {
+                    log.warn(e.getMessage(), e);
+                } catch (Exception e) {
+                    log.warn(e.getMessage(), e);
+                }
             }
         }
         return requestObj;

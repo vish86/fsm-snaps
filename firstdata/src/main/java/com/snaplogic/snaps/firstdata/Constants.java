@@ -19,7 +19,7 @@ import com.google.common.collect.ImmutableSet;
  */
 public class Constants {
     static final String GMF_TAG = "GMF";
-    static final String GMF_MESSAGE_VARIANTS_TAG = "GMFMessageVariants";
+    static final String GMF_MESSAGE_VARIANTS_TAG = "gmfMessageVariants";
     static final String PROD_CODE_DET_GRP = "ProdCodeDetGrp";
     static final String ADDTL_AMT_GRP = "AddtlAmtGrp";
     static final String GETTER = "get%s";
