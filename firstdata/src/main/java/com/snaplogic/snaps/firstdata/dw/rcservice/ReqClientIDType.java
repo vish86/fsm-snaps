@@ -19,17 +19,14 @@ import javax.xml.bind.annotation.XmlType;
 
 import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.*;
 
-
 /**
- * <p>
  * Java class for ReqClientIDType complex type.
- * </p>
- * 
+ *
  * @author svatada
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = REQ_CLIENT_ID_TYPE, namespace = HTTP_SECURETRANSPORT_DW_RCSERVICE_SOAP,
-        propOrder = { DID3, APP3, AUTH3, CLIENT_REF2 })
+propOrder = { DID3, APP3, AUTH3, CLIENT_REF2 })
 public class ReqClientIDType implements Serializable {
     @XmlElement(name = DID2, required = true)
     protected String did;
@@ -95,5 +92,4 @@ public class ReqClientIDType implements Serializable {
     public void setClientRef(String value) {
         this.clientRef = value;
     }
-
 }

@@ -23,16 +23,14 @@ import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.STAT
 import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.STATUS_TYPE;
 import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.VALUE;
 
-
 /**
- * <p>
  * Java class for StatusType complex type.
- * 
+ *
  * @author svatada
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = STATUS_TYPE, namespace = HTTP_SECURETRANSPORT_DW_RCSERVICE_SOAP,
-        propOrder = { VALUE })
+propOrder = { VALUE })
 public class StatusType implements Serializable {
     @XmlValue
     protected String value;

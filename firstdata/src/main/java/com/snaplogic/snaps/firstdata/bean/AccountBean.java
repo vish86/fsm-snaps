@@ -11,10 +11,8 @@
 package com.snaplogic.snaps.firstdata.bean;
 
 /**
- * <p>
  * Simple java bean class to hold account information.
- * </p>
- * 
+ *
  * @author svatada
  */
 public class AccountBean {

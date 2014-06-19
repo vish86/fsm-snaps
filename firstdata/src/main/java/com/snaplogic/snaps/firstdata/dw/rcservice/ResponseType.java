@@ -20,11 +20,9 @@ import javax.xml.bind.annotation.XmlType;
 
 import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.*;
 
-
 /**
- * <p>
  * Java class for ResponseType complex type.
- * 
+ *
  * @author svatada
  */
 @XmlAccessorType(XmlAccessType.FIELD)

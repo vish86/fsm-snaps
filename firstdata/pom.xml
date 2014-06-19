@@ -246,9 +246,9 @@
 		<snap.classes>com.snaplogic.snaps.firstdata.Create
 		</snap.classes>
 		<key.prefix>local-snapadmin</key.prefix>
-		<user>satish@snaplogic.com</user>
-		<path>snaplogic/shared</path>
-		<sl_build>001</sl_build>
+		<user>snapadmin@snaplogic.com</user>
+		<path>snaplogic</path>
+		<sl_build>SNAPSHOT</sl_build>
 		<VERSION>1</VERSION>
 	</properties>
 	<dependencies>

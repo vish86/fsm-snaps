@@ -14,7 +14,7 @@ import com.google.common.collect.ImmutableSet;
 
 /**
  * This class holds all the static final variables and enum types.
- * 
+ *
  * @author svatada
  */
 public class Constants {

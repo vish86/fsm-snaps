@@ -1,7 +1,7 @@
 /*
  * SnapLogic - Data Integration
  *
- * Copyright (C) _ELT014, SnapLogic, Inc. All rights reserved.
+ * Copyright (C) 2014, SnapLogic, Inc. All rights reserved.
  *
  * This program is licensed under the terms of
  * the SnapLogic Commercial Subscription agreement.
@@ -19,6 +19,11 @@ import static com.snaplogic.snaps.firstdata.gmf.proxy.Constants.ECOM_AGG_ELT;
 import static com.snaplogic.snaps.firstdata.gmf.proxy.Constants.MCMSDI_TYPE_NAME;
 import static com.snaplogic.snaps.firstdata.gmf.proxy.Constants.NAMESPACE;
 
+/**
+ * This class was generated based on UMF Schema V2.10a.6V5.xsd
+ *
+ * @author svatada
+ */
 @XmlType(name = MCMSDI_TYPE_NAME, namespace = NAMESPACE)
 @XmlEnum
 public enum MCMSDIType {

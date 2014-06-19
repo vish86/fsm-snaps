@@ -28,7 +28,7 @@ import static junit.framework.Assert.assertTrue;
 
 /**
  * JUnit tests for FirstData Create Snap.
- * 
+ *
  * @author svatada
  */
 @SuppressWarnings("unchecked")

@@ -29,11 +29,9 @@ import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.TRAN
 import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.VERSION;
 import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.VERSION_NUM;
 
-
 /**
- * <p>
  * Java class for RequestType complex type.
- * 
+ *
  * @author svatada
  */
 @XmlAccessorType(XmlAccessType.FIELD)

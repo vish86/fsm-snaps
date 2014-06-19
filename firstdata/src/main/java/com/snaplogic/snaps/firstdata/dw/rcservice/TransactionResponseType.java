@@ -24,16 +24,14 @@ import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.RETU
 import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.RETURN_CODE_S;
 import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.TRANSACTION_RESPONSE_TYPE_C;
 
-
 /**
- * <p>
  * Java class for TransactionResponseType complex type.
- * 
+ *
  * @author svatada
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = TRANSACTION_RESPONSE_TYPE_C, namespace = HTTP_SECURETRANSPORT_DW_RCSERVICE_SOAP,
-        propOrder = { RETURN_CODE_S, PAYLOAD_S })
+propOrder = { RETURN_CODE_S, PAYLOAD_S })
 public class TransactionResponseType implements Serializable {
     @XmlElement(name = RETURN_CODE, required = true)
     protected String returnCode;

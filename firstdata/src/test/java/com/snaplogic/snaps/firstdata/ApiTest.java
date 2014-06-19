@@ -22,7 +22,7 @@ import org.junit.Before;
 
 /**
  * FirstData Snap unit test setup
- * 
+ *
  * @author svatada
  */
 public abstract class ApiTest {

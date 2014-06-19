@@ -22,27 +22,25 @@ import javax.xml.ws.soap.SOAPBinding;
 import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.HTTP_SECURETRANSPORT_DW_RCSERVICE_SOAP;
 import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.RC_SERVICE_PORT;
 
-
 /**
  * RcServicePortProxy
- * 
+ *
  * @author svatada
  */
 public class RcServicePortProxy {
     protected Descriptor descriptor;
 
     public class Descriptor {
-        private com.snaplogic.snaps.firstdata.dw.rcservice.RcService service = null;
-        private com.snaplogic.snaps.firstdata.dw.rcservice.RcPortType proxy = null;
-        private Dispatch<Source> dispatch = null;
+        private RcService service;
+        private RcPortType proxy;
+        private Dispatch<Source> dispatch;
 
         public Descriptor() {
             init();
         }
 
         public Descriptor(URL wsdlLocation, QName serviceName) {
-            service = new com.snaplogic.snaps.firstdata.dw.rcservice.RcService(wsdlLocation,
-                    serviceName);
+            service = new RcService(wsdlLocation, serviceName);
             initCommon();
         }
 
@@ -50,7 +48,7 @@ public class RcServicePortProxy {
             service = null;
             proxy = null;
             dispatch = null;
-            service = new com.snaplogic.snaps.firstdata.dw.rcservice.RcService();
+            service = new RcService();
             initCommon();
         }
 
@@ -58,7 +56,7 @@ public class RcServicePortProxy {
             proxy = service.getRcServicePort();
         }
 
-        public com.snaplogic.snaps.firstdata.dw.rcservice.RcPortType getProxy() {
+        public RcPortType getProxy() {
             return proxy;
         }
 
@@ -68,7 +66,7 @@ public class RcServicePortProxy {
                 dispatch = service.createDispatch(portQName, Source.class, Service.Mode.MESSAGE);
 
                 String proxyEndpointUrl = getEndpoint();
-                BindingProvider bp = (BindingProvider) dispatch;
+                BindingProvider bp = dispatch;
                 String dispatchEndpointUrl = (String) bp.getRequestContext().get(
                         BindingProvider.ENDPOINT_ADDRESS_PROPERTY);
                 if (!dispatchEndpointUrl.equals(proxyEndpointUrl))
@@ -88,7 +86,7 @@ public class RcServicePortProxy {
             bp.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointUrl);
 
             if (dispatch != null) {
-                bp = (BindingProvider) dispatch;
+                bp = dispatch;
                 bp.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointUrl);
             }
         }
@@ -116,5 +114,4 @@ public class RcServicePortProxy {
     public ResponseType rcTransaction(RequestType body) {
         return _getDescriptor().getProxy().rcTransaction(body);
     }
-
 }

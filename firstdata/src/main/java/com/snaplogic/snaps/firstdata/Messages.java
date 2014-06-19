@@ -12,7 +12,7 @@ package com.snaplogic.snaps.firstdata;
 
 /**
  * Messages is the container for all the externalized messages.
- * 
+ *
  * @author svatada
  */
 class Messages {
@@ -46,11 +46,11 @@ class Messages {
     static final String DATAWIRE_ID_DESC = "FirstData Datawire ID";
     static final String AUTH_STRING = "AUTH_STRING";
     static final String AUTH_STRING_LABEL = "Auth string";
-    static final String AUTH_STRING_DESC = "AuthString will be assigned by FirstData and it will be concatenated string of Group ID, Merchant ID (MID) | Terminal ID (TID)";
+    static final String AUTH_STRING_DESC = "AuthString will be assigned by FirstData."
+            + "General format for AuthString is <Group ID><Merchant ID>|<Terminal ID>";
     static final String TIMEOUT = "TIME_OUT";
     static final String TIMEOUT_LABEL = "Timeout";
     static final String TIMEOUT_DESC = "Time out value";
-
     // Snap labels and descriptions
     static final String CREATE_LABEL = "FirstData - Create";
     static final String SNAP_DESC = "Create snap";
@@ -80,5 +80,5 @@ class Messages {
             + "reflectively invoke a private method";
     static final String SECURITY_EXE_RES = "all-permissions - requires access to the resources.";
     static final String SECURITY_EXE = "permissio denied";
-    static final String NOSUCH_METHOD_EXE = "Trying to access the unknow resources";
+    static final String NOSUCH_RESOURCE_EXE = "Trying to access the unknow resources";
 }

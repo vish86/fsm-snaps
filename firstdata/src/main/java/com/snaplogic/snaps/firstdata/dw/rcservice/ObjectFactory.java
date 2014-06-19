@@ -21,7 +21,6 @@ import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.RESP
 import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.TRANSACTION;
 import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.TRANSACTION_RESPONSE;
 
-
 /**
  * This object contains factory methods for each Java content interface and Java element interface
  * generated in the dw.securetransport.rcservice.soap package.
@@ -30,7 +29,7 @@ import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.TRAN
  * for XML content. The Java representation of XML content can consist of schema derived interfaces
  * and classes representing the binding of schema type definitions, element declarations and model
  * groups. Factory methods for each of these are provided in this class.
- * 
+ *
  * @author svatada
  */
 @XmlRegistry

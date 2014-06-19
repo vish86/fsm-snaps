@@ -12,7 +12,7 @@ package com.snaplogic.snaps.firstdata.dw.rcservice;
 
 /**
  * Holds all the RCService related constants.
- * 
+ *
  * @author svatada
  */
 class RCServiceConstants {

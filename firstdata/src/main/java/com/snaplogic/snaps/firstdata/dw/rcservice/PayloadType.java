@@ -18,18 +18,19 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 
-import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.*;
-
+import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.ENCODING2;
+import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.HTTP_SECURETRANSPORT_DW_RCSERVICE_SOAP;
+import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.PAYLOAD_TYPE;
+import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.VALUE;
 
 /**
- * <p>
  * Java class for PayloadType complex type.
- * 
+ *
  * @author svatada
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = PAYLOAD_TYPE, namespace = HTTP_SECURETRANSPORT_DW_RCSERVICE_SOAP,
-        propOrder = { VALUE })
+propOrder = { VALUE })
 public class PayloadType implements Serializable {
     @XmlValue
     protected String value;

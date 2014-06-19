@@ -24,11 +24,9 @@ import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.SERV
 import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.SERVICE_ID_C;
 import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.TRANSACTION_TYPE;
 
-
 /**
- * <p>
  * Java class for TransactionType complex type.
- * 
+ *
  * @author svatada
  */
 @XmlAccessorType(XmlAccessType.FIELD)

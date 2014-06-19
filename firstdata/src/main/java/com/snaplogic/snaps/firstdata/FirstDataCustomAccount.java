@@ -24,10 +24,8 @@ import com.snaplogic.snaps.firstdata.bean.AccountBean;
 import static com.snaplogic.snaps.firstdata.Messages.*;
 
 /**
- * <p>
- * custom account for the FirstData snap.
- * </p>
- * 
+ * Custom account for the FirstData snap.
+ *
  * @author svatada
  */
 @General(title = CUSTOM_ACCOUNT_TITLE)
@@ -48,7 +46,7 @@ public class FirstDataCustomAccount implements Account<AccountBean> {
     public void defineProperties(PropertyBuilder propertyBuilder) {
         propertyBuilder.describe(APP_ID, APP_ID_LABEL, APP_ID_DESC).required().add();
         propertyBuilder.describe(SERVICE_ID, SERVICE_ID_LABEL, SERVICE_ID_DESC)
-                .type(SnapType.INTEGER).required().add();
+        .type(SnapType.INTEGER).required().add();
         propertyBuilder.describe(SERVICE_URL, SERVICE_URL_LABEL, SERVICE_URL_DESC).required().add();
         propertyBuilder.describe(WSDL_URL, WSDL_URL_LABEL, WSDL_URL_DESC).required().add();
         propertyBuilder.describe(DATAWIRE_ID, DATAWIRE_ID_LABEL, DATAWIRE_ID_DESC).required().add();
@@ -56,7 +54,7 @@ public class FirstDataCustomAccount implements Account<AccountBean> {
         propertyBuilder.describe(TERMINAL_ID, TERMINAL_ID_LABEL, TERMINAL_ID_DESC).required().add();
         propertyBuilder.describe(AUTH_STRING, AUTH_STRING_LABEL, AUTH_STRING_DESC).required().add();
         propertyBuilder.describe(TIMEOUT, TIMEOUT_LABEL, TIMEOUT_DESC).required()
-                .type(SnapType.INTEGER).defaultValue(30).add();
+        .type(SnapType.INTEGER).defaultValue(30).add();
     }
 
     @Override

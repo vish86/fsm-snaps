@@ -10,16 +10,6 @@
  */
 package com.snaplogic.snaps.firstdata.dw.rcservice;
 
-/*
- * SnapLogic - Data Integration
- *
- * Copyright (C) 2014, SnapLogic, Inc. All rights reserved.
- *
- * This program is licensed under the terms of
- * the SnapLogic Commercial Subscription agreement.
- *
- * "SnapLogic" is a trademark of SnapLogic, Inc.
- */
 import java.net.URL;
 
 import javax.xml.namespace.QName;
@@ -32,10 +22,9 @@ import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.HTTP
 import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.RC_SERVICE;
 import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.RC_SERVICE_PORT;
 
-
 /**
  * RcService
- * 
+ *
  * @author svatada
  */
 @WebServiceClient(name = RC_SERVICE, targetNamespace = HTTP_SECURETRANSPORT_DW_RCSERVICE_SOAP)

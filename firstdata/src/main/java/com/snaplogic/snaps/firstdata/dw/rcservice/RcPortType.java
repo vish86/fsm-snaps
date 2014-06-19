@@ -24,10 +24,9 @@ import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.RC_P
 import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.REQUEST;
 import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.RESPONSE;
 
-
 /**
  * RcPortType
- * 
+ *
  * @author svatada
  */
 @WebService(name = RC_PORT_TYPE, targetNamespace = HTTP_SECURETRANSPORT_DW_RCSERVICE_SOAP)
@@ -40,8 +39,8 @@ public interface RcPortType {
      */
     @WebMethod(action = HTTP_SECURETRANSPORT_DW_RCSERVICE)
     @WebResult(name = RESPONSE, targetNamespace = HTTP_SECURETRANSPORT_DW_RCSERVICE_SOAP,
-            partName = BODY)
+    partName = BODY)
     public ResponseType rcTransaction(
             @WebParam(name = REQUEST, targetNamespace = HTTP_SECURETRANSPORT_DW_RCSERVICE_SOAP,
-                    partName = BODY) RequestType body);
+            partName = BODY) RequestType body);
 }
