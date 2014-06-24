@@ -282,6 +282,8 @@ public abstract class BaseService extends SimpleSnap implements MetricsProvider,
     private String getUFSReqClassType() {
         if (resourceType.equals(CHANGE_PASSWORD)) {
             return UNITELLER_CHANGE_PASS_PKG;
+        } else if (resourceType.equals(INFO_MODIFY_TX)) {
+            return UNITELLER_INFO_MODIFY;
         }
         return new StringBuilder().append(UNITELLER_PKG_PREFIX).append(resourceType)
                 .append(UNITELLER_REQ_TAG).toString();
