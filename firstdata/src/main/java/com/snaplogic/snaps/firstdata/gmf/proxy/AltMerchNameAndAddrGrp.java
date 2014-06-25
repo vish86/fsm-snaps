@@ -23,9 +23,8 @@ import static com.snaplogic.snaps.firstdata.gmf.proxy.Constants.*;
  * @author svatada
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = ALT_MERCH_NAME_AND_ADDR_GRP_NAME, namespace = NAMESPACE,
-propOrder = { MERCHANT_ID, MERCH_NAME, MERCH_ADDR, MERCH_CITY, MERCH_STATE, MERCH_CNTY,
-        MERCH_POSTAL_CODE, MERCH_CTRY })
+@XmlType(name = ALT_MERCH_NAME_AND_ADDR_GRP_NAME, namespace = NAMESPACE, propOrder = { MERCHANT_ID,
+        MERCH_NAME, MERCH_ADDR, MERCH_CITY, MERCH_STATE, MERCH_CNTY, MERCH_POSTAL_CODE, MERCH_CTRY })
 public class AltMerchNameAndAddrGrp {
     @XmlElement(name = MERCHANT_ID_ELT, namespace = NAMESPACE)
     protected String merchantID;

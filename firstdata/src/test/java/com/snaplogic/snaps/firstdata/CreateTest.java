@@ -34,9 +34,7 @@ import static junit.framework.Assert.assertTrue;
 @SuppressWarnings("unchecked")
 @RunWith(SnapTestRunner.class)
 public class CreateTest extends ApiTest {
-    @TestFixture(snap = Create.class, outputs = "out1", errors = "err1",
-            input = "data/create/input_invalid_DebitReqData.json",
-            properties = "data/create/property_request.json")
+    @TestFixture(snap = Create.class, outputs = "out1", errors = "err1", input = "data/create/input_invalid_DebitReqData.json", properties = "data/create/property_request.json")
     public void testValidateAccount(TestSetup setup) throws Exception {
         setup.inject().fieldName("account").dependency(invalidAccount).add();
         TestResult testResult = setup.test();
@@ -50,9 +48,7 @@ public class CreateTest extends ApiTest {
         }
     }
 
-    @TestFixture(snap = Create.class, outputs = "out1", errors = "err1",
-            input = "data/create/input_valid_map_debitReq.json",
-            properties = "data/create/property_request.json")
+    @TestFixture(snap = Create.class, outputs = "out1", errors = "err1", input = "data/create/input_valid_map_debitReq.json", properties = "data/create/property_request.json")
     public void testCreateREquestValidData(TestSetup setup) throws Exception {
         setup.inject().fieldName("account").dependency(account).add();
         TestResult testResult = setup.test();
@@ -73,9 +69,7 @@ public class CreateTest extends ApiTest {
         }
     }
 
-    @TestFixture(snap = Create.class, outputs = "out1", errors = "err1",
-            input = "data/create/input_valid_list_debitReq.json",
-            properties = "data/create/property_request.json")
+    @TestFixture(snap = Create.class, outputs = "out1", errors = "err1", input = "data/create/input_valid_list_debitReq.json", properties = "data/create/property_request.json")
     public void testCreateRequestValidDataWithJsonArray(TestSetup setup) throws Exception {
         setup.inject().fieldName("account").dependency(account).add();
         TestResult testResult = setup.test();
@@ -96,9 +90,7 @@ public class CreateTest extends ApiTest {
         }
     }
 
-    @TestFixture(snap = Create.class, outputs = "out1", errors = "err1",
-            input = "data/create/input_invalid_DebitReqData.json",
-            properties = "data/create/property_request.json")
+    @TestFixture(snap = Create.class, outputs = "out1", errors = "err1", input = "data/create/input_invalid_DebitReqData.json", properties = "data/create/property_request.json")
     public void testCreateRequestInvalidData(TestSetup setup) throws Exception {
         setup.inject().fieldName("account").dependency(account).add();
         TestResult testResult = setup.test();

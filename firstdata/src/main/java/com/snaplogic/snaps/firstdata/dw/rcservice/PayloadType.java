@@ -29,8 +29,7 @@ import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.VALU
  * @author svatada
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = PAYLOAD_TYPE, namespace = HTTP_SECURETRANSPORT_DW_RCSERVICE_SOAP,
-propOrder = { VALUE })
+@XmlType(name = PAYLOAD_TYPE, namespace = HTTP_SECURETRANSPORT_DW_RCSERVICE_SOAP, propOrder = { VALUE })
 public class PayloadType implements Serializable {
     @XmlValue
     protected String value;

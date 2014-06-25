@@ -12,7 +12,7 @@ package com.snaplogic.snaps.firstdata.gmf.proxy;
 
 /**
  * This class holds all the static final variables and enum types.
- * 
+ *
  * @author svatada
  */
 public class Constants {

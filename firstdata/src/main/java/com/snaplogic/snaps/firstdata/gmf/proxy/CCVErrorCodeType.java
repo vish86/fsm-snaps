@@ -17,7 +17,7 @@ import static com.snaplogic.snaps.firstdata.gmf.proxy.Constants.CCV_ERROR_CODE_T
 import static com.snaplogic.snaps.firstdata.gmf.proxy.Constants.NAMESPACE;
 
 /**
- *This class was generated based on UMF Schema V2.10a.6V5.xsd
+ * This class was generated based on UMF Schema V2.10a.6V5.xsd
  *
  * @author svatada
  */

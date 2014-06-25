@@ -24,7 +24,7 @@ import static com.snaplogic.snaps.firstdata.gmf.proxy.Constants.NO_MTCH2;
 import static com.snaplogic.snaps.firstdata.gmf.proxy.Constants.UNKNWN2;
 
 /**
- *This class was generated based on UMF Schema V2.10a.6V5.xsd
+ * This class was generated based on UMF Schema V2.10a.6V5.xsd
  *
  * @author svatada
  */

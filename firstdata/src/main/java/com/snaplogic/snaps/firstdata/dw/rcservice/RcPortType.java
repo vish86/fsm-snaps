@@ -38,9 +38,7 @@ public interface RcPortType {
      * @return ResponseType
      */
     @WebMethod(action = HTTP_SECURETRANSPORT_DW_RCSERVICE)
-    @WebResult(name = RESPONSE, targetNamespace = HTTP_SECURETRANSPORT_DW_RCSERVICE_SOAP,
-    partName = BODY)
+    @WebResult(name = RESPONSE, targetNamespace = HTTP_SECURETRANSPORT_DW_RCSERVICE_SOAP, partName = BODY)
     public ResponseType rcTransaction(
-            @WebParam(name = REQUEST, targetNamespace = HTTP_SECURETRANSPORT_DW_RCSERVICE_SOAP,
-            partName = BODY) RequestType body);
+            @WebParam(name = REQUEST, targetNamespace = HTTP_SECURETRANSPORT_DW_RCSERVICE_SOAP, partName = BODY) RequestType body);
 }

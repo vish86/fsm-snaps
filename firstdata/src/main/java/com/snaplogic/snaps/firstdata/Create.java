@@ -103,13 +103,16 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
     @Override
     public void defineProperties(PropertyBuilder propertyBuilder) {
         propertyBuilder.describe(RESOURCE_PROP, RESOURCE_LABEL, RESOURCE_DESC)
-                .withAllowedValues(RESOUCE_LIST).required().add();
+                .withAllowedValues(RESOUCE_LIST)
+                .required()
+                .add();
     }
 
     @Override
     public void defineMetrics(final MetricsBuilder metricsBuilder) {
         counter = metricsBuilder.describe(DOCUMENT_COUNTER, COUNTER_DESCRIPTION)
-                .measuredIn(COUNTER_UNIT).counter();
+                .measuredIn(COUNTER_UNIT)
+                .counter();
     }
 
     @Override
@@ -145,34 +148,33 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
                 Object map = Map.class.cast(data).get(getGMFReqClassName());
                 Map<String, Object> inputMap = Map.class.cast(map);
                 requestObj = getObject(claszPath, inputMap);
-
                 if (inputMap.containsKey(ADDTL_AMT_GRP)) {
                     try {
-                        List<Map<String, Object>> inputList = List.class.cast(inputMap
-                                .get(ADDTL_AMT_GRP));
+                        List<Map<String, Object>> inputList = List.class.cast(inputMap.get(ADDTL_AMT_GRP));
                         if (inputList != null) {
                             requestObj = prepareListObj(requestObj, claszPath, ADDTL_AMT_GRP,
                                     inputList);
                         }
                     } catch (ClassCastException e) {
-                        requestObj = prepareListObj(requestObj, claszPath, ADDTL_AMT_GRP, inputMap);
+                        Map<String, Object> inputPair = Map.class.cast(inputMap.get(ADDTL_AMT_GRP));
+                        requestObj = prepareListObj(requestObj, claszPath, ADDTL_AMT_GRP, inputPair);
                     }
                 }
                 if (inputMap.containsKey(PROD_CODE_DET_GRP)) {
                     try {
-                        List<Map<String, Object>> inputList = List.class.cast(inputMap
-                                .get(PROD_CODE_DET_GRP));
+                        List<Map<String, Object>> inputList = List.class.cast(inputMap.get(PROD_CODE_DET_GRP));
                         if (inputList != null) {
                             requestObj = prepareListObj(requestObj, claszPath, PROD_CODE_DET_GRP,
                                     inputList);
                         }
                     } catch (ClassCastException e) {
+                        Map<String, Object> inputPair = Map.class.cast(inputMap.get(PROD_CODE_DET_GRP));
                         requestObj = prepareListObj(requestObj, claszPath, PROD_CODE_DET_GRP,
-                                inputMap);
+                                inputPair);
                     }
                 }
 
-                String xmlData;
+                String xmlData=null;
                 try {
                     /* Using Reflection and JAXB to prepare SOAP request XML */
                     Class<?> gmfmv = Class.forName(GMF_MESSAGE_VARIANTS);
@@ -184,10 +186,13 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
                     /* converting simple java objects into XML format using JAXB */
                     xmlData = getGMFXMLRequestData((GMFMessageVariants) gmfmvObj);
                     xmlData = xmlData.replaceAll(GMF_MESSAGE_VARIANTS_TAG, GMF_TAG);
+                    xmlData = xmlData.replaceAll(NS2, StringUtils.EMPTY);
+                    xmlData = xmlData.replaceAll(NS22, StringUtils.EMPTY);
                     log.debug(xmlData);
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
-                    throw new SnapDataException(e, e.getMessage());
+                    writeToErrorView(e.getMessage(),REQUEST_FAILED , ERROR_RESOLUTION, e);
+                    return;
                 }
                 AccountBean bean = account.connect();
                 try {
@@ -269,15 +274,15 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
                                      * encoding.
                                      */
                                     gmfResponse = pType.getValue().replaceAll(GT, GT_SYM)
-                                            .replaceAll(LT, LT_SYM).replaceAll(AMP, AMP_SYM);
+                                            .replaceAll(LT, LT_SYM)
+                                            .replaceAll(AMP, AMP_SYM);
                                 }
-                                outputViews.write(documentUtility
-                                        .newDocument(getJsonFromXML(gmfResponse)));
+                                outputViews.write(documentUtility.newDocument(getJsonFromXML(gmfResponse)));
                                 counter.inc();
                             } else {
-                                writeToErrorView(NULL_TRANSACTION_RESPONSE, responseType
-                                        .getStatus().getStatusCode(), VALIDATE_INPUT_DATA,
-                                        responseType.getStatus().getValue());
+                                writeToErrorView(NULL_TRANSACTION_RESPONSE,
+                                        responseType.getStatus().getStatusCode(),
+                                        VALIDATE_INPUT_DATA, responseType.getStatus().getValue());
                             }
                         } else {
                             writeToErrorView(INVALID_RESPONSE, responseType.getStatus()
@@ -354,8 +359,10 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
      * Returns absolute class type for UFS request object
      */
     private String getGMFReqClassType() {
-        return new StringBuilder().append(FD_PROXY_PKG_PREFIX).append(resourceType)
-                .append(FD_REQ_TAG).toString();
+        return new StringBuilder().append(FD_PROXY_PKG_PREFIX)
+                .append(resourceType)
+                .append(FD_REQ_TAG)
+                .toString();
     }
 
     /*
@@ -468,7 +475,11 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
     private Map<String, Object> getJsonFromXML(String xml) {
         Map<String, Object> json2Map = new HashMap<String, Object>();
         try {
-            JSON objJson = new XMLSerializer().read(xml);
+            xml = xml.replace(FD_NAMESPACE, W3C_NAMESPACE);
+            XMLSerializer xmlSerializer = new XMLSerializer();
+            xmlSerializer.setRemoveNamespacePrefixFromElements(true);
+            xmlSerializer.setSkipNamespaces(true);
+            JSON objJson = xmlSerializer.read(xml);
             ObjectMapper objectMapper = new ObjectMapper();
             json2Map = objectMapper.readValue(objJson.toString(),
                     new TypeReference<HashMap<String, Object>>() {
@@ -575,7 +586,7 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
             Marshaller marshaller = null;
             context = JAXBContext.newInstance(GMFMessageVariants.class);
             marshaller = context.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+            marshaller.setProperty(Marshaller.JAXB_ENCODING, XML_ENCODING);
             marshaller.marshal(gmfmv, stringWriter);
             returnValue = stringWriter.toString();
         } catch (JAXBException jaxe) {
@@ -654,10 +665,8 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
             Method method;
             try {
                 method = clasz.getDeclaredMethod(String.format(GETTER, method2Invoke));
-                ParameterizedType fieldGenericType = (ParameterizedType) method
-                        .getGenericReturnType();
-                Class<?> fieldTypeParameterType = (Class<?>) fieldGenericType
-                        .getActualTypeArguments()[0];
+                ParameterizedType fieldGenericType = (ParameterizedType) method.getGenericReturnType();
+                Class<?> fieldTypeParameterType = (Class<?>) fieldGenericType.getActualTypeArguments()[0];
                 List<Object> list = (List<Object>) method.invoke(requestObj);
                 if (inputData instanceof List) {
                     List<Map<String, Object>> inputList = List.class.cast(inputData);

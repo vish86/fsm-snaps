@@ -30,8 +30,8 @@ import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.RESP
  * @author svatada
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = RESP_CLIENT_ID_TYPE, namespace = HTTP_SECURETRANSPORT_DW_RCSERVICE_SOAP,
-propOrder = { DID3, CLIENT_REF2 })
+@XmlType(name = RESP_CLIENT_ID_TYPE, namespace = HTTP_SECURETRANSPORT_DW_RCSERVICE_SOAP, propOrder = {
+        DID3, CLIENT_REF2 })
 public class RespClientIDType implements Serializable {
     @XmlElement(name = DID2, required = true)
     protected String did;

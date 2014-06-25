@@ -58,6 +58,7 @@ class Messages {
     static final String RESOURCE_PROP = "Resource";
     static final String RESOURCE_DESC = "Available FirstData resources";
     // Error msgs
+    static final String REQUEST_FAILED = "Request preparation failed at initial level";
     static final String NULL_TRANSACTION_RESPONSE = "Null transaction response";
     static final String NULL_OBJECT = "NULL Object";
     static final String INVALID_RESPONSE = "Invalid response";

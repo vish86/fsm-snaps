@@ -8,8 +8,7 @@
  *
  * "SnapLogic" is a trademark of SnapLogic, Inc.
  */
-@javax.xml.bind.annotation.XmlSchema(namespace = HTTP_SECURETRANSPORT_DW_RCSERVICE_SOAP,
-        elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
+@javax.xml.bind.annotation.XmlSchema(namespace = HTTP_SECURETRANSPORT_DW_RCSERVICE_SOAP, elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
 package com.snaplogic.snaps.firstdata.dw.rcservice;
 
 import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.HTTP_SECURETRANSPORT_DW_RCSERVICE_SOAP;

@@ -108,6 +108,7 @@ public class Constants {
     static final String REGEX_PATTERN_PROTOCOL = "^sldb:///";
     static final Pattern PATTERN = Pattern.compile(REGEX_PATTERN_PROTOCOL);
     static final String CHANGE_PASSWORD = "ChangePassword";
+    static final String INFO_MODIFY_TX = "InfoModifyTx";
     static final String IS_REGEX = "^is[A-Z].*";
     static final String GET_REGEX = "^get[A-Z].*";
     static final String FILE_PROTOCOL = "file:///%s";
@@ -121,6 +122,7 @@ public class Constants {
     static final String UFS_FOLIO_CREATION_CLIENT_PKG_URI = "com.snaplogic.snaps.uniteller.CustomUFSFolioCreationClient";
     static final String UNITELLER_PKG_PREFIX = "com.uniteller.support.foliocreationclient.UFS";
     static final String UNITELLER_CHANGE_PASS_PKG = "com.uniteller.support.common.ChangePassword";
+    static final String UNITELLER_INFO_MODIFY = "com.uniteller.support.foliocreationclient.UFSInfoModifyReq";
     static final String UNITELLER_REQ_TAG = "Req";
     static final String UNITELLER_RESP_TAG = "Resp";
 
@@ -169,6 +171,6 @@ public class Constants {
             SnapsModel.Create.toString(), ImmutableSet.of("CreateTx", "CreateSCTx",
                     "ConfirmSCTx", "NotificationConfirm", "QuickQuote"), SnapsModel.Read
                     .toString(), ImmutableSet.of("Notification", "GetTxDetails"),
-            SnapsModel.Update.toString(), ImmutableSet.of("InfoModify", CHANGE_PASSWORD),
+            SnapsModel.Update.toString(), ImmutableSet.of("InfoModifyTx", CHANGE_PASSWORD),
             SnapsModel.Delete.toString(), ImmutableSet.of("CancelTx"));
 }

@@ -30,8 +30,8 @@ import static com.snaplogic.snaps.firstdata.dw.rcservice.RCServiceConstants.TRAN
  * @author svatada
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = TRANSACTION_RESPONSE_TYPE_C, namespace = HTTP_SECURETRANSPORT_DW_RCSERVICE_SOAP,
-propOrder = { RETURN_CODE_S, PAYLOAD_S })
+@XmlType(name = TRANSACTION_RESPONSE_TYPE_C, namespace = HTTP_SECURETRANSPORT_DW_RCSERVICE_SOAP, propOrder = {
+        RETURN_CODE_S, PAYLOAD_S })
 public class TransactionResponseType implements Serializable {
     @XmlElement(name = RETURN_CODE, required = true)
     protected String returnCode;

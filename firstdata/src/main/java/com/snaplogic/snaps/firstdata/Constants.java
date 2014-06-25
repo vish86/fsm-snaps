@@ -21,6 +21,11 @@ import java.util.Map;
  * @author svatada
  */
 public class Constants {
+    static final String XML_ENCODING = "UTF-8";
+    static final String NS22 = "ns2:";
+    static final String NS2 = ":ns2";
+    static final String W3C_NAMESPACE = "https://com/firstdata/Merchant/gmfV2.08";
+    static final String FD_NAMESPACE = "com/firstdata/Merchant/gmfV2.08";
     static final String GMF_TAG = "GMF";
     static final String GMF_MESSAGE_VARIANTS_TAG = "gmfMessageVariants";
     static final String PROD_CODE_DET_GRP = "ProdCodeDetGrp";
@@ -60,7 +65,7 @@ public class Constants {
             "CheckRequest", "CreditRequest", "DebitRequest", "EBTRequest", "GenPrepaidRequest",
             "PinlessDebitRequest", "PrepaidRequest", "PrivateLabelRequest", "TARequest",
             "VoidTOReversalRequest");
-    static final Map<String, String> GMF_VARIENTS = new HashMap<String, String>(){
+    static final Map<String, String> GMF_VARIENTS = new HashMap<String, String>() {
         {
             put("TARequest", "TransArmorRequest");
             put("VoidTOReversalRequest", "ReversalRequest");
