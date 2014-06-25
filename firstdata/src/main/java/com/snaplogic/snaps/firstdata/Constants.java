@@ -12,6 +12,9 @@ package com.snaplogic.snaps.firstdata;
 
 import com.google.common.collect.ImmutableSet;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * This class holds all the static final variables and enum types.
  *
@@ -57,4 +60,10 @@ public class Constants {
             "CheckRequest", "CreditRequest", "DebitRequest", "EBTRequest", "GenPrepaidRequest",
             "PinlessDebitRequest", "PrepaidRequest", "PrivateLabelRequest", "TARequest",
             "VoidTOReversalRequest");
+    static final Map<String, String> GMF_VARIENTS = new HashMap<String, String>(){
+        {
+            put("TARequest", "TransArmorRequest");
+            put("VoidTOReversalRequest", "ReversalRequest");
+        }
+    };
 }

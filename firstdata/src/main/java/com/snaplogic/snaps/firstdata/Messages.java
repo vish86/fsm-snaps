@@ -80,5 +80,5 @@ class Messages {
             + "reflectively invoke a private method";
     static final String SECURITY_EXE_RES = "all-permissions - requires access to the resources.";
     static final String SECURITY_EXE = "permissio denied";
-    static final String NOSUCH_RESOURCE_EXE = "Trying to access the unknow resources";
+    static final String NOSUCH_METHOD_EXE = "Trying to access the unknow resources";
 }

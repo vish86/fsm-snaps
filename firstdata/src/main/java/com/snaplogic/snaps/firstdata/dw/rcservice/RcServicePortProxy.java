@@ -31,16 +31,17 @@ public class RcServicePortProxy {
     protected Descriptor descriptor;
 
     public class Descriptor {
-        private RcService service;
-        private RcPortType proxy;
-        private Dispatch<Source> dispatch;
+        private com.snaplogic.snaps.firstdata.dw.rcservice.RcService service = null;
+        private com.snaplogic.snaps.firstdata.dw.rcservice.RcPortType proxy = null;
+        private Dispatch<Source> dispatch = null;
 
         public Descriptor() {
             init();
         }
 
         public Descriptor(URL wsdlLocation, QName serviceName) {
-            service = new RcService(wsdlLocation, serviceName);
+            service = new com.snaplogic.snaps.firstdata.dw.rcservice.RcService(wsdlLocation,
+                    serviceName);
             initCommon();
         }
 
@@ -48,7 +49,7 @@ public class RcServicePortProxy {
             service = null;
             proxy = null;
             dispatch = null;
-            service = new RcService();
+            service = new com.snaplogic.snaps.firstdata.dw.rcservice.RcService();
             initCommon();
         }
 
@@ -56,7 +57,7 @@ public class RcServicePortProxy {
             proxy = service.getRcServicePort();
         }
 
-        public RcPortType getProxy() {
+        public com.snaplogic.snaps.firstdata.dw.rcservice.RcPortType getProxy() {
             return proxy;
         }
 

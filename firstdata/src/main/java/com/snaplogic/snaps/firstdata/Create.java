@@ -103,7 +103,7 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
     @Override
     public void defineProperties(PropertyBuilder propertyBuilder) {
         propertyBuilder.describe(RESOURCE_PROP, RESOURCE_LABEL, RESOURCE_DESC)
-        .withAllowedValues(RESOUCE_LIST).required().add();
+                .withAllowedValues(RESOUCE_LIST).required().add();
     }
 
     @Override
@@ -119,7 +119,7 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
             classType = Class.forName(getGMFReqClassType());
         } catch (ClassNotFoundException e) {
             log.error(e.getMessage(), e);
-            throw new ExecutionException(e,NOSUCH_RESOURCE_EXE);
+            throw new ExecutionException(e.getMessage());
         }
         for (String viewName : provider.getRegisteredViewNames()) {
             try {
@@ -177,7 +177,8 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
                     /* Using Reflection and JAXB to prepare SOAP request XML */
                     Class<?> gmfmv = Class.forName(GMF_MESSAGE_VARIANTS);
                     Object gmfmvObj = gmfmv.newInstance();
-                    Method gmfMethod = gmfmv.getMethod(String.format(SETTER, resourceType),
+                    Method gmfMethod = gmfmv.getMethod(
+                            String.format(SETTER, getGMFVarient(resourceType)),
                             getClassType(claszPath));
                     gmfMethod.invoke(gmfmvObj, requestObj);
                     /* converting simple java objects into XML format using JAXB */
@@ -471,7 +472,7 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
             ObjectMapper objectMapper = new ObjectMapper();
             json2Map = objectMapper.readValue(objJson.toString(),
                     new TypeReference<HashMap<String, Object>>() {
-            });
+                    });
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new SnapDataException(e, e.getMessage());
@@ -596,7 +597,7 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
             return typesObj;
         } catch (NoSuchMethodException e) {
             log.error(e.getMessage(), e);
-            writeToErrorView(NOSUCH_RESOURCE_EXE, e.getMessage(), ERROR_RESOLUTION, e);
+            writeToErrorView(NOSUCH_METHOD_EXE, e.getMessage(), ERROR_RESOLUTION, e);
         } catch (SecurityException e) {
             log.error(e.getMessage(), e);
             writeToErrorView(SECURITY_EXE, e.getMessage(), SECURITY_EXE_RES, e);
@@ -716,5 +717,12 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
             }
         }
         return requestObj;
+    }
+
+    private String getGMFVarient(String resourceType) {
+        String gmfVarient;
+        if ((gmfVarient = GMF_VARIENTS.get(resourceType)) != null)
+            return gmfVarient;
+        return resourceType;
     }
 }
