@@ -147,7 +147,7 @@
         <package.build_no>${sl_build}</package.build_no>
         <account.classes>com.snaplogic.snaps.firstdata.FirstDataCustomAccount
         </account.classes>
-        <snap.classes>com.snaplogic.snaps.firstdata.Create
+        <snap.classes>com.snaplogic.snaps.firstdata.Create, com.snaplogic.snaps.firstdata.Transaction
         </snap.classes>
         <key.prefix>local-snapadmin</key.prefix>
         <user>snapadmin@snaplogic.com</user>
@@ -157,35 +157,17 @@
         <VERSION>1</VERSION>
     </properties>
     <dependencies>
-        <!-- Test dependencies -->
+        <!-- Unit testing -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.python</groupId>
-                    <artifactId>jython-standalone</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymock</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>com.snaplogic</groupId>
-            <artifactId>jtest</artifactId>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.google.collections</groupId>
-                    <artifactId>google-collections</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <!-- SDK dependencies -->
         <dependency>
             <groupId>com.snaplogic</groupId>
             <artifactId>jsdk</artifactId>
@@ -198,28 +180,60 @@
         </dependency>
         <dependency>
             <groupId>com.snaplogic</groupId>
+            <artifactId>jschema</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.snaplogic</groupId>
             <artifactId>jsnapi</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.snaplogic</groupId>
-            <artifactId>jexpression</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.snaplogic</groupId>
-            <artifactId>jcommon</artifactId>
+            <artifactId>jtest</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.snaplogic</groupId>
-            <artifactId>jschema</artifactId>
-            <scope>test</scope>
+            <artifactId>jeditor</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <scope>provided</scope>
+            <groupId>com.snaplogic</groupId>
+            <artifactId>jxml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.snaplogic</groupId>
+            <artifactId>jtransform</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.snaplogic</groupId>
+            <artifactId>jsoap</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-jaxws</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-bindings-soap</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-transports-http</artifactId>
+            <version>2.7.10</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-ws-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-bundle-jaxrs</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-ws-policy</artifactId>
+            <version>2.7.7</version>
         </dependency>
         <dependency>
             <groupId>com.google.inject</groupId>

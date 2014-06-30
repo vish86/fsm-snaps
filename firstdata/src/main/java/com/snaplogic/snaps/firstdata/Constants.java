@@ -21,9 +21,21 @@ import java.util.Map;
  * @author svatada
  */
 public class Constants {
+    static final String PROP_SOAP_BINDING = "allowedBindings";
+    static final String PROP_TIMEOUT = "timeout";
+    static final String PROP_DEFAULT_VALUE = "defaultValue";
+    static final String PROP_USE_DEFAULT_VALUE = "useDefaultValue";
+    final static String DEFAULT_INPUT_VIEW_0 = "input0";
+    final static String DEFAULT_INPUT_VIEW_1 = "input1";
+    final static String DEFAULT_OUTPUT_VIEW_0 = "output0";
+    static final String KEY_ERROR = "error";
+    static final String KEY_ENVELOPE = "envelope";
+    static final String KEY_STRIPPED_ENVELOPE = "stripped_envelope";
+    static final String NAMESPACE_S2 = "S:";
+    static final String NAMESPACE_S1 = ":S";
     static final String XML_ENCODING = "UTF-8";
-    static final String NS22 = "ns2:";
-    static final String NS2 = ":ns2";
+    static final String NAMESPACE_NS2 = "ns2:";
+    static final String NAMESPACE_NS1 = ":ns2";
     static final String W3C_NAMESPACE = "https://com/firstdata/Merchant/gmfV2.08";
     static final String FD_NAMESPACE = "com/firstdata/Merchant/gmfV2.08";
     static final String GMF_TAG = "GMF";

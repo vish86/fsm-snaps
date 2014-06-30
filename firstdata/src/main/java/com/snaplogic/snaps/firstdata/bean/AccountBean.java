@@ -12,7 +12,7 @@ package com.snaplogic.snaps.firstdata.bean;
 
 /**
  * Simple java bean class to hold account information.
- * 
+ *
  * @author svatada
  */
 public class AccountBean {

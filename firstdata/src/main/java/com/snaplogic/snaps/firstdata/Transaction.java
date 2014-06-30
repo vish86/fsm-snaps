@@ -1,65 +1,88 @@
 /*
  * SnapLogic - Data Integration
  *
- * Copyright (C) 2014, SnapLogic, Inc. All rights reserved.
+ * Copyright (C) 2014, SnapLogic, Inc.  All rights reserved.
  *
  * This program is licensed under the terms of
  * the SnapLogic Commercial Subscription agreement.
  *
  * "SnapLogic" is a trademark of SnapLogic, Inc.
  */
+
 package com.snaplogic.snaps.firstdata;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Throwables;
+import com.google.common.collect.Maps;
+import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
-import com.snaplogic.account.api.capabilities.Accounts;
+import com.google.inject.Module;
+import com.google.inject.Scopes;
 import com.snaplogic.api.ConfigurationException;
+import com.snaplogic.api.DependencyManager;
 import com.snaplogic.api.ExecutionException;
 import com.snaplogic.api.InputSchemaProvider;
 import com.snaplogic.api.MetricsProvider;
+import com.snaplogic.api.Snap;
+import com.snaplogic.api.ViewProvider;
 import com.snaplogic.common.SnapType;
 import com.snaplogic.common.metrics.Counter;
+import com.snaplogic.common.properties.SnapProperty;
+import com.snaplogic.common.properties.Suggestions;
 import com.snaplogic.common.properties.builders.PropertyBuilder;
-import com.snaplogic.snap.api.Document;
-import com.snaplogic.snap.api.MetricsBuilder;
-import com.snaplogic.snap.api.PropertyValues;
-import com.snaplogic.snap.api.SimpleSnap;
-import com.snaplogic.snap.api.SnapCategory;
-import com.snaplogic.snap.api.SnapDataException;
+import com.snaplogic.common.properties.builders.ViewBuilder;
+import com.snaplogic.common.services.ws.ClientBuilder;
+import com.snaplogic.common.services.ws.ClientBuilderFactory;
+import com.snaplogic.common.services.ws.IntrospectionService;
+import com.snaplogic.common.services.ws.InvocationService;
+import com.snaplogic.snap.api.*;
 import com.snaplogic.snap.api.capabilities.Category;
+import com.snaplogic.snap.api.capabilities.Errors;
 import com.snaplogic.snap.api.capabilities.General;
 import com.snaplogic.snap.api.capabilities.Inputs;
 import com.snaplogic.snap.api.capabilities.Outputs;
 import com.snaplogic.snap.api.capabilities.Version;
 import com.snaplogic.snap.api.capabilities.ViewType;
+import com.snaplogic.snap.api.editor.EditorPropertyFactory;
+import com.snaplogic.snap.api.editor.XMLEditorContentProviderImpl;
+import com.snaplogic.snap.api.soap.ClientBuilderFactoryImpl;
+import com.snaplogic.snap.api.soap.DefaultSOAPTemplateGenerator;
+import com.snaplogic.snap.api.soap.HttpContextProvider;
+import com.snaplogic.snap.api.soap.InvocationServiceImpl;
+import com.snaplogic.snap.api.soap.ResponseInterceptor;
+import com.snaplogic.snap.api.soap.SOAPTemplateGenerator;
+import com.snaplogic.snap.api.soap.SoapEditorSuggestionsProviderImpl;
+import com.snaplogic.snap.api.soap.WsdlIntrospectionService;
+import com.snaplogic.snap.api.xml.XmlUtils;
+import com.snaplogic.snap.api.xml.XmlUtilsImpl;
 import com.snaplogic.snap.schema.api.ObjectSchema;
 import com.snaplogic.snap.schema.api.SchemaBuilder;
 import com.snaplogic.snap.schema.api.SchemaProvider;
-import com.snaplogic.snaps.firstdata.bean.AccountBean;
-import com.snaplogic.snaps.firstdata.dw.rcservice.PayloadType;
-import com.snaplogic.snaps.firstdata.dw.rcservice.RcPortType;
-import com.snaplogic.snaps.firstdata.dw.rcservice.RcService;
-import com.snaplogic.snaps.firstdata.dw.rcservice.ReqClientIDType;
-import com.snaplogic.snaps.firstdata.dw.rcservice.RequestType;
-import com.snaplogic.snaps.firstdata.dw.rcservice.ResponseType;
-import com.snaplogic.snaps.firstdata.dw.rcservice.StatusType;
-import com.snaplogic.snaps.firstdata.dw.rcservice.TransactionResponseType;
-import com.snaplogic.snaps.firstdata.dw.rcservice.TransactionType;
+import com.snaplogic.snap.view.InputView;
 import com.snaplogic.snaps.firstdata.gmf.proxy.CommonGrp;
 import com.snaplogic.snaps.firstdata.gmf.proxy.GMFMessageVariants;
+import com.snaplogic.snaps.firstdata.soap.suggestions.EndpointSuggestions;
+import com.snaplogic.snaps.firstdata.soap.suggestions.OperationSuggestions;
+import com.snaplogic.snaps.firstdata.soap.suggestions.SOAPExecuteTemplateEvaluatorImpl;
+import com.snaplogic.snaps.firstdata.soap.suggestions.ServiceSuggestions;
+import com.snaplogic.snaps.firstdata.soap.suggestions.SoapHttpContextProvider;
+import com.snaplogic.snaps.firstdata.soap.suggestions.SoapUtils;
+import com.snaplogic.snaps.firstdata.soap.suggestions.TemplateSuggestionsExecuteImpl;
+import com.snaplogic.util.PeekingDocumentIterator;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.cxf.Bus;
+import org.apache.cxf.BusFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
-import java.math.BigInteger;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -69,7 +92,18 @@ import java.util.Map;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.namespace.QName;
+import javax.xml.soap.SOAPMessage;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
 import javax.xml.ws.BindingProvider;
+import javax.xml.ws.Dispatch;
+
+import de.odysseus.staxon.json.JsonXMLConfig;
+import de.odysseus.staxon.json.JsonXMLConfigBuilder;
+import de.odysseus.staxon.json.JsonXMLOutputFactory;
 
 import net.sf.json.JSON;
 import net.sf.json.xml.XMLSerializer;
@@ -78,34 +112,136 @@ import static com.snaplogic.snaps.firstdata.Constants.*;
 import static com.snaplogic.snaps.firstdata.Messages.*;
 
 /**
- * Performs create operation in FirstData making use of FirstData API.
+ * Snap that makes SOAP calls and writes out SOAP response in JSON format.
  *
- * @author svatada
- **/
-@General(title = CREATE_LABEL, purpose = SNAP_DESC)
-@Inputs(min = 1, max = 1, accepts = { ViewType.DOCUMENT })
-@Outputs(min = 1, max = 1, offers = { ViewType.DOCUMENT })
+ * @author mklumpp
+ */
 @Version(snap = 1)
-@Category(snap = SnapCategory.TRANSFORM)
-@Accounts(provides = FirstDataCustomAccount.class, optional = false)
-public class Create extends SimpleSnap implements MetricsProvider, InputSchemaProvider {
-    @Inject
-    private FirstDataCustomAccount account;
+@General(title = CREATE1_LABEL, purpose = SNAP_DESC)
+@Inputs(min = 2, max = 2, accepts = { ViewType.DOCUMENT })
+@Outputs(min = 0, max = 1, offers = { ViewType.DOCUMENT })
+@Errors(min = 1, max = 1, offers = { ViewType.DOCUMENT })
+@Category(snap = SnapCategory.WRITE)
+public class Transaction implements Snap, MetricsProvider, DependencyManager, InputSchemaProvider,
+        ViewProvider {
     private String resourceType = null;
+    private static final Logger log = LoggerFactory.getLogger(Transaction.class);
+    public static final String PROP_WSDL_URL = "wsdl_url";
+    public static final String PROP_SERVICE = "serviceName";
+    public static final String PROP_ENDPOINT = "portName";
+    public static final String PROP_OPERATION = "operation";
+    private final JsonXMLConfig config = new JsonXMLConfigBuilder().autoArray(true)
+            .multiplePI(true)
+            .build();
+    private final XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
+    private final JsonXMLOutputFactory jsonOutputFactory = new JsonXMLOutputFactory(config);
+    @Inject
+    private InputViews inputViews;
+    @Inject
+    private OutputViews outputViews;
+    @Inject
+    private ErrorViews errorViews;
+    @Inject
+    private DocumentUtility documentUtility;
+    @Inject
+    private InvocationService invocationService;
+    @Inject
+    private IntrospectionService introspectionService;
+    @Inject
+    private EditorPropertyFactory tablePropertyFactory;
+    @Inject
+    private TemplateEvaluator templateEvaluator;
+    @Inject
+    private EditorContentProvider soapEditorContentProvider;
+    @Inject
+    private SoapUtils soapUtils;
+    @Inject
+    private XmlUtils xmlUtils;
+    private EditorProperty editorProperty;
     private Counter counter;
-    private static final Logger log = LoggerFactory.getLogger(Create.class);
+    private ClientBuilder clientBuilder;
+    private boolean useDefaultValueChecked;
 
     @Override
-    public void configure(PropertyValues propertyValues) throws ConfigurationException {
-        resourceType = propertyValues.get(RESOURCE_PROP);
+    public void defineViews(final ViewBuilder viewBuilder) {
+        viewBuilder.describe(DEFAULT_INPUT_VIEW_0).type(ViewType.DOCUMENT).add(ViewCategory.INPUT);
+        viewBuilder.describe(DEFAULT_INPUT_VIEW_1).type(ViewType.DOCUMENT).add(ViewCategory.INPUT);
+        viewBuilder.describe(DEFAULT_OUTPUT_VIEW_0)
+                .type(ViewType.DOCUMENT)
+                .add(ViewCategory.OUTPUT);
     }
 
     @Override
-    public void defineProperties(PropertyBuilder propertyBuilder) {
-        propertyBuilder.describe(RESOURCE_PROP, RESOURCE_LABEL, RESOURCE_DESC)
+    public Module getManagedModule() {
+        return new AbstractModule() {
+            @Override
+            protected void configure() {
+                bind(ClientBuilderFactory.class).to(ClientBuilderFactoryImpl.class).in(
+                        Scopes.SINGLETON);
+                bind(IntrospectionService.class).to(WsdlIntrospectionService.class).in(
+                        Scopes.SINGLETON);
+                bind(InvocationService.class).to(InvocationServiceImpl.class).in(Scopes.SINGLETON);
+                bind(EditorContentProvider.class).to(XMLEditorContentProviderImpl.class);
+                bind(TemplateEvaluator.class).to(SOAPExecuteTemplateEvaluatorImpl.class);
+                bind(EditorSuggestionProvider.class).to(SoapEditorSuggestionsProviderImpl.class);
+                bind(XmlUtils.class).to(XmlUtilsImpl.class);
+                bind(SOAPTemplateGenerator.class).to(DefaultSOAPTemplateGenerator.class);
+                bind(XmlUtils.class).to(XmlUtilsImpl.class);
+            }
+        };
+    }
+
+    @Override
+    public void defineInputSchema(final SchemaProvider provider) {
+        for (String viewName : provider.getRegisteredViewNames()) {
+            if (viewName.equals(DEFAULT_INPUT_VIEW_0)) {
+                SchemaBuilder schemaBuilder = provider.getSchemaBuilder(viewName);
+                editorProperty.getSchema(schemaBuilder, viewName);
+            } else {
+                Class<?> classType = null;
+                try {
+                    classType = Class.forName(getGMFReqClassType());
+                } catch (ClassNotFoundException e) {
+                    log.error(e.getMessage(), e);
+                    throw new ExecutionException(e.getMessage());
+                }
+                try {
+                    SchemaBuilder schemaBuilder = provider.getSchemaBuilder(viewName);
+                    schemaBuilder.withChildSchema(getSchema(provider, classType, SnapType.STRING));
+                    schemaBuilder.build();
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void defineProperties(final PropertyBuilder propBuilder) {
+        propBuilder.describe(PROP_WSDL_URL, LBL_WSDL_URL, DESC_URL_FOR_THE_WSDL)
+                .required()
+                .fileBrowsing()
+                .add();
+        propBuilder.describe(PROP_SERVICE, LBL_SERVICE_NAME, DESC_SERVICE_NAME)
+                .withSuggestions(new ServiceSuggestions(introspectionService, PROP_SERVICE))
+                .required()
+                .add();
+        propBuilder.describe(PROP_ENDPOINT, LBL_ENDPOINT, DESC_ENDPOINT)
+                .withSuggestions(new EndpointSuggestions(introspectionService, PROP_ENDPOINT))
+                .required()
+                .add();
+        propBuilder.describe(PROP_OPERATION, LBL_OPERATION, DESC_OPERATION)
+                .withSuggestions(new OperationSuggestions(introspectionService, PROP_OPERATION))
+                .required()
+                .add();
+        propBuilder.describe(RESOURCE_PROP, RESOURCE_LABEL, RESOURCE_DESC)
                 .withAllowedValues(RESOUCE_LIST)
                 .required()
                 .add();
+        Suggestions templateSuggestions = new TemplateSuggestionsExecuteImpl(soapUtils,
+                invocationService);
+        tablePropertyFactory.addEditorProperty(propBuilder, templateSuggestions,
+                SnapProperty.EditorType.XML, CUSTOMIZE_ENVELOPE, CUSTOMIZE_ENVELOPE_DESC);
     }
 
     @Override
@@ -116,36 +252,83 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
     }
 
     @Override
-    public void defineInputSchema(SchemaProvider provider) {
-        Class<?> classType = null;
-        try {
-            classType = Class.forName(getGMFReqClassType());
-        } catch (ClassNotFoundException e) {
-            log.error(e.getMessage(), e);
-            throw new ExecutionException(e.getMessage());
-        }
-        for (String viewName : provider.getRegisteredViewNames()) {
-            try {
-                SchemaBuilder schemaBuilder = provider.getSchemaBuilder(viewName);
-                schemaBuilder.withChildSchema(getSchema(provider, classType, SnapType.STRING));
-                schemaBuilder.build();
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
+    public void configure(final PropertyValues propertyValues) throws ConfigurationException {
+        resourceType = propertyValues.get(RESOURCE_PROP);
+        String wsdlUrl = propertyValues.get(PROP_WSDL_URL);
+        String serviceName = propertyValues.get(PROP_SERVICE);
+        String portName = propertyValues.get(PROP_ENDPOINT);
+        String operation = propertyValues.get(PROP_OPERATION);
+        String defaultValueForSubstitution = propertyValues.get(PROP_DEFAULT_VALUE);
+        Boolean useDefaultValue = propertyValues.get(PROP_USE_DEFAULT_VALUE);
+        useDefaultValueChecked = Boolean.TRUE == useDefaultValue;
+        if (useDefaultValueChecked) {
+            if (defaultValueForSubstitution == null) {
+                defaultValueForSubstitution = StringUtils.EMPTY;
             }
+        }
+        QName serviceQName = QName.valueOf(serviceName);
+        QName portQName = QName.valueOf(portName);
+        QName operationQName = QName.valueOf(operation);
+        HttpContextProvider httpContextProvider = new SoapHttpContextProvider();
+        clientBuilder = invocationService.createClientBuilderFor(wsdlUrl, serviceQName, portQName,
+                operationQName, httpContextProvider);
+        configureDispatch(clientBuilder.getDispatchClient(), clientBuilder.getSoapAction());
+        editorProperty = propertyValues.getEditorProperty(
+                soapEditorContentProvider,
+                ((SOAPExecuteTemplateEvaluatorImpl) templateEvaluator).withDefaultValue(useDefaultValueChecked ? defaultValueForSubstitution
+                        : XmlUtilsImpl.NO_DATA),
+                soapUtils.initializeSuggestionProvider(wsdlUrl, serviceQName, portQName,
+                        operationQName, clientBuilder, httpContextProvider));
+        Bus bus = BusFactory.getDefaultBus(true);
+        bus.getInInterceptors().add(new ResponseInterceptor());
+    }
+
+    @Override
+    public void cleanup() throws ExecutionException {
+        // do nothing
+    }
+
+    private void configureDispatch(Dispatch<? extends SOAPMessage> dispatch, String action) {
+        if (action == null) {
+            return;
+        }
+        dispatch.getRequestContext().put(BindingProvider.SOAPACTION_USE_PROPERTY, true);
+        dispatch.getRequestContext().put(BindingProvider.SOAPACTION_URI_PROPERTY, action);
+    }
+
+    private Object parseXML2JSON(String envelope, XmlUtils xmlUtils) {
+        Source source = new StreamSource(new StringReader(envelope));
+        try {
+            return xmlUtils.convertToJson(xmlInputFactory, jsonOutputFactory, source);
+        } catch (XMLStreamException e) {
+            throw new ExecutionException(e, ERROR_PARSING_XML).withReason(e.getMessage())
+                    .withResolution(VERIFY_THE_RETURNED_XML_IS_PARSEABLE);
         }
     }
 
     @Override
-    protected void process(Document document, String viewname) {
+    public void execute() throws ExecutionException {
+        Map<String, InputView> inputViewMap = inputViews.getAll();
+        InputView payloadInputView = inputViewMap.get(DEFAULT_INPUT_VIEW_1);
+        InputView authInputView = inputViewMap.get(DEFAULT_INPUT_VIEW_0);
+        PeekingDocumentIterator payloadInputViewIterator = null;
+        Document payloadInputDoc = null;
+        if (payloadInputView != null) {
+            payloadInputViewIterator = new PeekingDocumentIterator(
+                    inputViews.getDocumentsFrom(payloadInputView), DEFAULT_INPUT_VIEW_1);
+            if (payloadInputViewIterator != null && payloadInputViewIterator.hasNext()) {
+                payloadInputDoc = payloadInputViewIterator.next();
+            }
+        }
         Object requestObj;
-        Object data;
-        if ((data = document.get()) != null) {
+        Object inputData;
+        if ((inputData = payloadInputDoc.get()) != null) {
             /*
              * Process the input data if and only if it is of Map
              */
-            if (data instanceof Map) {
+            if (inputData instanceof Map) {
                 String claszPath = getGMFReqClassType();
-                Object map = Map.class.cast(data).get(getGMFReqClassName());
+                Object map = Map.class.cast(inputData).get(getGMFReqClassName());
                 Map<String, Object> inputMap = Map.class.cast(map);
                 requestObj = getObject(claszPath, inputMap);
                 if (inputMap.containsKey(ADDTL_AMT_GRP)) {
@@ -174,7 +357,7 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
                     }
                 }
 
-                String xmlData=null;
+                String xmlData = null;
                 try {
                     /* Using Reflection and JAXB to prepare SOAP request XML */
                     Class<?> gmfmv = Class.forName(GMF_MESSAGE_VARIANTS);
@@ -186,122 +369,69 @@ public class Create extends SimpleSnap implements MetricsProvider, InputSchemaPr
                     /* converting simple java objects into XML format using JAXB */
                     xmlData = getGMFXMLRequestData((GMFMessageVariants) gmfmvObj);
                     xmlData = xmlData.replaceAll(GMF_MESSAGE_VARIANTS_TAG, GMF_TAG);
-                    xmlData = xmlData.replaceAll(NAMESPACE_NS1, StringUtils.EMPTY);
-                    xmlData = xmlData.replaceAll(NAMESPACE_NS2, StringUtils.EMPTY);
+                    xmlData = xmlData.replaceAll(NAMESPACE_NS1, NAMESPACE_S1);
+                    xmlData = xmlData.replaceAll(NAMESPACE_NS2, NAMESPACE_S2);
                     log.debug(xmlData);
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
-                    writeToErrorView(e.getMessage(),REQUEST_FAILED , ERROR_RESOLUTION, e);
+                    writeToErrorView(e.getMessage(), REQUEST_FAILED, ERROR_RESOLUTION, e);
                     return;
                 }
-                AccountBean bean = account.connect();
-                try {
-                    /*
-                     * Create the instance of the RequestType that is a class generated from the
-                     * Rapid connect Transaction Service WSDL file [rc.wsdl]
-                     */
-                    RequestType requestType = new RequestType();
-                    /* Set client timeout value of request object. */
-                    requestType.setClientTimeout(new BigInteger(String.valueOf(bean.getTimeOut())));
-                    /*
-                     * Create the instance of the ReqClientIDType that is a class generated from the
-                     * Rapid connect Transaction Service WSDL file [rc.wsdl]
-                     */
-                    ReqClientIDType reqClientIDType = new ReqClientIDType();
-                    reqClientIDType.setApp(bean.getAppID());
-                    reqClientIDType.setAuth(bean.getAuthString());
-                    String clientRef = getClientRef(requestObj, claszPath);
-                    reqClientIDType.setClientRef(clientRef);
-                    reqClientIDType.setDID(bean.getDatawireId());
-                    /* Assign ReqClientID value to the requesttype object */
-                    requestType.setReqClientID(reqClientIDType);
-                    /*
-                     * Create the instance of the TransactionType that is a class generated from the
-                     * Rapid connect Transaction Service WSDL file [rc.wsdl]
-                     */
-                    TransactionType transactionType = new TransactionType();
-                    /*
-                     * Create the instance of the PayloadType that is a class generated from the
-                     * Rapid connect Transaction Service WSDL file [rc.wsdl]
-                     */
-                    PayloadType payloadType = new PayloadType();
-                    payloadType.setEncoding(CDATA);
-                    payloadType.setValue(xmlData); // actual xml request
-                    transactionType.setPayload(payloadType);
-                    transactionType.setServiceID(String.valueOf(bean.getServiceID()));
-                    /* Set transaction type */
-                    requestType.setTransaction(transactionType);
-                    /* Set version number of the request */
-                    requestType.setVersion(VERSION);
-                    /* The response to be returned. */
-                    String gmfResponse = null;
-                    /*
-                     * Create the instance of the RcService that is a class generated from the Rapid
-                     * connect Transaction Service WSDL file [rc.wsdl]
-                     */
-                    URL wsdlUrl = new URL(bean.getServiceWSDLURL());
-                    RcService.setWsdlURL(wsdlUrl);
-                    RcService rcService = new RcService();
-                    /*
-                     * Create the instance of the RcPortType that is a class generated from the
-                     * Rapid connect Transaction Service WSDL file [rc.wsdl]
-                     */
-                    RcPortType port = rcService.getRcServicePort();
-                    /* The URL that will receive the XML request data. */
-                    /* Bind the URL using Binding Provider */
-                    ((BindingProvider) port).getRequestContext().put(
-                            BindingProvider.ENDPOINT_ADDRESS_PROPERTY, bean.getServiceURL());
-                    /* Perform actual send operation for the request. */
-                    ResponseType responseType = port.rcTransaction(requestType);
-                    /* Parse the response received from the URL */
-                    StatusType statusType;
-                    if (responseType != null && (statusType = responseType.getStatus()) != null) {
-                        String statuCode = statusType.getStatusCode();
-                        if (statuCode != null && statuCode.equals(STATUS_OK)) {
-                            TransactionResponseType trType = responseType.getTransactionResponse();
-                            PayloadType pType;
-                            if (trType != null && (pType = trType.getPayload()) != null) {
-                                String encoding = pType.getEncoding();
-                                if (encoding != null && encoding.equals(CDATA)) {
-                                    /*
-                                     * Extract pay load - the response from data wire for cdata
-                                     * encoding.
-                                     */
-                                    gmfResponse = pType.getValue();
-                                } else if (encoding.equalsIgnoreCase(XML_ESCAPE)) {
-                                    /*
-                                     * Extract pay load - the response from data wire for xml_escape
-                                     * encoding.
-                                     */
-                                    gmfResponse = pType.getValue().replaceAll(GT, GT_SYM)
-                                            .replaceAll(LT, LT_SYM)
-                                            .replaceAll(AMP, AMP_SYM);
-                                }
-                                outputViews.write(documentUtility.newDocument(getJsonFromXML(gmfResponse)));
-                                counter.inc();
-                            } else {
-                                writeToErrorView(NULL_TRANSACTION_RESPONSE,
-                                        responseType.getStatus().getStatusCode(),
-                                        VALIDATE_INPUT_DATA, responseType.getStatus().getValue());
-                            }
-                        } else {
-                            writeToErrorView(INVALID_RESPONSE, responseType.getStatus()
-                                    .getStatusCode(), VALIDATE_INPUT_DATA, responseType.getStatus()
-                                    .getValue());
+
+                PeekingDocumentIterator authInputViewIterator = null;
+                Document document = null;
+                Map<String, Object> requestData = null;
+                if (authInputView != null) {
+                    authInputViewIterator = new PeekingDocumentIterator(
+                            inputViews.getDocumentsFrom(authInputView), DEFAULT_INPUT_VIEW_0);
+                    if (authInputViewIterator != null && authInputViewIterator.hasNext()) {
+                        document = authInputViewIterator.next();
+                        if ((requestData = (Map<String, Object>) document.get()) != null) {
+                            Map dataSet = new HashMap();
+                            dataSet.put("Encoding", "cdata");
+                            dataSet.put("value", xmlData);
+                            Map payload = new HashMap();
+                            payload.put("Payload", dataSet);
+                            requestData.put("Transaction", payload);
                         }
-                    } else {
-                        writeToErrorView(EMPTY_RESPONSE, IMPROPER_INPUT, VALIDATE_INPUT_DATA,
-                                NULL_OBJECT);
+                        document.set(requestData);
                     }
-                } catch (Exception ex) {
-                    writeToErrorView(ERRORMSG, ex.getMessage(), ERROR_RESOLUTION, ex);
                 }
-            } else {
-                writeToErrorView(NO_DATA_ERRMSG, NO_DATA_WARNING, NO_DATA_REASON,
-                        NO_DATA_RESOLUTION);
+
+                String envelope = null;
+                String strippedEnvelope = null;
+                try {
+                    envelope = editorProperty.eval(document);
+                    log.info(DISPATCHING_SOAP_REQUEST, envelope);
+                    SOAPMessage soapResponse = invocationService.call(clientBuilder, envelope);
+                    if (soapResponse == null) {
+                        return;
+                    }
+                    Object data = invocationService.serialize(soapResponse);
+                    if (data != null) {
+                        outputViews.write(documentUtility.newDocument(data), document);
+                        counter.inc();
+                    }
+                } catch (XMLStreamException e) {
+                    throw new ExecutionException(e, XML_SERIALIZATION_FAILED).withResolutionAsDefect();
+                } catch (Exception e) {
+                    Throwable rootCause = Throwables.getRootCause(e);
+                    String reason = rootCause.getMessage();
+                    Map<String, Object> errorMap = Maps.newHashMap();
+                    errorMap.put(KEY_ERROR, reason);
+                    SnapDataException dataException = new SnapDataException(
+                            documentUtility.newDocument(errorMap), EXCEPTION_OCCURRED).withReason(
+                            reason).withResolution(SOAP_EXCEPTION_RESOLUTION);
+                    if (envelope != null) {
+                        errorMap.put(KEY_ENVELOPE, parseXML2JSON(envelope, xmlUtils));
+                    }
+                    if (strippedEnvelope != null) {
+                        errorMap.put(KEY_STRIPPED_ENVELOPE,
+                                parseXML2JSON(strippedEnvelope, xmlUtils));
+                    }
+                    errorViews.write(dataException, document);
+                }
             }
-        } else {
-            writeToErrorView(NO_DATA_ERRMSG, NO_DATA_WARNING, NO_DATA_REASON, NO_DATA_RESOLUTION);
         }
     }
 

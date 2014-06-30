@@ -10,18 +10,39 @@
  */
 package com.snaplogic.snaps.firstdata;
 
+
+
+
+
+
+
 /**
  * Messages is the container for all the externalized messages.
  *
  * @author svatada
  */
-class Messages {
+public class Messages {
     // Metric
     static final String COUNTER_DESCRIPTION = "A metric that indicates the number of "
             + "successfully written records.";
     static final String COUNTER_UNIT = "Documents";
     static final String DOCUMENT_COUNTER = "Document Counter";
     // Snap label for Account
+    static final String DESC_ENDPOINT = "Endpoint (in Wsdl 2.0 terminology) / Port name (in "
+            + "Wsdl 1.1 terminology)";
+    static final String DESC_OPERATION = "Operation to invoke";
+    static final String DESC_URL_FOR_THE_WSDL = "Url for the WSDL";
+    static final String LBL_PROP_SOAP_BINDING = "SOAP binding type";
+    static final String DESC_PROP_SOAP_BINDING = "Defines the SOAP binding in case it can not "
+            + "be determined via introspection";
+    static final String DESC_TIMEOUT = "Timeout for the web service call (in seconds). O "
+            + "indicates no timeout";
+    static final String LBL_TIMEOUT = "Timeout";
+    static final String CUSTOMIZE_ENVELOPE = "Customize Envelope";
+    static final String CUSTOMIZE_ENVELOPE_DESC = "Allows to edit the template. "
+            + "If no template is stored in the snap, then it will suggest one based on the "
+            + "selection of the port, otherwise it will load the existing one.";
+    // ------------------
     static final String CUSTOM_ACCOUNT_TITLE = "FirstData custom account";
     static final String APP_ID = "Application_ID";
     static final String APP_ID_LABEL = "Application ID";
@@ -52,6 +73,7 @@ class Messages {
     static final String TIMEOUT_LABEL = "Timeout";
     static final String TIMEOUT_DESC = "Time out value";
     // Snap labels and descriptions
+    static final String CREATE1_LABEL = "FirstData - CreateSOAP";
     static final String CREATE_LABEL = "FirstData - Create";
     static final String SNAP_DESC = "Create snap";
     static final String RESOURCE_LABEL = "Payment type";
@@ -82,4 +104,34 @@ class Messages {
     static final String SECURITY_EXE_RES = "all-permissions - requires access to the resources.";
     static final String SECURITY_EXE = "permissio denied";
     static final String NOSUCH_METHOD_EXE = "Trying to access the unknow resources";
+    public static final String INVALID_SETTINGS = "Either %s or %s or %s or %s is not set. Please set "
+            + "all correctly before suggesting the template.";
+    public static final String WSDL_MUST_BE_DEFINED_FIRST = "WSDL Url must be defined first.";
+    public static final String SERVICE_NAME_MUST_BE_DEFINED_FIRST = "Service Name must be defined first.";
+    public static final String SERVICE_NAME_AND_OR_ENDPOINT_MUST_BE_DEFINED_FIRST = "Service Name "
+            + "and/or Endpoint must be defined first.";
+    public static final String LBL_SERVICE_NAME = "Service Name";
+    static final String DESC_SERVICE_NAME = "Service is the system function that has "
+            + "been exposed to the Web-based protocols";
+    public static final String LBL_ENDPOINT = "Endpoint";
+    public static final String LBL_OPERATION = "Operation";
+    public static final String LBL_WSDL_URL = "WSDL Url";
+    public static final String ERROR_WHILE_READING_OPERATION_SCHEMA = "An error occurred while reading "
+            + "the operation schema";
+    public static final String REQUEST_SCHEMA_NOT_AVAILABLE = "The request schema for the given "
+            + "operation is not available";
+    public static final String PLEASE_SPECIFY_REQUEST_SCHEMA = "Please make sure that given wsdl "
+            + "contains the request schema for the given operation";
+    static final String SOAP_EXCEPTION = "SOAP Exception";
+    static final String SOAP_EXCEPTION_REASON = "SOAP request failed";
+    static final String SOAP_EXCEPTION_RESOLUTION = "Please verify the template is correct, " +
+            "the substituted values are valid and the provided envelope matches the namespaces  " +
+            "that are required by the targeted service";
+    static final String XML_SERIALIZATION_FAILED = "XML Serialization failed";
+    static final String EXCEPTION_OCCURRED = "An exception occurred while executing the SOAP " +
+            "request";
+    static final String DISPATCHING_SOAP_REQUEST = "Dispatching a SOAP request:\n{}";
+    static final String ERROR_PARSING_XML = "Error parsing XML";
+    static final String VERIFY_THE_RETURNED_XML_IS_PARSEABLE = "Verify the returned XML is " +
+            "parseable";
 }

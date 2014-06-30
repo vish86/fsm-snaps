@@ -22,7 +22,7 @@ import static com.snaplogic.snaps.firstdata.gmf.proxy.Constants.TRACK2;
 
 /**
  * This class was generated based on UMF Schema V2.10a.6V5.xsd
- * 
+ *
  * @author svatada
  */
 @XmlType(name = ENCRPT_TRGT_TYPE_NAME, namespace = NAMESPACE)
