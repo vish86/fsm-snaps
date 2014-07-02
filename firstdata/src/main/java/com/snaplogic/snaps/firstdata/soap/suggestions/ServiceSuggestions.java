@@ -37,8 +37,6 @@ public class ServiceSuggestions extends AbstractSuggestions {
         super(introspectionService, nodeKey);
     }
 
-    // --------------------------------- Implemented methods ------------------------------------//
-
     @Override
     protected boolean validateSettings(Object wsdlUrlObject, Object serviceNameObject,
             Object portNameObject, SuggestionBuilder suggestionBuilder) {

@@ -35,10 +35,8 @@ public class OperationSuggestions extends AbstractSuggestions {
     @SuppressWarnings("javadoc")
     public OperationSuggestions(final IntrospectionService introspectionService,
             final String nodeKey) {
-        super(introspectionService,  nodeKey);
+        super(introspectionService, nodeKey);
     }
-
-    // --------------------------------- Implemented methods ------------------------------------//
 
     @Override
     protected boolean validateSettings(Object wsdlUrlObject, Object serviceNameObject,
@@ -60,7 +58,7 @@ public class OperationSuggestions extends AbstractSuggestions {
                 getHttpContextProvider(headers));
         Set<String> operations = new HashSet<>();
         for (QName bindingOperation : operationQNames) {
-            operations.add(bindingOperation.toString());
+            operations.add(bindingOperation.getLocalPart());
         }
         suggestionBuilder.node(PROP_OPERATION).suggestions(operations.toArray(new String[0]));
     }

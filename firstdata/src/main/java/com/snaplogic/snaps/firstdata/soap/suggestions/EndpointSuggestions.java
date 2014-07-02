@@ -38,8 +38,6 @@ public class EndpointSuggestions extends AbstractSuggestions {
         super(introspectionService, nodeKey);
     }
 
-    // --------------------------------- Implemented methods ------------------------------------//
-
     @Override
     protected boolean validateSettings(Object wsdlUrlObject, Object serviceNameObject,
             Object portNameObject, SuggestionBuilder suggestionBuilder) {
@@ -57,7 +55,7 @@ public class EndpointSuggestions extends AbstractSuggestions {
         QName[] endpointQNames = introspectionService.getEndpointsFrom(wsdlUrl,
                 QName.valueOf(serviceName), getHttpContextProvider(headers));
         for (QName endpointQName : endpointQNames) {
-            endpoints.add(endpointQName.toString());
+            endpoints.add(endpointQName.getLocalPart());
         }
         suggestionBuilder.node(PROP_ENDPOINT).suggestions(endpoints.toArray(new String[0]));
     }

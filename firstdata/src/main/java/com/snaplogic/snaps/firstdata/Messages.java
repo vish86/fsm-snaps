@@ -10,12 +10,6 @@
  */
 package com.snaplogic.snaps.firstdata;
 
-
-
-
-
-
-
 /**
  * Messages is the container for all the externalized messages.
  *
@@ -73,7 +67,7 @@ public class Messages {
     static final String TIMEOUT_LABEL = "Timeout";
     static final String TIMEOUT_DESC = "Time out value";
     // Snap labels and descriptions
-    static final String CREATE1_LABEL = "FirstData - CreateSOAP";
+    static final String CREATE1_LABEL = "FirstData - Transaction";
     static final String CREATE_LABEL = "FirstData - Create";
     static final String SNAP_DESC = "Create snap";
     static final String RESOURCE_LABEL = "Payment type";
@@ -124,14 +118,14 @@ public class Messages {
             + "contains the request schema for the given operation";
     static final String SOAP_EXCEPTION = "SOAP Exception";
     static final String SOAP_EXCEPTION_REASON = "SOAP request failed";
-    static final String SOAP_EXCEPTION_RESOLUTION = "Please verify the template is correct, " +
-            "the substituted values are valid and the provided envelope matches the namespaces  " +
-            "that are required by the targeted service";
+    static final String SOAP_EXCEPTION_RESOLUTION = "Please verify the template is correct, "
+            + "the substituted values are valid and the provided envelope matches the namespaces  "
+            + "that are required by the targeted service";
     static final String XML_SERIALIZATION_FAILED = "XML Serialization failed";
-    static final String EXCEPTION_OCCURRED = "An exception occurred while executing the SOAP " +
-            "request";
+    static final String EXCEPTION_OCCURRED = "An exception occurred while executing the SOAP "
+            + "request";
     static final String DISPATCHING_SOAP_REQUEST = "Dispatching a SOAP request:\n{}";
     static final String ERROR_PARSING_XML = "Error parsing XML";
-    static final String VERIFY_THE_RETURNED_XML_IS_PARSEABLE = "Verify the returned XML is " +
-            "parseable";
+    static final String VERIFY_THE_RETURNED_XML_IS_PARSEABLE = "Verify the returned XML is "
+            + "parseable";
 }

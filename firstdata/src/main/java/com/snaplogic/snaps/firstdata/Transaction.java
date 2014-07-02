@@ -259,13 +259,7 @@ public class Transaction implements Snap, MetricsProvider, DependencyManager, In
         String portName = propertyValues.get(PROP_ENDPOINT);
         String operation = propertyValues.get(PROP_OPERATION);
         String defaultValueForSubstitution = propertyValues.get(PROP_DEFAULT_VALUE);
-        Boolean useDefaultValue = propertyValues.get(PROP_USE_DEFAULT_VALUE);
-        useDefaultValueChecked = Boolean.TRUE == useDefaultValue;
-        if (useDefaultValueChecked) {
-            if (defaultValueForSubstitution == null) {
-                defaultValueForSubstitution = StringUtils.EMPTY;
-            }
-        }
+
         QName serviceQName = QName.valueOf(serviceName);
         QName portQName = QName.valueOf(portName);
         QName operationQName = QName.valueOf(operation);

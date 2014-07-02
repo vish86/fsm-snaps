@@ -58,7 +58,6 @@ public abstract class AbstractSuggestions implements Suggestions {
                 String wsdlUrl = (String) wsdlUrlObject;
                 String serviceName = (String) serviceNameObject;
                 String portName = (String) portNameObject;
-                // build Headers from configuration, default accept type to text/xml
                 Header[] suggestHeaders = headerList.toArray(new Header[0]);
                 getSuggestion(suggestionBuilder, wsdlUrl, serviceName, portName, suggestHeaders);
             }
