@@ -1,0 +1,19 @@
+{
+    "settings": {
+        "wsdl_url": {
+            "value": "file:///netsuite.wsdl"
+        },
+        "serviceName": {
+            "value": "{urn:platform_2010_2.webservices.netsuite.com}NetSuiteService"
+        },
+        "portName": {
+            "value": "{urn:platform_2010_2.webservices.netsuite.com}NetSuitePort"
+        },
+        "operation": {
+            "value": "{urn:messages_2010_2.platform.webservices.netsuite.com}add"
+        },
+        "timeout": {
+            "value": 0
+        }
+    }
+}

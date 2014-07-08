@@ -1,0 +1,19 @@
+{
+    "settings": {
+        "wsdl_url": {
+            "value": "file:///test_composite.wsdl"
+        },
+        "serviceName": {
+            "value": "{http://example.com/stockquote.wsdl}StockQuoteService"
+        },
+        "portName": {
+            "value": "{http://example.com/stockquote.wsdl}StockQuotePort"
+        },
+        "operation": {
+            "value": "{http://example.com/stockquote.wsdl}GetLastTradePrice"
+        },
+        "timeout": {
+            "value": 0
+        }
+    }
+}

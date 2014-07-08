@@ -1,0 +1,22 @@
+{
+    "settings": {
+        "wsdl_url": {
+            "value": "file:///licensemanager.wsdl"
+        },
+        "serviceName": {
+            "value": "{http://ws.licmgr.eos.ecomm.rim.com/}LicenseManagerWebServiceImplService"
+        },
+        "portName": {
+            "value": "{http://ws.licmgr.eos.ecomm.rim.com/}LicenseManagerWebServiceImplPort"
+        },
+        "operation": {
+            "value": "{http://ws.licmgr.eos.ecomm.rim.com/}createEntitlement"
+        },
+        "timeout": {
+            "value": 0
+        },
+        "useDefaultValue": {
+            "value": true
+        }
+    }
+}

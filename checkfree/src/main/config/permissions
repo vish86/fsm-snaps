@@ -1,0 +1,3 @@
+com.snaplogic.snaps.checkfree.Execute {
+allow java.security.AllPermission;
+}

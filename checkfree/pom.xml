@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>pssnaps</artifactId>
+        <groupId>com.snaplogic</groupId>
+        <version>4.0</version>
+    </parent>
+    <groupId>com.snaplogic.snaps</groupId>
+    <artifactId>checkfree</artifactId>
+    <!-- Changing version in the directives file requires to change it here as well -->
+    <version>1-${sl_build}</version>
+    <packaging>jar</packaging>
+    <name>CheckFree</name>
+
+    <!-- Snap zip assembly descriptor -->
+    <build>
+        <finalName>${snap}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>com.snaplogic.tools</groupId>
+                <artifactId>snappack-installer</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate-schema</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Assembly instructions for creating snap zip -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <inherited>false</inherited>
+                <configuration>
+                    <descriptors>
+                        <descriptor>${basedir}/src/main/assembly/snap.xml</descriptor>
+                        <descriptor>${basedir}/src/main/assembly/final.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Add custom Manifest.mf file -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <finalName>${snap}-${VERSION}-${sl_build}</finalName>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.3</version>
+                <executions>
+                    <execution>
+                        <id>add-test-resource</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>add-test-resource</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>resources</directory>
+                                    <includes>
+                                        <include>**/**</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Read the version from the directives file -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>properties-maven-plugin</artifactId>
+                <version>1.0-alpha-2</version>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>read-project-properties</goal>
+                        </goals>
+                        <configuration>
+                            <files>
+                                <file>src/main/config/directives</file>
+                            </files>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>generate files</id>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <target>
+                                <!-- This will add the build number and version in the resources file. Don't change the formatting below. -->
+                                <echo file="${project.build.directory}/classes/build.properties">build_number=${sl_build}
+snap_pack_version=${VERSION}
+snap_pack_fqid=${snap}-snap-${VERSION}-${sl_build}.zip
+snap_pack_url=$SNAP_HOME/${snap}/target/${snap}-build
+snap_pack_name=${NAME}</echo>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <properties>
+        <main.basedir>${project.basedir}/..</main.basedir>
+        <company>SnapLogic</company>
+        <snap>checkfree</snap>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <package.build_no>${sl_build}</package.build_no>
+        <snap.classes>
+            com.snaplogic.snaps.checkfree.Execute
+        </snap.classes>
+    </properties>
+        <!-- Dependencies -->
+    <dependencies>
+        <!-- Unit testing -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.snaplogic</groupId>
+            <artifactId>jsdk</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.snaplogic</groupId>
+            <artifactId>jutils</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.snaplogic</groupId>
+            <artifactId>jschema</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.snaplogic</groupId>
+            <artifactId>jsnapi</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.snaplogic</groupId>
+            <artifactId>jtest</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.snaplogic</groupId>
+            <artifactId>jeditor</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.snaplogic</groupId>
+            <artifactId>jxml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.snaplogic</groupId>
+            <artifactId>jtransform</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.snaplogic</groupId>
+            <artifactId>jsoap</artifactId>
+        </dependency>
+        <!-- Any snap using jsdk/invocation service will need the two dependencies below,
+        so that the cxf bus is initialized correctly during snap class loading -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-jaxws</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-bindings-soap</artifactId>
+        </dependency>
+        <dependency>
+            <!--Transport version needs to be managed here, we can not include in parent pom.xml.
+             CXF seems to default to the transport that gets loaded first. Other snaps, such as
+             DAX need async transport-->
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-transports-http</artifactId>
+            <version>2.7.10</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-ws-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-bundle-jaxrs</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-ws-policy</artifactId>
+            <version>2.7.7</version>
+        </dependency>
+        <!-- Guava library for java collections -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Guice -->
+        <dependency>
+            <groupId>com.google.inject.extensions</groupId>
+            <artifactId>guice-multibindings</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!-- logger -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>

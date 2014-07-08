@@ -1,0 +1,19 @@
+{
+    "settings": {
+        "wsdl_url": {
+            "value": "file:///test_serviceNow.wsdl"
+        },
+        "serviceName": {
+            "value": "{http://www.service-now.com}ServiceNow_incident"
+        },
+        "portName": {
+            "value": "{http://www.service-now.com}ServiceNowSoap"
+        },
+        "operation": {
+            "value": "{http://www.service-now.com/incident}get"
+        },
+        "timeout": {
+            "value": 0
+        }
+    }
+}

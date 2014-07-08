@@ -1,0 +1,3 @@
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Header/><SOAP-ENV:Body><GetLastTradePrice xmlns="http://example.com/stockquote.wsdl">
+  <body xmlns="">***NO DATA***</body>
+</GetLastTradePrice></SOAP-ENV:Body></SOAP-ENV:Envelope>

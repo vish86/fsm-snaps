@@ -1,0 +1,19 @@
+{
+    "settings": {
+        "wsdl_url": {
+            "value": "file:///test_clicktel.wsdl"
+        },
+        "serviceName": {
+            "value": "{http://api.clickatell.com/soap/webservice}PushServerWS"
+        },
+        "portName": {
+            "value": "{http://api.clickatell.com/soap/webservice}PushServerWSPort"
+        },
+        "operation": {
+            "value": "{http://api.clickatell.com/soap/webservice}ping"
+        },
+        "timeout": {
+            "value": 0
+        }
+    }
+}

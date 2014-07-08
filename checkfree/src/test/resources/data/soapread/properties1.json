@@ -1,0 +1,19 @@
+{
+    "settings": {
+        "wsdl_url": {
+            "value": "file:///test_helloworld.wsdl"
+        },
+        "serviceName": {
+            "value": "{http://apache.org/hello_world_soap_http}SOAPService"
+        },
+        "portName": {
+            "value": "{http://apache.org/hello_world_soap_http}SoapPort"
+        },
+        "operation": {
+            "value": "{http://apache.org/hello_world_soap_http/types}greetMe"
+        },
+        "timeout": {
+            "value": 0
+        }
+    }
+}
