@@ -59,6 +59,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -70,12 +71,11 @@ import static com.snaplogic.snaps.lunex.ServiceURIInfo.DR_PARAM_LIST;
 import static com.snaplogic.snaps.lunex.ServiceURIInfo.REQ_BODY_PARAM_INFO;
 import static com.snaplogic.snaps.lunex.ServiceURIInfo.RR_PARAM_LIST;
 import static com.snaplogic.snaps.lunex.ServiceURIInfo.UR_PARAM_LIST;
-import java.util.LinkedHashMap;
 
 /**
  * Abstract base class for Lunex snap pack which contains common snap properties, authentication and
  * request handling.
- * 
+ *
  * @author svatada
  */
 @Inputs(min = 0, max = 1, accepts = { ViewType.DOCUMENT })
@@ -86,14 +86,14 @@ import java.util.LinkedHashMap;
 public abstract class BaseService extends SimpleSnap implements
         MultiAccountBinding<Account<AccountBean>> {
     private static final int INIT_HEADER_SIZE = 4;
-    private static final String PARAM_NAME_JSON = new JsonPathBuilder(PARAM_NAME_PROP)
-            .appendValueElement().build();
-    private static final String FIELD_NAME_JSON = new JsonPathBuilder(FIELD_NAME_PROP)
-            .appendValueElement().build();
-    private static final String HEADER_KEY_JSON = new JsonPathBuilder(HEADER_KEY_PROP)
-            .appendValueElement().build();
-    private static final String HEADER_VALUE_JSON = new JsonPathBuilder(HEADER_VALUE_PROP)
-            .appendValueElement().build();
+    private static final String PARAM_NAME_JSON = new JsonPathBuilder(PARAM_NAME_PROP).appendValueElement()
+            .build();
+    private static final String FIELD_NAME_JSON = new JsonPathBuilder(FIELD_NAME_PROP).appendValueElement()
+            .build();
+    private static final String HEADER_KEY_JSON = new JsonPathBuilder(HEADER_KEY_PROP).appendValueElement()
+            .build();
+    private static final String HEADER_VALUE_JSON = new JsonPathBuilder(HEADER_VALUE_PROP).appendValueElement()
+            .build();
     private List<Pair<String, ExpressionProperty>> queryParams;
     private List<Pair<String, ExpressionProperty>> requestContentInfo;
     private List<Pair<String, String>> headersProperties;
@@ -134,13 +134,16 @@ public abstract class BaseService extends SimpleSnap implements
 
     @Override
     public void defineProperties(final PropertyBuilder propertyBuilder) {
-        propertyBuilder
-                .describe(SERVICE_DOMAIN_PROP, SERVICE_DOMAIN_LABEL, SERVICE_DOMAIN_DESCRIPTION)
-                .required().add();
+        propertyBuilder.describe(SERVICE_DOMAIN_PROP, SERVICE_DOMAIN_LABEL,
+                SERVICE_DOMAIN_DESCRIPTION)
+                .required()
+                .add();
         propertyBuilder.describe(USERNAME_PROP, USERNAME_LABEL, USERNAME_DESCRIPTION)
-                .expression(SnapProperty.DecoratorType.ACCEPTS_SCHEMA).add();
+                .expression(SnapProperty.DecoratorType.ACCEPTS_SCHEMA)
+                .add();
         propertyBuilder.describe(PASSWORD_PROP, PASSWORD_LABEL, PASSWORD_DESCRIPTION)
-                .expression(SnapProperty.DecoratorType.ACCEPTS_SCHEMA).add();
+                .expression(SnapProperty.DecoratorType.ACCEPTS_SCHEMA)
+                .add();
         propertyBuilder.describe(RESOURCE_PROP, RESOURCE_LABEL, RESOURCE_DESC);
         switch (snapsType) {
             case Create:
@@ -161,12 +164,16 @@ public abstract class BaseService extends SimpleSnap implements
         SnapProperty headerValue = propertyBuilder.describe(HEADER_VALUE_PROP, HEADER_VALUE_LABEL,
                 HEADER_VALUE_DESCRIPTION).build();
         propertyBuilder.describe(HTTP_HEADER_PROP, HTTP_HEADER_LABEL, HTTP_HEADER_DESCRIPTION)
-                .type(SnapType.TABLE).withEntry(headerKey).withEntry(headerValue).add();
-        SnapProperty paramPath = propertyBuilder
-                .describe(PARAM_PATH_PROP, PARAM_PATH_LABEL, PARAM_PATH_DESC)
-                .expression(SnapProperty.DecoratorType.ACCEPTS_SCHEMA).build();
-        SnapProperty paramName = propertyBuilder
-                .describe(PARAM_NAME_PROP, PARAM_NAME_LABEL, PARAM_NAME_DESC)
+                .type(SnapType.TABLE)
+                .withEntry(headerKey)
+                .withEntry(headerValue)
+                .add();
+        SnapProperty paramPath = propertyBuilder.describe(PARAM_PATH_PROP, PARAM_PATH_LABEL,
+                PARAM_PATH_DESC)
+                .expression(SnapProperty.DecoratorType.ACCEPTS_SCHEMA)
+                .build();
+        SnapProperty paramName = propertyBuilder.describe(PARAM_NAME_PROP, PARAM_NAME_LABEL,
+                PARAM_NAME_DESC)
                 .withSuggestions(new Suggestions() {
                     @Override
                     public void suggest(final SuggestionBuilder suggestionBuilder,
@@ -190,32 +197,39 @@ public abstract class BaseService extends SimpleSnap implements
                                 break;
                         }
                     }
-                }).build();
-        propertyBuilder
-                .describe(PARAM_TABLE_MAPPINGS_PROP, PARAM_TABLE_MAPPINGS_LABEL,
-                        PARAM_TABLE_MAPPINGS_DESC).type(SnapType.TABLE).withEntry(paramPath)
-                .withEntry(paramName).required().add();
+                })
+                .build();
+        propertyBuilder.describe(PARAM_TABLE_MAPPINGS_PROP, PARAM_TABLE_MAPPINGS_LABEL,
+                PARAM_TABLE_MAPPINGS_DESC)
+                .type(SnapType.TABLE)
+                .withEntry(paramPath)
+                .withEntry(paramName)
+                .required()
+                .add();
         if (snapsType != LunexSnaps.Read) {
-            SnapProperty fieldPath = propertyBuilder
-                    .describe(FIELD_PATH_PROP, FIELD_PATH_LABEL, FIELD_PATH_DESC)
-                    .expression(SnapProperty.DecoratorType.ACCEPTS_SCHEMA).build();
-            SnapProperty fieldName = propertyBuilder
-                    .describe(FIELD_NAME_PROP, FIELD_NAME_LABEL, FIELD_NAME_DESC)
+            SnapProperty fieldPath = propertyBuilder.describe(FIELD_PATH_PROP, FIELD_PATH_LABEL,
+                    FIELD_PATH_DESC)
+                    .expression(SnapProperty.DecoratorType.ACCEPTS_SCHEMA)
+                    .build();
+            SnapProperty fieldName = propertyBuilder.describe(FIELD_NAME_PROP, FIELD_NAME_LABEL,
+                    FIELD_NAME_DESC)
                     .withSuggestions(new Suggestions() {
                         @Override
                         public void suggest(final SuggestionBuilder suggestionBuilder,
                                 final PropertyValues propertyValues) {
-                            suggestionBuilder
-                                    .node(FIELD_TABLE_MAPPINGS_PROP)
+                            suggestionBuilder.node(FIELD_TABLE_MAPPINGS_PROP)
                                     .over(FIELD_NAME_PROP)
                                     .suggestions(
                                             REQ_BODY_PARAM_INFO.keySet().toArray(new String[0]));
                         }
-                    }).build();
-            propertyBuilder
-                    .describe(FIELD_TABLE_MAPPINGS_PROP, FIELD_TABLE_MAPPINGS_LABEL,
-                            FIELD_TABLE_MAPPINGS_DESC).type(SnapType.TABLE).withEntry(fieldPath)
-                    .withEntry(fieldName).add();
+                    })
+                    .build();
+            propertyBuilder.describe(FIELD_TABLE_MAPPINGS_PROP, FIELD_TABLE_MAPPINGS_LABEL,
+                    FIELD_TABLE_MAPPINGS_DESC)
+                    .type(SnapType.TABLE)
+                    .withEntry(fieldPath)
+                    .withEntry(fieldName)
+                    .add();
         }
     }
 
@@ -278,19 +292,26 @@ public abstract class BaseService extends SimpleSnap implements
                         .toString());
             }
             RequestBuilder rBuilder = new RequestBuilder().addDoc(document)
-                    .addEndPointIP(lunexHost).addHeaders(headersProperties)
+                    .addEndPointIP(lunexHost)
+                    .addHeaders(headersProperties)
                     .addQueryParams(queryParams)
                     .addRequestBody(prepareJson(requestContentInfo, document))
-                    .addResource(resourceType).addSnapTye(snapsType).addMethod(httpMethod);
+                    .addResource(resourceType)
+                    .addSnapTye(snapsType)
+                    .addMethod(httpMethod);
             String response = RequestProcessor.getInstance().execute(rBuilder);
-            if (RequestProcessor.getInstance().getStatusCode() == HttpStatus.SC_OK) {
+            int statusCode = RequestProcessor.getInstance().getStatusCode();
+            /*
+             * Writing HTTP STATUS codes 100-299 to success view and other than 299 will move to
+             * Error view.
+             */
+            if (statusCode < HttpStatus.SC_MULTIPLE_CHOICES) {
                 Map<String, Object> map = new HashMap<String, Object>();
-                map.put(STATUS_CODE_TAG, HttpStatus.SC_OK);
+                map.put(STATUS_CODE_TAG, statusCode);
                 map.put(resourceType, OBJECT_MAPPER.readValue(response, MAP_TYPE_REFERENCE));
                 outputViews.write(documentUtility.newDocument(map));
             } else {
-                writeToErrorView(RequestProcessor.getInstance().getStatusCode(), HTTP_ERROR_REASON,
-                        HTTP_ERROR_RESOLUTION, response);
+                writeToErrorView(statusCode, HTTP_ERROR_REASON, HTTP_ERROR_RESOLUTION, response);
             }
         } catch (MalformedURLException ex) {
             writeToErrorView(ex.getLocalizedMessage(), MALFORMEDURL_ERROR_REASON,
@@ -354,8 +375,10 @@ public abstract class BaseService extends SimpleSnap implements
             if (!isEmptyJson) {
                 subJson.append(CLOSETAG).append(COMMA);
             }
-            return new StringBuilder().append(OPENTAG).append(subJson)
-                    .append(json.deleteCharAt(json.length() - 1)).append(CLOSETAG);
+            return new StringBuilder().append(OPENTAG)
+                    .append(subJson)
+                    .append(json.deleteCharAt(json.length() - 1))
+                    .append(CLOSETAG);
         }
         return new StringBuilder("");
     }
@@ -367,11 +390,21 @@ public abstract class BaseService extends SimpleSnap implements
 
         if (((LinkedHashMap) document.get()).containsKey(paramPair.getLeft())) {
             if (REQ_BODY_PARAM_INFO.get(key) == 1) {
-                jsonSlice.append(QUOTE).append(key).append(QUOTE).append(COLON)
-                        .append(paramPair.getRight().eval(document)).append(COMMA);
+                jsonSlice.append(QUOTE)
+                        .append(key)
+                        .append(QUOTE)
+                        .append(COLON)
+                        .append(paramPair.getRight().eval(document))
+                        .append(COMMA);
             } else {
-                jsonSlice.append(QUOTE).append(key).append(QUOTE).append(COLON).append(QUOTE)
-                        .append(paramPair.getRight().eval(document)).append(QUOTE).append(COMMA);
+                jsonSlice.append(QUOTE)
+                        .append(key)
+                        .append(QUOTE)
+                        .append(COLON)
+                        .append(QUOTE)
+                        .append(paramPair.getRight().eval(document))
+                        .append(QUOTE)
+                        .append(COMMA);
             }
         }
         return jsonSlice;
@@ -379,14 +412,13 @@ public abstract class BaseService extends SimpleSnap implements
 
     /* configure the basic auth header */
     private void setAuthHeaderProp(String username, String passcode) {
-        headersProperties
-                .add(Pair.of(
-                        AUTHORIZATION,
-                        new StringBuilder()
-                                .append(BASIC)
-                                .append(Base64.encodeBase64String((new StringBuilder()
-                                        .append(username).append(COLON).append(passcode).toString())
-                                        .getBytes())).toString()));
+        headersProperties.add(Pair.of(
+                AUTHORIZATION,
+                new StringBuilder().append(BASIC)
+                        .append(Base64.encodeBase64String((new StringBuilder().append(username)
+                                .append(COLON)
+                                .append(passcode).toString()).getBytes()))
+                        .toString()));
     }
 
     /* configure the HTTP Lunex request headers */
@@ -404,8 +436,7 @@ public abstract class BaseService extends SimpleSnap implements
     private void setSuggestionBuilder(final SuggestionBuilder suggestionBuilder,
             PropertyValues propertyValues, final String TABLE_PROP_NAME,
             final String VALUE_PROP_NAME, ImmutableMap<String, ImmutableSet<String>> PARAM_LIST) {
-        suggestionBuilder
-                .node(TABLE_PROP_NAME)
+        suggestionBuilder.node(TABLE_PROP_NAME)
                 .over(VALUE_PROP_NAME)
                 .suggestions(
                         PARAM_LIST.get(propertyValues.get(RESOURCE_PROP)).toArray(new String[0]));

@@ -12,10 +12,10 @@ package com.snaplogic.snaps.lunex;
 
 /**
  * Messages is the container for all the externalized messages.
- * 
+ *
  * @author svatada
  */
-class Messages {
+public class Messages {
     // Snap labels and descriptions
     static final String LUNEX_CREATE_LABEL = "Lunex - Create";
     static final String LUNEX_CREATE_DESC = "Issues an HTTP Postto "
@@ -27,7 +27,8 @@ class Messages {
     static final String LUNEX_DELETE_DESC = "Issues an HTTP Delete to"
             + " Lunex API service endpoint.";
     static final String LUNEX_READ_LABEL = "Lunex - Read";
-    static final String LUNEX_READ_DESC = "Issues an HTTP GET to " + "Lunex API service endpoint.";
+    static final String LUNEX_READ_DESC = "Issues an HTTP GET to "
+            + "Lunex API service endpoint.";
     // Common properties labels and descriptions
     static final String SERVICE_DOMAIN_PROP = "endpoint";
     static final String SERVICE_DOMAIN_LABEL = "Endpoint IP";
@@ -78,7 +79,8 @@ class Messages {
     static final String HEADER_VALUE_LABEL = "Value";
     static final String HEADER_VALUE_DESCRIPTION = "Please enter HTTP header value.";
     static final String HTTP_HEADER_LABEL = "Custom HTTP headers";
-    static final String HTTP_HEADER_DESCRIPTION = "Please enter HTTP header " + "key-value pairs.";
+    static final String HTTP_HEADER_DESCRIPTION = "Please enter HTTP header "
+            + "key-value pairs.";
     static final String LUNEX_BASIC_AUTH_ACCOUNT_TITLE = "LUNEX basic auth account";
     // Error messages
     static final String AUTH_ERROR_RESOLUTION = "Please provide valid "
