@@ -16,6 +16,7 @@ import com.snaplogic.snap.api.ExpressionProperty;
 import com.snaplogic.snaps.lunex.Constants.HttpMethodNames;
 import com.snaplogic.snaps.lunex.Constants.LunexSnaps;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
@@ -133,17 +134,29 @@ public class RequestBuilder {
             if (queryParams != null) {
                 CharSequence source, target;
                 for (Pair<String, ExpressionProperty> paramPair : queryParams) {
-                    source = new StringBuilder().append(OPENTAG).append(paramPair.getLeft())
-                            .append(CLOSETAG).toString();
+                    source = new StringBuilder().append(OPENTAG)
+                            .append(paramPair.getLeft())
+                            .append(CLOSETAG)
+                            .toString();
                     target = paramPair.getRight().eval(document).toString();
+                    if (target == null) {
+                        target = StringUtils.EMPTY;
+                    }
                     resourceSpecificUri = resourceSpecificUri.replace(source, target);
                 }
             }
-            return new StringBuilder().append(HTTP).append(COLON).append(DOUBLE_SLASH)
-                    .append(IPAddress).append(resourceSpecificUri).toString();
+            return new StringBuilder().append(HTTP)
+                    .append(COLON)
+                    .append(DOUBLE_SLASH)
+                    .append(IPAddress)
+                    .append(resourceSpecificUri)
+                    .toString();
         } catch (Exception e) {
-            String msg = String.format(INVALID_URI, new StringBuilder().append(HTTP).append(COLON)
-                    .append(DOUBLE_SLASH).append(IPAddress).toString());
+            String msg = String.format(INVALID_URI, new StringBuilder().append(HTTP)
+                    .append(COLON)
+                    .append(DOUBLE_SLASH)
+                    .append(IPAddress)
+                    .toString());
             throw new ExecutionException(e, msg).withReason(msg).withResolution(
                     INVALID_URI_RESOLUTION);
         }

@@ -304,6 +304,15 @@ public abstract class BaseService extends SimpleSnap implements
             /*
              * Writing HTTP STATUS codes 100-299 to success view and other than 299 will move to
              * Error view.
+             *
+             * Success:
+             * HTTP 1XX-Request received, continuing process.
+             * HTTP 2XX-Action requested by the client was received, understood, accepted and processed successfully.
+             *
+             * Error:
+             * HTTP 3XX-The client must take additional action to complete the request.
+             * HTTP 4XX-Intended for cases in which the client seems to have errored.
+             * HTTP 5XX-The server failed to fulfill an apparently valid request.
              */
             if (statusCode < HttpStatus.SC_MULTIPLE_CHOICES) {
                 Map<String, Object> map = new HashMap<String, Object>();

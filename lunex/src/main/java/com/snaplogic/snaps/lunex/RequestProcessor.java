@@ -20,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -74,13 +73,22 @@ public class RequestProcessor {
                     log.debug(String.format(LUNEX_HTTP_REQ_INFO, paramsJson));
                     cgiInput.writeBytes(paramsJson);
                     cgiInput.flush();
-                    close(cgiInput);
                 }
             }
 
             BufferedReader reader;
             InputStream iStream = httpConnection.getInputStream();
-            if ((statusCode = httpConnection.getResponseCode()) == HttpStatus.SC_OK) {
+            /**
+             * Success:
+             * HTTP 1XX-Request received, continuing process.
+             * HTTP 2XX-action requested by the client was received, understood, accepted and processed successfully.
+             *
+             * Error:
+             * HTTP 3XX-The client must take additional action to complete the request.
+             * HTTP 4XX-Intended for cases in which the client seems to have errored.
+             * HTTP 5XX-The server failed to fulfill an apparently valid request.
+             */
+            if ((statusCode = httpConnection.getResponseCode()) < HttpStatus.SC_MULTIPLE_CHOICES) {
                 reader = new BufferedReader(new InputStreamReader(iStream));
             } else {
                 reader = new BufferedReader(new InputStreamReader(httpConnection.getErrorStream()));
@@ -91,6 +99,7 @@ public class RequestProcessor {
                 response.append(line);
             }
             close(reader);
+            close(cgiInput);
             log.debug(String.format(HTTP_STATUS, statusCode));
             return formatResponse(response, rBuilder);
         } catch (MalformedURLException me) {
@@ -115,8 +124,7 @@ public class RequestProcessor {
                     ((BufferedReader) obj).close();
                 }
             } catch (IOException ioe) {
-                log.error(ioe.getLocalizedMessage(), ioe);
-                throw ioe;
+                log.warn(ioe.getLocalizedMessage(), ioe);
             }
         }
     }
@@ -129,13 +137,25 @@ public class RequestProcessor {
     private String formatResponse(StringBuilder response, RequestBuilder rBuilder) {
         StringBuilder sBuilder = new StringBuilder();
         if (rBuilder.getResource().toString().equals(RResource.GetTime.toString())) {
-            sBuilder.append(OPENTAG).append(QUOTE).append(TIME_STAMP_TAG).append(QUOTE)
-                    .append(COLON).append(QUOTE)
-                    .append(response.toString().replaceAll(REGEX, "").substring(4)).append(QUOTE)
+            sBuilder.append(OPENTAG)
+                    .append(QUOTE)
+                    .append(TIME_STAMP_TAG)
+                    .append(QUOTE)
+                    .append(COLON)
+                    .append(QUOTE)
+                    .append(response.toString().replaceAll(REGEX, "").substring(4))
+                    .append(QUOTE)
                     .append(CLOSETAG);
         } else if (rBuilder.getSnapType() == LunexSnaps.Delete) {
-            sBuilder.append(OPENTAG).append(QUOTE).append(DELETE_RESPONSE_FLAG).append(QUOTE)
-                    .append(COLON).append(QUOTE).append(response).append(QUOTE).append(CLOSETAG);
+            sBuilder.append(OPENTAG)
+                    .append(QUOTE)
+                    .append(DELETE_RESPONSE_FLAG)
+                    .append(QUOTE)
+                    .append(COLON)
+                    .append(QUOTE)
+                    .append(response)
+                    .append(QUOTE)
+                    .append(CLOSETAG);
         } else {
             sBuilder.append(response);
         }

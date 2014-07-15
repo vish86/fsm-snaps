@@ -43,7 +43,7 @@ public class ServiceURIInfo {
     static final ImmutableMap<String, ImmutableSet<String>> CR_PARAM_LIST = ImmutableMap.of(
             CResource.NewOrder.toString(), ImmutableSet.of(SELLER, CID, SKU, PHONE, PROMO_PHONE,
                     AMOUNT, QUANTITY, PHONETYPE, LANG, NOTIFY, MERCHANTNAME, MERCHANTID),
-            CResource.Account.toString(), ImmutableSet.of(SELLER, PHONETYPE, LANG, NOTIFY),
+            CResource.Account.toString(), ImmutableSet.of(SELLER, PHONETYPE, LANG, NOTIFY,PIN),
             CResource.VoidTx.toString(), ImmutableSet.of(SELLER, TXID, NOTIFY), CResource.PreOrder
                     .toString(), ImmutableSet.of(SELLER, CID, SKU, PHONE, AMOUNT));
 
@@ -114,7 +114,7 @@ public class ServiceURIInfo {
                             + "&phone_type={PHONETYPE}&lang={LANG}&notify={NOTIFY}"
                             + "&merchantname={MERCHANTNAME}&merchantid={MERCHANTID}")
             .put(CResource.Account.toString(),
-                    "/pos/sellers/{SELLER}/pins/?phone_type={PHONETYPE}&lang="
+                    "/pos/sellers/{SELLER}/pins/{PIN}?phone_type={PHONETYPE}&lang="
                             + "{LANG}&notify={NOTIFY}")
             .put(CResource.VoidTx.toString(), "/pos/sellers/{SELLER}/trans/{TXID}?notify={NOTIFY}")
             .put(CResource.PreOrder.toString(),
