@@ -13,22 +13,22 @@ package com.snaplogic.snaps.lunex;
 import com.snaplogic.snaps.lunex.Constants.LunexSnaps;
 import com.snaplogic.snaps.lunex.Constants.RResource;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 import static com.snaplogic.snaps.lunex.Constants.*;
+import static com.snaplogic.snaps.lunex.Messages.INPUT_STREAM_ERROR;
 
 /**
  * The Request Processor manage submission and handling of all the request. This class performs the
@@ -52,55 +52,56 @@ public class RequestProcessor {
     public String execute(RequestBuilder rBuilder) throws MalformedURLException, IOException {
         try {
             URL api_url = new URL(rBuilder.getURL());
-            HttpURLConnection httpConnection = (HttpURLConnection) api_url.openConnection();
-            httpConnection.setRequestMethod(rBuilder.getMethod().toString());
-            httpConnection.setDoInput(true);
-            httpConnection.setDoOutput(true);
-            httpConnection.setUseCaches(false);
+            HttpURLConnection httpUrlConnection = (HttpURLConnection) api_url.openConnection();
+            httpUrlConnection.setRequestMethod(rBuilder.getMethod().toString());
+            httpUrlConnection.setDoInput(true);
+            httpUrlConnection.setDoOutput(true);
+            if (rBuilder.getSnapType() != LunexSnaps.Read) {
+                rBuilder.getHeaders().add(Pair.of(CONTENT_LENGTH, rBuilder.getRequestBodyLenght()));
+            }
             for (Pair<String, String> header : rBuilder.getHeaders()) {
                 if (!StringUtils.isEmpty(header.getKey())
                         && !StringUtils.isEmpty(header.getValue())) {
-                    httpConnection.setRequestProperty(header.getKey(), header.getValue());
+                    httpUrlConnection.setRequestProperty(header.getKey(), header.getValue());
                 }
             }
             log.debug(String.format(LUNEX_HTTP_INFO, rBuilder.getSnapType(), rBuilder.getURL(),
-                    httpConnection.getRequestProperties().toString()));
-            DataOutputStream cgiInput = null;
+                    httpUrlConnection.getRequestProperties().toString()));
             if (rBuilder.getSnapType() != LunexSnaps.Read) {
                 String paramsJson = null;
                 if (!StringUtils.isEmpty(paramsJson = rBuilder.getRequestBody())) {
-                    cgiInput = new DataOutputStream(httpConnection.getOutputStream());
+                    DataOutputStream cgiInput = new DataOutputStream(
+                            httpUrlConnection.getOutputStream());
                     log.debug(String.format(LUNEX_HTTP_REQ_INFO, paramsJson));
                     cgiInput.writeBytes(paramsJson);
                     cgiInput.flush();
+                    IOUtils.closeQuietly(cgiInput);
                 }
             }
 
-            BufferedReader reader;
-            InputStream iStream = httpConnection.getInputStream();
-            /**
-             * Success:
-             * HTTP 1XX-Request received, continuing process.
-             * HTTP 2XX-action requested by the client was received, understood, accepted and processed successfully.
-             *
-             * Error:
-             * HTTP 3XX-The client must take additional action to complete the request.
-             * HTTP 4XX-Intended for cases in which the client seems to have errored.
-             * HTTP 5XX-The server failed to fulfill an apparently valid request.
-             */
-            if ((statusCode = httpConnection.getResponseCode()) < HttpStatus.SC_MULTIPLE_CHOICES) {
-                reader = new BufferedReader(new InputStreamReader(iStream));
-            } else {
-                reader = new BufferedReader(new InputStreamReader(httpConnection.getErrorStream()));
-            }
-            String line;
+            List<String> input = null;
             StringBuilder response = new StringBuilder();
-            while ((line = reader.readLine()) != null) {
-                response.append(line);
+            try (InputStream iStream = httpUrlConnection.getInputStream()) {
+                input = IOUtils.readLines(iStream);
+            } catch (IOException ioe) {
+                log.warn(String.format(INPUT_STREAM_ERROR, ioe.getMessage()));
+                try (InputStream eStream = httpUrlConnection.getErrorStream()) {
+                    if (eStream != null) {
+                        input = IOUtils.readLines(eStream);
+                    } else {
+                        response.append(String.format(INPUT_STREAM_ERROR, ioe.getMessage()));
+                    }
+                } catch (IOException ioe1) {
+                    log.warn(String.format(INPUT_STREAM_ERROR, ioe1.getMessage()));
+                }
             }
-            close(reader);
-            close(cgiInput);
+            statusCode = httpUrlConnection.getResponseCode();
             log.debug(String.format(HTTP_STATUS, statusCode));
+            if (input != null && !input.isEmpty()) {
+                for (String line : input) {
+                    response.append(line);
+                }
+            }
             return formatResponse(response, rBuilder);
         } catch (MalformedURLException me) {
             log.error(me.getMessage(), me);
@@ -111,21 +112,6 @@ public class RequestProcessor {
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
             throw ex;
-        }
-    }
-
-    /* Handles IO close operation */
-    private void close(Object obj) throws IOException {
-        if (null != obj) {
-            try {
-                if (obj instanceof DataOutputStream) {
-                    ((DataOutputStream) obj).close();
-                } else {
-                    ((BufferedReader) obj).close();
-                }
-            } catch (IOException ioe) {
-                log.warn(ioe.getLocalizedMessage(), ioe);
-            }
         }
     }
 

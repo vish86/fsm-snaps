@@ -59,7 +59,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -86,13 +85,17 @@ import static com.snaplogic.snaps.lunex.ServiceURIInfo.UR_PARAM_LIST;
 public abstract class BaseService extends SimpleSnap implements
         MultiAccountBinding<Account<AccountBean>> {
     private static final int INIT_HEADER_SIZE = 4;
-    private static final String PARAM_NAME_JSON = new JsonPathBuilder(PARAM_NAME_PROP).appendValueElement()
+    private static final String PARAM_NAME_JSON = new JsonPathBuilder(PARAM_NAME_PROP)
+            .appendValueElement()
             .build();
-    private static final String FIELD_NAME_JSON = new JsonPathBuilder(FIELD_NAME_PROP).appendValueElement()
+    private static final String FIELD_NAME_JSON = new JsonPathBuilder(FIELD_NAME_PROP)
+            .appendValueElement()
             .build();
-    private static final String HEADER_KEY_JSON = new JsonPathBuilder(HEADER_KEY_PROP).appendValueElement()
+    private static final String HEADER_KEY_JSON = new JsonPathBuilder(HEADER_KEY_PROP)
+            .appendValueElement()
             .build();
-    private static final String HEADER_VALUE_JSON = new JsonPathBuilder(HEADER_VALUE_PROP).appendValueElement()
+    private static final String HEADER_VALUE_JSON = new JsonPathBuilder(HEADER_VALUE_PROP)
+            .appendValueElement()
             .build();
     private List<Pair<String, ExpressionProperty>> queryParams;
     private List<Pair<String, ExpressionProperty>> requestContentInfo;
@@ -121,7 +124,8 @@ public abstract class BaseService extends SimpleSnap implements
         return new AbstractModule() {
             @Override
             protected void configure() {
-                TypeLiteral<Account<AccountBean>> typeLiteral = new TypeLiteral<Account<AccountBean>>() {
+                TypeLiteral<Account<AccountBean>> typeLiteral =
+                        new TypeLiteral<Account<AccountBean>>() {
                 };
                 if (account == null) {
                     bind(Key.get(typeLiteral)).to(DefaultAccount.class).in(Scopes.SINGLETON);
@@ -302,19 +306,17 @@ public abstract class BaseService extends SimpleSnap implements
             String response = RequestProcessor.getInstance().execute(rBuilder);
             int statusCode = RequestProcessor.getInstance().getStatusCode();
             /*
-             * Writing HTTP STATUS codes 100-299 to success view and other than 299 will move to
-             * Error view.
+             * Writing HTTP STATUS codes in between 100-299 to success view and other codes will
+             * move to Error view.
              *
-             * Success:
-             * HTTP 1XX-Request received, continuing process.
-             * HTTP 2XX-Action requested by the client was received, understood, accepted and processed successfully.
+             * Success: HTTP 1XX-Request received, continuing process. HTTP 2XX-Action requested by
+             * the client was received, understood, accepted and processed successfully.
              *
-             * Error:
-             * HTTP 3XX-The client must take additional action to complete the request.
-             * HTTP 4XX-Intended for cases in which the client seems to have errored.
-             * HTTP 5XX-The server failed to fulfill an apparently valid request.
+             * Error: HTTP 3XX-The client must take additional action to complete the request. HTTP
+             * 4XX-Intended for cases in which the client seems to have errored. HTTP 5XX-The server
+             * failed to fulfill an apparently valid request.
              */
-            if (statusCode < HttpStatus.SC_MULTIPLE_CHOICES) {
+            if (statusCode >= 100 && statusCode < HttpStatus.SC_MULTIPLE_CHOICES) {
                 Map<String, Object> map = new HashMap<String, Object>();
                 map.put(STATUS_CODE_TAG, statusCode);
                 map.put(resourceType, OBJECT_MAPPER.readValue(response, MAP_TYPE_REFERENCE));
@@ -396,8 +398,7 @@ public abstract class BaseService extends SimpleSnap implements
     private StringBuilder getJsonSlice(Pair<String, ExpressionProperty> paramPair, Document document) {
         String key = paramPair.getKey();
         StringBuilder jsonSlice = new StringBuilder();
-
-        if (((LinkedHashMap) document.get()).containsKey(paramPair.getLeft())) {
+        if (((HashMap) document.get()).containsKey(paramPair.getLeft())) {
             if (REQ_BODY_PARAM_INFO.get(key) == 1) {
                 jsonSlice.append(QUOTE)
                         .append(key)
@@ -434,6 +435,7 @@ public abstract class BaseService extends SimpleSnap implements
     private void setDefaultHeaders() {
         headersProperties.add(Pair.of(CONTENT_TYPE, APPLICATION_JSON));
         headersProperties.add(Pair.of(ACCEPT, APPLICATION_JSON));
+        headersProperties.add(Pair.of(CONTENT_LENGTH, DEFAULT_CONTENT_LENGTH));
         AccountBean bean = account.connect();
         if (!isCredentialsSet && bean != null) {
             isAuthHeaderSet = true;

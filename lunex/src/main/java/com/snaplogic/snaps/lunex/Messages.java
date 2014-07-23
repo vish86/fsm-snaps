@@ -92,6 +92,7 @@ public class Messages {
             + "the values provided.";
     static final String IO_ERROR_REASON = "Check the values passed.";
     static final String IO_ERROR = "An io error occured while reading data.";
+    static final String INPUT_STREAM_ERROR = "IO Error occured while opening the input stream %s";
     static final String CONTENT_STREAM_ERROR = "The content stream for the"
             + " response could not be created.";
     static final String ILLEGAL_STATE_REASON = "Unable to process the response.";

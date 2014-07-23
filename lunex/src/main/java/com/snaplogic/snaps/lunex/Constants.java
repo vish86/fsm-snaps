@@ -22,6 +22,7 @@ import java.util.Map;
  * @author svatada
  */
 public class Constants {
+    static final String DEFAULT_CONTENT_LENGTH = "0";
     static final String LUNEX_HTTP_INFO = "[{\"ResourceType\": \"%s\"}, {\"Lunex URL\":\"%s\"}, {\"Header\": \"%s\"}]";
     static final String LUNEX_HTTP_REQ_INFO = "Lunex Request Body: %s";
     static final String HTTP_STATUS = "Lunex HTTPStatus: %s ";
