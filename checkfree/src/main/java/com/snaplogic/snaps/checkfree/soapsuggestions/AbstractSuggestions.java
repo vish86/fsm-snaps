@@ -9,7 +9,7 @@
  * "SnapLogic" is a trademark of SnapLogic, Inc.
  */
 
-package com.snaplogic.snaps.soap.suggestions;
+package com.snaplogic.snaps.checkfree.soapsuggestions;
 
 import com.snaplogic.common.properties.Suggestions;
 import com.snaplogic.common.properties.builders.SuggestionBuilder;
@@ -34,7 +34,7 @@ import java.util.Map;
 import static com.snaplogic.snaps.checkfree.CheckfreeExecute.PROP_ENDPOINT;
 import static com.snaplogic.snaps.checkfree.CheckfreeExecute.PROP_SERVICE;
 import static com.snaplogic.snaps.checkfree.CheckfreeExecute.PROP_WSDL_URL;
-import static com.snaplogic.snaps.soap.suggestions.Messages.WSDL_MUST_BE_DEFINED_FIRST;
+import static com.snaplogic.snaps.checkfree.soapsuggestions.Messages.WSDL_MUST_BE_DEFINED_FIRST;
 
 /**
  * AbstractSuggestions is the suggestions implementation that is the base class for all the other

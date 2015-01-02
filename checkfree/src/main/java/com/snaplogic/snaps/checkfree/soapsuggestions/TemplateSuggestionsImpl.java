@@ -8,7 +8,7 @@
  *
  * "SnapLogic" is a trademark of SnapLogic, Inc.
  */
-package com.snaplogic.snaps.soap.suggestions;
+package com.snaplogic.snaps.checkfree.soapsuggestions;
 
 import com.snaplogic.api.ConfigurationException;
 import com.snaplogic.common.properties.Suggestions;
@@ -26,7 +26,7 @@ import com.snaplogic.snaps.checkfree.CheckfreeExecute;
 
 import javax.xml.namespace.QName;
 
-import static com.snaplogic.snaps.soap.suggestions.Messages.INVALID_SETTINGS;
+import static com.snaplogic.snaps.checkfree.soapsuggestions.Messages.INVALID_SETTINGS;
 
 /**
  * Provides functionality to suggest a template for a SOAP request.

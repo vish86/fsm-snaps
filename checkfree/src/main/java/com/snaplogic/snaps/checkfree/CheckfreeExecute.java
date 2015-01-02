@@ -132,10 +132,10 @@ import com.snaplogic.snap.api.xsd.TypesFactory;
 import com.snaplogic.snap.api.xsd.TypesFactoryImpl;
 import com.snaplogic.snap.schema.api.SchemaBuilder;
 import com.snaplogic.snap.schema.api.SchemaProvider;
-import com.snaplogic.snaps.soap.suggestions.EndpointSuggestions;
-import com.snaplogic.snaps.soap.suggestions.OperationSuggestions;
-import com.snaplogic.snaps.soap.suggestions.ServiceSuggestions;
-import com.snaplogic.snaps.soap.suggestions.TemplateSuggestionsExecuteImpl;
+import com.snaplogic.snaps.checkfree.soapsuggestions.EndpointSuggestions;
+import com.snaplogic.snaps.checkfree.soapsuggestions.OperationSuggestions;
+import com.snaplogic.snaps.checkfree.soapsuggestions.ServiceSuggestions;
+import com.snaplogic.snaps.checkfree.soapsuggestions.TemplateSuggestionsExecuteImpl;
 
 import de.odysseus.staxon.json.JsonXMLConfig;
 import de.odysseus.staxon.json.JsonXMLConfigBuilder;

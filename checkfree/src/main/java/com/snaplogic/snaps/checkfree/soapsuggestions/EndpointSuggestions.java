@@ -9,7 +9,7 @@
  * "SnapLogic" is a trademark of SnapLogic, Inc.
  */
 
-package com.snaplogic.snaps.soap.suggestions;
+package com.snaplogic.snaps.checkfree.soapsuggestions;
 
 import com.snaplogic.common.properties.builders.SuggestionBuilder;
 import com.snaplogic.common.services.ws.IntrospectionService;
@@ -23,8 +23,7 @@ import java.util.Set;
 import javax.xml.namespace.QName;
 
 import static com.snaplogic.snaps.checkfree.CheckfreeExecute.PROP_ENDPOINT;
-
-import static com.snaplogic.snaps.soap.suggestions.Messages.SERVICE_NAME_MUST_BE_DEFINED_FIRST;
+import static com.snaplogic.snaps.checkfree.soapsuggestions.Messages.SERVICE_NAME_MUST_BE_DEFINED_FIRST;
 
 /**
  * EndpointSuggestions is the suggestions implementation that provides Endpoint suggestion

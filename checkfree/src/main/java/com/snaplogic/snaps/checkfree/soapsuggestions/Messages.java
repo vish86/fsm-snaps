@@ -9,7 +9,7 @@
  * "SnapLogic" is a trademark of SnapLogic, Inc.
  */
 
-package com.snaplogic.snaps.soap.suggestions;
+package com.snaplogic.snaps.checkfree.soapsuggestions;
 
 /**
  * This class holds the externalizable messages for all the classes in this package.

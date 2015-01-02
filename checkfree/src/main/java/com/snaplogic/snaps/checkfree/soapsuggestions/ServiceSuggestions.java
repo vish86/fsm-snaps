@@ -9,7 +9,7 @@
  * "SnapLogic" is a trademark of SnapLogic, Inc.
  */
 
-package com.snaplogic.snaps.soap.suggestions;
+package com.snaplogic.snaps.checkfree.soapsuggestions;
 
 import com.snaplogic.common.properties.Suggestions;
 import com.snaplogic.common.properties.builders.SuggestionBuilder;
