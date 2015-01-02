@@ -1,0 +1,19 @@
+{
+    "settings": {
+        "wsdl_url": {
+            "value": "file:///hello.wsdl"
+        },
+        "serviceName": {
+            "value": "{http://www.abc.com/service/}HelloService"
+        },
+        "portName": {
+            "value": "{http://www.abc.com/service/}HelloEndpoint"
+        },
+        "operation": {
+            "value": "{http://www.abc.com/service/}Hello"
+        },
+        "timeout": {
+            "value": 0
+        }
+    }
+}

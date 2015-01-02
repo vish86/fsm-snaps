@@ -1,0 +1,7 @@
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Header/><SOAP-ENV:Body><platformMsgs:add xmlns:platformMsgs="urn:messages_2010_2.platform.webservices.netsuite.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="platformMsgs:AddRequest">
+  <platformMsgs:record xmlns:platformCore="urn:core_2010_2.platform.webservices.netsuite.com" xsi:type="platformCore:Record">
+    <platformCore:nullFieldList xsi:type="platformCore:NullField">
+      <platformCore:name xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="xsd:string">***NO DATA***</platformCore:name>
+    </platformCore:nullFieldList>
+  </platformMsgs:record>
+</platformMsgs:add></SOAP-ENV:Body></SOAP-ENV:Envelope>

@@ -1,0 +1,29 @@
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Header/><SOAP-ENV:Body><tns:CorticonRequest xmlns:tns="urn:Corticon" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" decisionServiceEffectiveTimestamp="?" decisionServiceName="?" decisionServiceTargetVersion="?" usage="?" xsi:type="tns:CorticonRequestType">
+  <tns:WorkDocuments messageType="?" xsi:type="tns:WorkDocumentsType">
+    <tns:Inquiry href="?" id="?" xsi:type="tns:InquiryType">
+      <tns:assigned_email xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="xsd:string">***NO DATA***</tns:assigned_email>
+      <tns:assigned_name xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="xsd:string">***NO DATA***</tns:assigned_name>
+      <tns:campaign_id xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="xsd:string">***NO DATA***</tns:campaign_id>
+      <tns:country xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="xsd:string">***NO DATA***</tns:country>
+      <tns:decision_service xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="xsd:string">***NO DATA***</tns:decision_service>
+      <tns:event_type xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="xsd:string">***NO DATA***</tns:event_type>
+      <tns:industry xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="xsd:string">***NO DATA***</tns:industry>
+      <tns:method_of_distribution xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="xsd:string">***NO DATA***</tns:method_of_distribution>
+      <tns:named_rep xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="xsd:string">***NO DATA***</tns:named_rep>
+      <tns:ok_to_call xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="xsd:string">***NO DATA***</tns:ok_to_call>
+      <tns:organization_name xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="xsd:string">***NO DATA***</tns:organization_name>
+      <tns:organization_size xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="xsd:string">***NO DATA***</tns:organization_size>
+      <tns:post_code xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="xsd:string">***NO DATA***</tns:post_code>
+      <tns:preferredPartner xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="xsd:string">***NO DATA***</tns:preferredPartner>
+      <tns:prequalified xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="xsd:boolean">***NO DATA***</tns:prequalified>
+      <tns:priority xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="xsd:string">***NO DATA***</tns:priority>
+      <tns:product xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="xsd:string">***NO DATA***</tns:product>
+      <tns:product_family xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="xsd:string">***NO DATA***</tns:product_family>
+      <tns:product_quantity xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="xsd:string">***NO DATA***</tns:product_quantity>
+      <tns:province_state xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="xsd:string">***NO DATA***</tns:province_state>
+      <tns:purchase_timeframe xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="xsd:string">***NO DATA***</tns:purchase_timeframe>
+      <tns:reasonLeadRejected xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="xsd:string">***NO DATA***</tns:reasonLeadRejected>
+    </tns:Inquiry>
+  </tns:WorkDocuments>
+  <tns:parameters>***NO DATA***</tns:parameters>
+</tns:CorticonRequest></SOAP-ENV:Body></SOAP-ENV:Envelope>

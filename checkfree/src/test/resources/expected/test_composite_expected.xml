@@ -1,3 +1,1 @@
-<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Header/><SOAP-ENV:Body><GetLastTradePrice xmlns="http://example.com/stockquote.wsdl">
-  <body xmlns="">***NO DATA***</body>
-</GetLastTradePrice></SOAP-ENV:Body></SOAP-ENV:Envelope>
+<?xml version="1.0" encoding="UTF-8"?><SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns0="http://example.com/stockquote.xsd"><SOAP-ENV:Header/><SOAP-ENV:Body><ns0:TradePriceRequest><tickerSymbol>1234</tickerSymbol></ns0:TradePriceRequest></SOAP-ENV:Body></SOAP-ENV:Envelope>

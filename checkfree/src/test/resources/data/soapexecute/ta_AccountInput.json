@@ -5,10 +5,10 @@
                 "Account": {
                     "accountSegment": 1,
                     "accountTeamMember": [{
-                        "href": 1,
+                        "@href": 1,
                         "accountMgrType": 2,
                         "adobeRole": 3,
-                        "id": 4,
+                        "@id": 4,
                         "named": 5,
                         "outlookProductGroup": 6,
                         "ruleName": 7,

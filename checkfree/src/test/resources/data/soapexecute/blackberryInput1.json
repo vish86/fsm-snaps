@@ -1,0 +1,15 @@
+{
+    "inp1": [
+        {
+            "arg0": {
+                "endCustomer": {
+                    "accountId": 2,
+                    "address": {
+                        "city": 4
+                    },
+                    "name": null
+                }
+            }
+        }
+    ]
+}

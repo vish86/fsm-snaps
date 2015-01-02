@@ -1,0 +1,33 @@
+{
+    "inp1": [
+        {
+            "WorkDocuments": {
+                "Inquiry": [{
+                    "assigned_email": 1,
+                    "assigned_name": 2,
+                    "campaign_id":3,
+                    "country":4,
+                    "decision_service": 5,
+                    "event_type": 6,
+                    "industry": 7,
+                    "method_of_distribution": 8,
+                    "named_rep": 9,
+                    "ok_to_call": 10,
+                    "organization_name": 11,
+                    "organization_size": 12,
+                    "post_code": 13,
+                    "preferredPartner": 14,
+                    "prequalified": 15,
+                    "priority": 16,
+                    "product": 17,
+                    "product_family": 18,
+                    "product_quantity": 19,
+                    "province_state": 20,
+                    "purchase_timeframe": 21,
+                    "reasonLeadRejected": 22
+                }
+                ]
+            }
+        }
+    ]
+}

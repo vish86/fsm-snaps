@@ -1,0 +1,19 @@
+{
+    "settings": {
+        "wsdl_url": {
+            "value": "file:///corticon.wsdl"
+        },
+        "serviceName": {
+            "value": "{urn:CorticonService}inquiryDecisionService"
+        },
+        "portName": {
+            "value": "{urn:CorticonService}inquiryDecisionServiceSoap"
+        },
+        "operation": {
+            "value": "{urn:CorticonService}processRequest"
+        },
+        "timeout": {
+            "value": 0
+        }
+    }
+}

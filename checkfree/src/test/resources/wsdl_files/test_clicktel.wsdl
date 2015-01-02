@@ -1,11 +1,10 @@
 file:///test_clicktel.wsdl
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://api.clickatell.com/soap/webservice" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://api.clickatell.com/soap/webservice">
+<definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://api.clickatell.com/soap/webservice" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://api.clickatell.com/soap/webservice">
     <types>
-        <xsd:schema targetNamespace="http://api.clickatell.com/soap/webservice"
-                >
-            <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/" />
-            <xsd:import namespace="http://schemas.xmlsoap.org/wsdl/" />
+        <xsd:schema targetNamespace="http://api.clickatell.com/soap/webservice">
+            <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/" schemaLocation="encoding.xsd"/>
+            <xsd:import namespace="http://schemas.xmlsoap.org/wsdl/" schemaLocation="wsdl.xsd"/>
             <xsd:complexType name="ArrayOfString">
                 <xsd:complexContent>
                     <xsd:restriction base="SOAP-ENC:Array">

@@ -1,0 +1,124 @@
+file:///corticon.wsdl
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions targetNamespace="urn:CorticonService"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:tns="urn:CorticonService"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:cc="urn:Corticon">
+    <types>
+        <xsd:schema elementFormDefault="qualified" targetNamespace="urn:Corticon"
+                    xmlns:tns="urn:Corticon">
+            <xsd:element name="CorticonRequest" type="tns:CorticonRequestType"/>
+            <xsd:element name="CorticonResponse" type="tns:CorticonResponseType"/>
+            <xsd:complexType name="CorticonRequestType">
+                <xsd:sequence>
+                    <xsd:element name="WorkDocuments" type="tns:WorkDocumentsType"/>
+                </xsd:sequence>
+                <xsd:attribute name="decisionServiceName" type="xsd:string" use="required"/>
+                <xsd:attribute name="decisionServiceTargetVersion" type="xsd:nonNegativeInteger" use="optional"/>
+                <xsd:attribute name="decisionServiceEffectiveTimestamp" type="xsd:dateTime" use="optional"/>
+                <xsd:attribute name="usage" type="xsd:string" use="optional"/>
+            </xsd:complexType>
+            <xsd:complexType name="CorticonResponseType">
+                <xsd:sequence>
+                    <xsd:element name="WorkDocuments" type="tns:WorkDocumentsType"/>
+                    <xsd:element name="Messages" type="tns:MessagesType"/>
+                </xsd:sequence>
+                <xsd:attribute name="decisionServiceName" type="xsd:string" use="required"/>
+                <xsd:attribute name="decisionServiceTargetVersion" type="xsd:nonNegativeInteger" use="optional"/>
+                <xsd:attribute name="decisionServiceEffectiveTimestamp" type="xsd:dateTime" use="optional"/>
+            </xsd:complexType>
+            <xsd:complexType name="WorkDocumentsType">
+                <xsd:sequence maxOccurs="unbounded">
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="Inquiry" type="tns:InquiryType"/>
+                </xsd:sequence>
+                <xsd:attribute fixed="HIER" name="messageType" type="xsd:string" use="optional"/>
+            </xsd:complexType>
+            <xsd:complexType name="MessagesType">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="Message" type="tns:MessageType"/>
+                </xsd:sequence>
+                <xsd:attribute name="version" type="xsd:string"/>
+            </xsd:complexType>
+            <xsd:complexType name="MessageType">
+                <xsd:sequence>
+                    <xsd:element name="severity">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:enumeration value="Info"/>
+                                <xsd:enumeration value="Warning"/>
+                                <xsd:enumeration value="Violation"/>
+                                <xsd:enumeration value="Fatal Error"/>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element name="text" type="xsd:string"/>
+                    <xsd:element name="entityReference">
+                        <xsd:complexType>
+                            <xsd:attribute name="href" type="xsd:anyURI"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="InquiryType">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" name="assigned_email" nillable="false" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="assigned_name" nillable="false" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="campaign_id" nillable="false" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="country" nillable="false" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="decision_service" nillable="false" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="event_type" nillable="false" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="industry" nillable="false" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="method_of_distribution" nillable="false" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="named_rep" nillable="false" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="ok_to_call" nillable="false" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="organization_name" nillable="false" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="organization_size" nillable="false" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="post_code" nillable="false" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="preferredPartner" nillable="false" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="prequalified" nillable="false" type="xsd:boolean"/>
+                    <xsd:element minOccurs="0" name="priority" nillable="false" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="product" nillable="false" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="product_family" nillable="false" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="product_quantity" nillable="false" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="province_state" nillable="false" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="purchase_timeframe" nillable="false" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="reasonLeadRejected" nillable="false" type="xsd:string"/>
+                </xsd:sequence>
+                <xsd:attribute name="id" type="xsd:string" use="optional"/>
+                <xsd:attribute name="href" type="xsd:anyURI" use="optional"/>
+            </xsd:complexType>
+        </xsd:schema>
+    </types>
+    <message name="CorticonRequestIn">
+        <part name="parameters" element="cc:CorticonRequest"></part>
+    </message>
+    <message name="CorticonResponseOut">
+        <part name="parameters" element="cc:CorticonResponse"></part>
+    </message>
+    <portType name="inquiryDecisionServiceSoap">
+        <operation name="processRequest">
+            <input message="tns:CorticonRequestIn"></input>
+            <output message="tns:CorticonResponseOut"></output>
+        </operation>
+    </portType>
+    <binding name="inquiryDecisionServiceSoap" type="tns:inquiryDecisionServiceSoap">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="processRequest">
+            <soap:operation soapAction="urn:Corticon" style="document"/>
+            <input>
+                <soap:body use="literal" namespace="urn:Corticon"/>
+            </input>
+            <output>
+                <soap:body use="literal" namespace="urn:Corticon"/>
+            </output>
+        </operation>
+    </binding>
+    <service name="inquiryDecisionService">
+        <documentation>InsertDecisionServiceDescription</documentation>
+        <port name="inquiryDecisionServiceSoap" binding="tns:inquiryDecisionServiceSoap">
+            <soap:address location="http://sj1slm100:8080/BREServices/services/inquiryDecisionService/"/>
+        </port>
+    </service>
+</definitions>

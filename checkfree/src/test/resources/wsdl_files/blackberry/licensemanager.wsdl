@@ -1,0 +1,217 @@
+file:///licensemanager.wsdl
+<?xml version='1.0' encoding='UTF-8'?>
+<wsdl:definitions name="LicenseManagerWebServiceImplService" targetNamespace="http://ws.licmgr.eos.ecomm.rim.com/"
+                  xmlns:ns1="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://ws.licmgr.eos.ecomm.rim.com/"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <wsdl:types>
+        <xs:schema targetNamespace="http://ws.licmgr.eos.ecomm.rim.com/" version="1.0" xmlns:tns="http://ws.licmgr.eos.ecomm.rim.com/"
+                   xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <xs:complexType name="licenseProcessRequest">
+                <xs:sequence>
+                    <xs:element name="addEntitlement" type="xs:boolean" />
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="lineItems" nillable="true" type="tns:lineItem" />
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="lineItem">
+                <xs:sequence>
+                    <xs:element name="activationId" type="xs:string" />
+                    <xs:element minOccurs="0" name="billingEndDate" nillable="true" type="xs:dateTime" />
+                    <xs:element minOccurs="0" name="calKey" type="xs:string" />
+                    <xs:element minOccurs="0" name="contractEndDate" nillable="true" type="xs:dateTime" />
+                    <xs:element minOccurs="0" name="endDate" nillable="true" type="xs:dateTime" />
+                    <xs:element minOccurs="0" name="licenseType" type="tns:licenseType" />
+                    <xs:element name="lineNumber" nillable="true" type="xs:int" />
+                    <xs:element name="numberOfSeats" type="xs:int" />
+                    <xs:element minOccurs="0" name="parentActivationId" type="xs:string" />
+                    <xs:element name="quantity" type="xs:int" />
+                    <xs:element name="sku" type="xs:string" />
+                    <xs:element minOccurs="0" name="startDate" nillable="true" type="xs:dateTime" />
+                    <xs:element minOccurs="0" name="subscription" type="xs:string" />
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="licenseProcessReponse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="entitlementId" type="xs:string" />
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="orderLines" nillable="true" type="tns:lineItemData" />
+                    <xs:element name="status" type="xs:boolean" />
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="lineItemData">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="lineItem" type="tns:lineItem" />
+                    <xs:element minOccurs="0" name="reason" type="xs:string" />
+                    <xs:element name="status" type="xs:boolean" />
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="entitlementRequest">
+                <xs:sequence>
+                    <xs:element name="ecommOrderNumber" type="xs:string" />
+                    <xs:element name="endCustomer" type="tns:organization" />
+                    <xs:element maxOccurs="unbounded" name="lineItems" type="tns:lineItem" />
+                    <xs:element name="globalOrderNumber" type="xs:string" />
+                    <xs:element name="orderSource" type="xs:string" />
+                    <xs:element name="partner" type="tns:organization" />
+                    <xs:element minOccurs="0" name="systemId" type="xs:string" />
+                    <xs:element minOccurs="0" name="transactionID" type="xs:string" />
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="organization">
+                <xs:sequence>
+                    <xs:element name="accountId" type="xs:string" />
+                    <xs:element minOccurs="0" name="address" type="tns:address" />
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="contacts" nillable="true" type="tns:contact" />
+                    <xs:element minOccurs="0" name="name" type="xs:string" />
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="address">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="city" type="xs:string" />
+                    <xs:element minOccurs="0" name="country" type="xs:string" />
+                    <xs:element minOccurs="0" name="phoneNumber" type="xs:string" />
+                    <xs:element minOccurs="0" name="postalCode" type="xs:string" />
+                    <xs:element minOccurs="0" name="state" type="xs:string" />
+                    <xs:element minOccurs="0" name="street1" type="xs:string" />
+                    <xs:element minOccurs="0" name="street2" type="xs:string" />
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="contact">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="accountId" type="xs:string" />
+                    <xs:element minOccurs="0" name="address" type="tns:address" />
+                    <xs:element minOccurs="0" name="contactId" type="xs:string" />
+                    <xs:element minOccurs="0" name="email" type="xs:string" />
+                    <xs:element minOccurs="0" name="firstName" type="xs:string" />
+                    <xs:element minOccurs="0" name="lastName" type="xs:string" />
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="order">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="countryCode" type="xs:string" />
+                    <xs:element name="customerId" type="xs:string" />
+                    <xs:element maxOccurs="unbounded" name="items" type="tns:orderItem" />
+                    <xs:element name="orderNumber" type="xs:string" />
+                    <xs:element name="transactionId" type="xs:long" />
+                    <xs:element name="eCommOrderNumber" type="xs:string" />
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="orderItem">
+                <xs:sequence>
+                    <xs:element name="lineItem" nillable="true" type="xs:int" />
+                    <xs:element name="qty" type="xs:int" />
+                    <xs:element name="skuCode" type="xs:string" />
+                </xs:sequence>
+            </xs:complexType>
+            <xs:simpleType name="licenseType">
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="UNSPECIFIED" />
+                    <xs:enumeration value="PERPETUAL" />
+                    <xs:enumeration value="CONTENT_SUBSCRIPTION" />
+                    <xs:enumeration value="SOFTWARE_SUBSCRIPTION" />
+                    <xs:enumeration value="EVALUATION" />
+                    <xs:enumeration value="INTERNAL" />
+                    <xs:enumeration value="EMERGENCY" />
+                    <xs:enumeration value="NFR" />
+                    <xs:enumeration value="DEVELOPMENT" />
+                    <xs:enumeration value="BACKUP" />
+                    <xs:enumeration value="MAINTENANCE" />
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:message name="updateOrderLicensesResponse">
+        <wsdl:part name="return" type="tns:licenseProcessReponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="createEntitlementResponse">
+    </wsdl:message>
+    <wsdl:message name="updateOrderLicenses">
+        <wsdl:part name="arg0" type="tns:licenseProcessRequest">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="obtainOrderSrpsResponse">
+    </wsdl:message>
+    <wsdl:message name="updateEntitlementResponse">
+    </wsdl:message>
+    <wsdl:message name="obtainOrderSrps">
+        <wsdl:part name="arg0" type="tns:order">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="createEntitlement">
+        <wsdl:part name="arg0" type="tns:entitlementRequest">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="updateEntitlement">
+        <wsdl:part name="arg0" type="tns:entitlementRequest">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="LicenseManagerWebService">
+        <wsdl:operation name="updateOrderLicenses">
+            <wsdl:input message="tns:updateOrderLicenses" name="updateOrderLicenses">
+            </wsdl:input>
+            <wsdl:output message="tns:updateOrderLicensesResponse" name="updateOrderLicensesResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="createEntitlement">
+            <wsdl:input message="tns:createEntitlement" name="createEntitlement">
+            </wsdl:input>
+            <wsdl:output message="tns:createEntitlementResponse" name="createEntitlementResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="obtainOrderSrps">
+            <wsdl:input message="tns:obtainOrderSrps" name="obtainOrderSrps">
+            </wsdl:input>
+            <wsdl:output message="tns:obtainOrderSrpsResponse" name="obtainOrderSrpsResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="updateEntitlement">
+            <wsdl:input message="tns:updateEntitlement" name="updateEntitlement">
+            </wsdl:input>
+            <wsdl:output message="tns:updateEntitlementResponse" name="updateEntitlementResponse">
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="LicenseManagerWebServiceImplServiceSoapBinding" type="tns:LicenseManagerWebService">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
+        <wsdl:operation name="updateOrderLicenses">
+            <soap:operation soapAction="" style="rpc" />
+            <wsdl:input name="updateOrderLicenses">
+                <soap:body namespace="http://ws.licmgr.eos.ecomm.rim.com/" use="literal" />
+            </wsdl:input>
+            <wsdl:output name="updateOrderLicensesResponse">
+                <soap:body namespace="http://ws.licmgr.eos.ecomm.rim.com/" use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="createEntitlement">
+            <soap:operation soapAction="" style="rpc" />
+            <wsdl:input name="createEntitlement">
+                <soap:body namespace="http://ws.licmgr.eos.ecomm.rim.com/" use="literal" />
+            </wsdl:input>
+            <wsdl:output name="createEntitlementResponse">
+                <soap:body namespace="http://ws.licmgr.eos.ecomm.rim.com/" use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="obtainOrderSrps">
+            <soap:operation soapAction="" style="rpc" />
+            <wsdl:input name="obtainOrderSrps">
+                <soap:body namespace="http://ws.licmgr.eos.ecomm.rim.com/" use="literal" />
+            </wsdl:input>
+            <wsdl:output name="obtainOrderSrpsResponse">
+                <soap:body namespace="http://ws.licmgr.eos.ecomm.rim.com/" use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="updateEntitlement">
+            <soap:operation soapAction="" style="rpc" />
+            <wsdl:input name="updateEntitlement">
+                <soap:body namespace="http://ws.licmgr.eos.ecomm.rim.com/" use="literal" />
+            </wsdl:input>
+            <wsdl:output name="updateEntitlementResponse">
+                <soap:body namespace="http://ws.licmgr.eos.ecomm.rim.com/" use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="LicenseManagerWebServiceImplService">
+        <wsdl:port binding="tns:LicenseManagerWebServiceImplServiceSoapBinding" name="LicenseManagerWebServiceImplPort">
+            <soap:address location="http://eosdev001cnc.rim.net:8080/eos/LicenseManagerWebServiceImpl" />
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

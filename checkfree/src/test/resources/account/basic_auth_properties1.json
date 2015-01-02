@@ -1,0 +1,10 @@
+{
+    "settings": {
+        "username": {
+            "value": "foo"
+        },
+        "password": {
+            "value": "bar"
+        }
+    }
+}

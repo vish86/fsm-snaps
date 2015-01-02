@@ -1,7 +1,7 @@
 {
     "inp1": [
         {
-            "sys_id": "1234"
+            "tickerSymbol": "1234"
         }
     ]
 }

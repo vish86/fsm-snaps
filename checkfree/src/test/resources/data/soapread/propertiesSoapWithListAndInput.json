@@ -1,0 +1,22 @@
+{
+    "settings": {
+        "wsdl_url": {
+            "value": "file:///ta_account.wsdl"
+        },
+        "serviceName": {
+            "value": "{urn:CorticonService}TADecisionService"
+        },
+        "portName": {
+            "value": "{urn:CorticonService}TADecisionServiceSoap"
+        },
+        "operation": {
+            "value": "{urn:CorticonService}processRequest"
+        },
+        "encodeAttribute": {
+            "value": true
+        },
+        "timeout": {
+            "value": 0
+        }
+    }
+}

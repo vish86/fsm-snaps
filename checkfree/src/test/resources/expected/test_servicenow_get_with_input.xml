@@ -1,0 +1,4 @@
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Header/><SOAP-ENV:Body><tns:get xmlns:tns="http://www.service-now.com/incident">
+  <tns:sys_id xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xsd:string">1234</tns:sys_id>
+  <tns:__use_view xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xsd:string">***NO DATA***</tns:__use_view>
+</tns:get></SOAP-ENV:Body></SOAP-ENV:Envelope>

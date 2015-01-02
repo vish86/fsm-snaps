@@ -1,0 +1,19 @@
+{
+    "settings": {
+        "wsdl_url": {
+            "value": "file:///sap_account.wsdl"
+        },
+        "serviceName": {
+            "value": "{http://sap.com/xi/A1S/Global}service"
+        },
+        "portName": {
+            "value": "{http://sap.com/xi/A1S/Global}binding"
+        },
+        "operation": {
+            "value": "{{http://sap.com/xi/A1S/Global}CheckMaintainBundle_V1"
+        },
+        "timeout": {
+            "value": 0
+        }
+    }
+}

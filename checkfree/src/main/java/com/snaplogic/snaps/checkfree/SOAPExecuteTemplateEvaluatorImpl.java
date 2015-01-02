@@ -22,7 +22,6 @@ import java.util.Map;
  * A template evaluator implementation for SOAP Execute snap
  *
  * @author svatada
- * @since 2014 July
  */
 public class SOAPExecuteTemplateEvaluatorImpl extends XMLTemplateEvaluatorImpl {
 

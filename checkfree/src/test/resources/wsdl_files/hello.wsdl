@@ -1,0 +1,40 @@
+file:///hello.wsdl
+<?xml version="1.0"?>
+<wsdl:description xmlns:wsdl="http://www.w3.org/ns/wsdl"
+                  xmlns:wsoap= "http://www.w3.org/ns/wsdl/soap"
+                  xmlns:abc="http://www.abc.com/service/"
+                  targetNamespace="http://www.abc.com/service/">
+    <wsdl:documentation>
+        // Sample WSDL 2.0
+    </wsdl:documentation>
+    <wsdl:types>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                    targetNamespace="http://www.abc.com/service/">
+            <xsd:element name="HelloRequest" type="xsd:string"/>
+            <xsd:element name="HelloResponse" type="xsd:string"/>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:interface name="HelloInterface" >
+        <wsdl:operation name="Hello"
+                        pattern="http://www.w3.org/ns/wsdl/in-out"
+                        style="http://www.w3.org/ns/wsdl/style/iri">
+            <wsdl:input messageLabel="In"
+                        element="abc:HelloRequest" />
+            <wsdl:output messageLabel="Out"
+                         element="abc:HelloResponse" />
+        </wsdl:operation>
+    </wsdl:interface>
+    <wsdl:binding name="HelloBinding"
+                  interface="abc:HelloInterface"
+                  type="http://www.w3.org/ns/wsdl/soap"
+                  wsoap:protocol="http://www.w3.org/2003/05/soap/bindings/HTTP/">
+        <wsdl:operation ref="abc:Hello"
+                        wsoap:mep="http://www.w3.org/2003/05/soap/mep/soap-response"/>
+    </wsdl:binding>
+    <wsdl:service name="HelloService"
+                  interface="abc:HelloInterface">
+        <wsdl:endpoint name="HelloEndpoint"
+                       binding="abc:HelloBinding"
+                       address="http://www.abc.com/service/Hello.jsp"/>
+    </wsdl:service>
+</wsdl:description>

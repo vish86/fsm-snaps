@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="UTF-8"?><SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns0="http://www.webserviceX.NET"><SOAP-ENV:Header/><SOAP-ENV:Body><ns0:GetWeather><ns0:CityName>abc</ns0:CityName><ns0:CountryName>xyz</ns0:CountryName></ns0:GetWeather></SOAP-ENV:Body></SOAP-ENV:Envelope>

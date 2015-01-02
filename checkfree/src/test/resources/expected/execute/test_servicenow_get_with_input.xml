@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="UTF-8"?><SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns0="http://www.service-now.com/incident"><SOAP-ENV:Header/><SOAP-ENV:Body><ns0:get><sys_id>1234</sys_id></ns0:get></SOAP-ENV:Body></SOAP-ENV:Envelope>

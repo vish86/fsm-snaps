@@ -15,7 +15,6 @@ package com.snaplogic.snaps.checkfree;
  * This class holds the externalizable messages for all the classes in this package.
  *
  * @author svatada
- * @since 2014 July
  */
 public class Messages {
     // Labels & descriptions
@@ -29,13 +28,20 @@ public class Messages {
     static final String DESC_OPERATION = "Operation to invoke";
     public static final String LBL_WSDL_URL = "WSDL Url";
     static final String DESC_URL_FOR_THE_WSDL = "Url for the WSDL";
+    public static final String LBL_KEYSTORE_URL = "SSL Certificate Url";
+    public static final String LBL_KEYSTORE_PASS = "SSL Certificate password";
+    static final String DESC_URL_FOR_THE_KEYSTORE = "Url for the SSL Certificate";
+    static final String DESC_PASS_FOR_THE_KEYSTORE = "Password for the SSL Certificate";
     static final String LBL_PROP_SOAP_BINDING = "SOAP binding type";
     static final String DESC_PROP_SOAP_BINDING = "Defines the SOAP binding in case it can not " +
             "be determined via introspection";
-    static final String DESC_TIMEOUT = "Timeout for the web service call (in seconds). O " +
+    static final String DESC_TIMEOUT = "Timeout for the web service call (in seconds). 0 " +
             "indicates no timeout";
     static final String LBL_TIMEOUT = "Timeout";
     static final String LBL_DEFAULT_VALUE = "Default value for substitution";
+    static final String LBL_ENCODE_ATTRIBUTE = "Encode Attribute";
+    static final String DESC_ENCODE_ATTRIBUTE = "If checked, the attributes from XSD will be " +
+            "differentiated with an '@' prefix in the input schema of this snap";
     static final String DESC_DEFAULT_VALUE = "This value will be used for substitution for the " +
             "leaf elements which are not objects and/or not enclosed in an array. If nothing is " +
             "specified and 'Use default value for substitution' is checked, " +
@@ -47,9 +53,10 @@ public class Messages {
             "don't have any values will be deleted from the SOAP request.";
     static final String DOCUMENTS = "Documents";
     static final String SOAP_DOC_PROCESSED = "SoapDocProcessed";
-    static final String SOAP_EXECUTE_LABEL = "CheckFree - Execute";
-    static final String SOAP_REQUEST_DESC = "Calls the CheckFree endpoint and writes out response.";
-    static final String XML_WRITTEN_DESCRIPTION = "Number of XML documents successfully written";
+    static final String SOAP_EXECUTE_LABEL = "CheckFree-Execute";
+    static final String SOAP_REQUEST_DESC = "Calls the SOAP endpoint and writes out SOAP response.";
+    static final String SOAP_RESPONSES_WRITTEN_DESCRIPTION = "Number of SOAP responses " +
+            "successfully written";
     static final String SOAP_BASIC_AUTH_ACCOUNT_TITLE = "SOAP basic auth account";
     static final String SOAP_HEADER_ACCOUNT_TITLE = "SOAP header account";
     static final String SOAP_HEADER_LABEL = "SOAP Header";
@@ -83,4 +90,13 @@ public class Messages {
     static final String ERROR_PARSING_XML = "Error parsing XML";
     static final String VERIFY_THE_RETURNED_XML_IS_PARSEABLE = "Verify the returned XML is " +
             "parseable";
+    static final String OPERATION_BINDING_NOT_SUPPORTED = "Operation binding %s not supported";
+    static final String WSDL_VERSION_NOT_SUPPORTED = "Error: WSDL version is not supported";
+    static final String WSDL_VERSION_NOT_SUPPORTED_REASON = "The specified WSDL doesn't conform " +
+            "to either 1.1 or 2.0 specification";
+    static final String WSDL_VERSION_NOT_SUPPORTED_RES = "Please specify the WSDL that conforms " +
+            "to either 1.1 or 2.0 specification";
+    static final String TRUST_ALL_CERTS_LABEL = "Trust all certificates";
+    static final String TRUST_ALL_CERTS_DESCRIPTION = "Trust all certificates, such as" +
+            " self-signed certificates.";
 }

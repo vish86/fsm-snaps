@@ -1,0 +1,19 @@
+{
+    "settings": {
+        "wsdl_url": {
+            "value": "file:///global_weather.wsdl"
+        },
+        "serviceName": {
+            "value": "{http://www.webserviceX.NET}GlobalWeather"
+        },
+        "portName": {
+            "value": "{http://www.webserviceX.NET}GlobalWeatherSoap"
+        },
+        "operation": {
+            "value": "{http://www.webserviceX.NET}GetWeather"
+        },
+        "timeout": {
+            "value": 0
+        }
+    }
+}

@@ -1,0 +1,1 @@
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://www.service-now.com/incident" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><SOAP-ENV:Header/><SOAP-ENV:Body><tns:get><tns:sys_id>***NO DATA***</tns:sys_id><tns:__use_view>***NO DATA***</tns:__use_view></tns:get></SOAP-ENV:Body></SOAP-ENV:Envelope>

@@ -3,22 +3,55 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <groupId>com.snaplogic.pssnaps</groupId>
+    <artifactId>checkfree</artifactId>
+    <version>1-${sl_build}</version>
+    <packaging>jar</packaging>
+    <name>checkfree</name>
+    <url>http://www.SnapLogic.com</url>
     <parent>
         <artifactId>pssnaps</artifactId>
         <groupId>com.snaplogic</groupId>
         <version>4.0</version>
     </parent>
-    <groupId>com.snaplogic.snaps</groupId>
-    <artifactId>checkfree</artifactId>
-    <!-- Changing version in the directives file requires to change it here as well -->
-    <version>1-${sl_build}</version>
-    <packaging>jar</packaging>
-    <name>CheckFree</name>
 
     <!-- Snap zip assembly descriptor -->
     <build>
-        <finalName>${snap}</finalName>
+        <finalName>${project.artifactId}</finalName>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>properties-maven-plugin</artifactId>
+                </plugin>
+                <plugin>
+                    <groupId>com.snaplogic.tools</groupId>
+                    <artifactId>snappack-installer</artifactId>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+            <!-- Snaplogic Maven Plugins -->
             <plugin>
                 <groupId>com.snaplogic.tools</groupId>
                 <artifactId>snappack-installer</artifactId>
@@ -27,6 +60,7 @@
                         <goals>
                             <goal>generate-schema</goal>
                         </goals>
+                        <configuration></configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -51,12 +85,12 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- Add custom Manifest.mf file -->
+            <!-- Set the final name for the jar file-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
-                    <finalName>${snap}-${VERSION}-${sl_build}</finalName>
+                    <finalName>${project.artifactId}-${VERSION}-${sl_build}</finalName>
                 </configuration>
                 <executions>
                     <execution>
@@ -64,35 +98,10 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.3</version>
-                <executions>
-                    <execution>
-                        <id>add-test-resource</id>
-                        <phase>generate-test-sources</phase>
-                        <goals>
-                            <goal>add-test-resource</goal>
-                        </goals>
-                        <configuration>
-                            <resources>
-                                <resource>
-                                    <directory>resources</directory>
-                                    <includes>
-                                        <include>**/**</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
             <!-- Read the version from the directives file -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>properties-maven-plugin</artifactId>
-                <version>1.0-alpha-2</version>
                 <executions>
                     <execution>
                         <phase>generate-resources</phase>
@@ -117,7 +126,8 @@
                         <phase>generate-resources</phase>
                         <configuration>
                             <target>
-                                <!-- This will add the build number and version in the resources file. Don't change the formatting below. -->
+                                <!-- This will add the build number and version in the resources file. Don't
+                                     change the formatting below. -->
                                 <echo file="${project.build.directory}/classes/build.properties">build_number=${sl_build}
 snap_pack_version=${VERSION}
 snap_pack_fqid=${snap}-snap-${VERSION}-${sl_build}.zip
@@ -139,11 +149,21 @@ snap_pack_name=${NAME}</echo>
         <company>SnapLogic</company>
         <snap>checkfree</snap>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- This is the build number for the ZIP, will be SNAPSHOT by default (
+             or whatever else is defined in Tectonic's pom.xml as the default value for
+             the sl_build property).
+
+             Use mvn install -Dsl_build=b1234 to change that.
+         -->
         <package.build_no>${sl_build}</package.build_no>
+        <!-- This identifies the classes which represent the actual snaps
+             (and become accessible on the jcc after deployment).
+         -->
         <snap.classes>
-            com.snaplogic.snaps.checkfree.Execute
+            com.snaplogic.snaps.checkfree.CheckfreeExecute
         </snap.classes>
     </properties>
+
         <!-- Dependencies -->
     <dependencies>
         <!-- Unit testing -->
@@ -246,6 +266,15 @@ snap_pack_name=${NAME}</echo>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <scope>provided</scope>
+        </dependency>
+        <!-- XSOM and its dependency -->
+        <dependency>
+            <groupId>com.sun.xsom</groupId>
+            <artifactId>xsom</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml</groupId>
+            <artifactId>relaxngDatatype</artifactId>
         </dependency>
     </dependencies>
 </project>
